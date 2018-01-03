@@ -1,0 +1,36 @@
+{
+  "name": "xapphire13.com",
+  "version": "1.0.0",
+  "description": "Xapphire13.com",
+  "main": "./dist/index.js",
+  "dependencies": {
+    "express": "^4.16.2",
+    "handlebars": "^4.0.11"
+  },
+  "devDependencies": {
+    "@types/express": "^4.11.0",
+    "@types/handlebars": "^4.0.36",
+    "ts-loader": "^3.2.0",
+    "typescript": "^2.6.2",
+    "webpack": "^3.10.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc && webpack",
+    "start": "node ./dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Xapphire13/xapphire13.com.git"
+  },
+  "keywords": [
+    "xapphire13",
+    "website"
+  ],
+  "author": "Xapphire13",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Xapphire13/xapphire13.com/issues"
+  },
+  "homepage": "https://github.com/Xapphire13/xapphire13.com#readme"
+}
