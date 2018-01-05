@@ -1,0 +1,84 @@
+.icon {
+  position: relative;
+  top: 3px;
+  height: 1em;
+}
+
+.post-preview + .post-preview {
+  margin-top: 1em;
+}
+
+.post-preview {
+  border: 1px solid #999;
+  padding: 1em;
+  text-align: justify;
+
+  .post-title {
+    font-weight: bold;
+    font-size: 1.3em;
+  }
+
+  .post-details {
+    color: #666;
+  }
+
+  .post-tags::before {
+    content: "Tags";
+    display: inline-block;
+    font-weight: bold;
+    margin: 0.2em 0.5em 0 0;
+  }
+
+  .post-tag {
+    border: 1px solid #A1A1A1;
+    background: #F2F2F2;
+    color: #555;
+    font-size: 0.9em;
+    border-radius: 5px;
+    padding: 0 0.5em 0 0.5em;
+  }
+
+  .post-tag + .post-tag {
+    margin-left: 0.3em;
+  }
+
+  .post-tag:hover {
+    background: #52BFFF;
+    color: white;
+    border-color: #0673B3;
+    cursor: pointer;
+  }
+
+  .post-preview-content {
+    position: relative;
+    min-height: 5em;
+    margin-top: 1em;
+  }
+
+  .post-preview-content.post-clipped::after {
+    content: "";
+    background: linear-gradient(rgba(255,255,255,0), rgba(255,255,255,1) 66%);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 10em;
+    max-height: 100%;
+    width: 100%;
+    pointer-events: none;
+  }
+
+  .post-preview-read-more {
+    position: absolute;
+    bottom: 1em;
+    z-index: 1;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .post-title:hover, .post-preview-read-more:hover {
+    color: #52BFFF;
+    cursor: pointer;
+  }
+}
