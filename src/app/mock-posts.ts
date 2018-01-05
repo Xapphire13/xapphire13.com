@@ -1,4 +1,4 @@
-export const MOCK_POSTS = [
+export default [
   "Test",
   `
   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum vitae quam cursus,
