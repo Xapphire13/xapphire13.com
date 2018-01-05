@@ -9,6 +9,7 @@ module.exports = {
   output: {
     filename: "app.js",
     path: DIST_PATH,
+    publicPath: "/app/"
   },
   devtool: "source-map",
   module: {
