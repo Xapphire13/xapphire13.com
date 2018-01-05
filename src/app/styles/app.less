@@ -15,10 +15,13 @@ html, body, #app-root {
   .app-content {
     margin-left: auto;
     margin-right: auto;
-    padding: 1em 0 1em 0;
+    padding: 1em;
     max-width: 1000px;
     flex: 1 1 auto;
-    text-align: center;
+    
+    .post-preview {
+      width: ~"calc(100% - 2em)";
+    }
   }
 
   .app-footer {
