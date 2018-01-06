@@ -3,7 +3,7 @@ const globby = require("globby");
 const path = require("path");
 const yazl = require("yazl");
 
-const DIST_PATH = "./dist";
+const DIST_PATH = path.resolve(__dirname, "../dist");
 
 module.exports = function(outpath) {
   const distFiles = globby.sync(path.join(DIST_PATH, "**"));
