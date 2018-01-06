@@ -4,7 +4,6 @@
     "module": "commonjs",
     "jsx": "react",
     "sourceMap": true,
-    "outDir": "./dist",
     "removeComments": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
@@ -16,6 +15,7 @@
     "noImplicitReturns": true
   },
   "include": [
-    "./src/**/*"
+    "./**/*",
+    "../types/**/*"
   ]
 }

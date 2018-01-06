@@ -4,9 +4,13 @@ import * as path from "path";
 const APP_PATH = path.resolve(__dirname, "app");
 const app = express();
 
+app.set('port', process.env.PORT || 80);
+
 app.use("/app", express.static(APP_PATH));
 app.get("*", (_req, res) => {
-  res.sendfile(path.join(APP_PATH, "index.html"));
+  res.sendFile(path.join(APP_PATH, "index.html"));
 });
 
-app.listen(80);
+const server = app.listen(app.get("port"), () => {
+  console.log("Listening on port " + server.address().port);
+});
