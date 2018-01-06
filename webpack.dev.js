@@ -1,26 +1,14 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const merge = require('webpack-merge');
+const common = require("./webpack.common.js");
 
 const SRC_PATH = path.resolve(__dirname, "src/app");
 const DIST_PATH = path.resolve(__dirname, "dist/app");
 
-module.exports = {
-  entry: path.join(SRC_PATH, "bootstrap.ts"),
-  output: {
-    filename: "app.js",
-    path: DIST_PATH,
-    publicPath: "/app/"
-  },
-  devtool: "source-map",
+module.exports = merge(common, {
   module: {
     rules: [
-      {
-        test: /\.tsx?$/,
-        exclude: /node_modules/,
-        use: {
-          loader: "ts-loader"
-        }
-      },
       {
         test: /\.less$/,
         use: [{
@@ -30,11 +18,7 @@ module.exports = {
         }, {
           loader: "less-loader" // compiles Less to CSS
         }]
-        }
+      }
     ]
-  },
-  resolve: {
-    extensions: [".tsx", ".ts", ".js"]
-  },
-  plugins: [new HtmlWebpackPlugin({title: "Xapphire13"})]
-};
+  }
+});
