@@ -2,13 +2,10 @@ import "./styles/app.less";
 import "react-github-button/assets/style.less";
 import * as React from "react";
 import {AppHeader} from "./app-header";
-import {PostPreview} from "./post-preview";
-import {NotFound} from "./not-found";
 import {BrowserRouter, Route, Switch} from "react-router-dom";
-import MOCK_POSTS from "./mock-posts";
+import {HomePage} from "./home-page";
+import {NotFound} from "./not-found";
 import GitHubButton = require("react-github-button");
-
-const MAX_PREVIEW_LENGTH = 4000;
 
 export class App extends React.Component {
   public render(): JSX.Element {
@@ -18,15 +15,7 @@ export class App extends React.Component {
         <div className="app-content-wrapper">
           <div className="app-content">
             <Switch>
-              <Route exact path="/" render={() => MOCK_POSTS.map((post, i) =>
-                <PostPreview
-                  key={i}
-                  title="Test"
-                  created={new Date()}
-                  lastModified={new Date()}
-                  markdownText={post}
-                  tags={["Test", "tech", "awesome"]}
-                  maxLength={MAX_PREVIEW_LENGTH} />)} />
+              <Route exact path="/" component={HomePage} />
               <Route component={NotFound} />
             </Switch>
           </div>
