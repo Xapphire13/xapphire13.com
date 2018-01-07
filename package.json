@@ -28,6 +28,7 @@
     "react-router-dom": "^4.2.2",
     "reading-time": "^1.1.0",
     "style-loader": "^0.19.1",
+    "throttleit": "^1.0.0",
     "ts-loader": "^3.2.0",
     "typescript": "^2.6.2",
     "uglifyjs-webpack-plugin": "^1.1.6",

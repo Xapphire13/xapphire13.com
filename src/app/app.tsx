@@ -10,7 +10,7 @@ import GitHubButton = require("react-github-button");
 export class App extends React.Component {
   public render(): JSX.Element {
     return <BrowserRouter>
-      <div className="app">
+      <div id="app">
         <AppHeader />
         <div className="app-content-wrapper">
           <div className="app-content">
