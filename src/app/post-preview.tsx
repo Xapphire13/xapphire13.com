@@ -2,10 +2,12 @@ import "./styles/post-preview.less";
 import * as React from "react";
 import * as moment from "moment";
 import * as ReactMarkdown from "react-markdown";
+import {Link} from "react-router-dom";
 import {BookOpen, Clock, Edit} from "react-feather";
 import readingTime = require("reading-time");
 
 type Props = {
+  id: string;
   title: string;
   created: Date;
   lastModified: Date;
@@ -21,7 +23,7 @@ export class PostPreview extends React.Component<Props> {
     const lengthInMin = Math.floor(readingTime(this.props.markdownText).time / 1000 / 60);
 
     return <div className="post-preview">
-      <div className="post-title">{this.props.title}</div>
+      <Link className="post-title" to={`/post/${this.props.id}`}>{this.props.title}</Link>
       <div className="post-details">
         <span className="post-details-created" title={this.props.created.toLocaleString()}>
           <Clock className="icon" />{moment(this.props.created).fromNow()}

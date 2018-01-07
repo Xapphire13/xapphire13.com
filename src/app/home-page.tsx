@@ -34,6 +34,7 @@ export class HomePage extends React.Component<{}, State> {
     return <div className={`home-page${this.state.loading ? " loading" : ""}`}>
       {this.state.loadedPosts.map((post, i) =>
         <PostPreview
+          id={post.id}
           key={i}
           title="Test"
           created={new Date()}
