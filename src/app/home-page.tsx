@@ -1,3 +1,4 @@
+import "./styles/home-page.less";
 import * as React from "react";
 import {PostPreview} from "./post-preview";
 import MOCK_POSTS from "./mock-posts";
@@ -6,7 +7,7 @@ const MAX_PREVIEW_LENGTH = 4000;
 
 export class HomePage extends React.Component {
   public render(): JSX.Element {
-    return <div>
+    return <div className="home-page">
       {MOCK_POSTS.map((post, i) =>
         <PostPreview
           key={i}
