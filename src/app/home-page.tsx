@@ -36,11 +36,11 @@ export class HomePage extends React.Component<{}, State> {
         <PostPreview
           id={post.id}
           key={i}
-          title="Test"
-          created={new Date()}
-          lastModified={new Date()}
+          title={post.title}
+          created={post.created}
+          lastModified={post.lastModified}
           markdownText={post.markdownText}
-          tags={["Test", "tech", "awesome"]}
+          tags={post.tags}
           maxLength={MAX_PREVIEW_LENGTH} />)}
     </div>;
   }
