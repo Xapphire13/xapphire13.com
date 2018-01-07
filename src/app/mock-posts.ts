@@ -4,10 +4,16 @@ import {stripIndent} from "common-tags";
 export default <Post[]>[
   {
     id: "foo",
+    title: "Test 1",
+    created: new Date(2018, 0, 1, 12, 0),
+    lastModified: new Date(2018, 0, 1, 12, 0),
     markdownText: "Test"
   },
   {
     id: "bar",
+    title: "Test 2",
+    created: new Date(2017, 11, 30, 4, 0),
+    lastModified: new Date(2018, 0, 5, 12, 0),
     markdownText: stripIndent`
     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum vitae quam cursus,
     vestibulum risus id, mollis neque. Nam sit amet consequat sapien. In ornare lectus in
@@ -31,6 +37,9 @@ export default <Post[]>[
   },
   {
     id: "foobar",
+    title: "Test 3",
+    created: new Date(2017, 11, 29, 18, 0),
+    lastModified: new Date(2017, 11, 29, 18, 0),
     markdownText: stripIndent`
     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum vitae quam cursus,
     vestibulum risus id, mollis neque. Nam sit amet consequat sapien. In ornare lectus in
