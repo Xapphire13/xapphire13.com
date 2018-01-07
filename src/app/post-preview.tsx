@@ -34,7 +34,7 @@ export class PostPreview extends React.Component<Props> {
         <span className="post-details-length"><BookOpen className="icon" />{lengthInMin >= 1 ? `${lengthInMin} min` : "short"} read</span>
       </div>
       <div className={`post-preview-content ${isClipped ? "post-clipped" : ""}`}>
-        <ReactMarkdown source={this.props.markdownText.substr(0, this.props.maxLength)}/>
+        <ReactMarkdown className="post-preview-markdown" source={this.props.markdownText.substr(0, this.props.maxLength)}/>
         {isClipped && <div className="post-preview-read-more">Read more</div>}
       </div>
       {this.props.tags && !!this.props.tags.length && <div className="post-tags">
