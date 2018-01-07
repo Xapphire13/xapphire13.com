@@ -7,7 +7,8 @@ export default <Post[]>[
     title: "Test 1",
     created: new Date(2018, 0, 1, 12, 0),
     lastModified: new Date(2018, 0, 1, 12, 0),
-    markdownText: "Test"
+    markdownText: "Test",
+    tags: ["awesome", "test"]
   },
   {
     id: "bar",
