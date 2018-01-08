@@ -7,6 +7,7 @@ import {RouteComponentProps} from "react-router-dom";
 import {BookOpen, Clock, Edit} from "react-feather";
 import {Post} from "./post";
 import readingTime = require("reading-time");
+import DisqusThread from "react-disqus-comments";
 
 type Params = {
   id: string;
@@ -63,6 +64,16 @@ export class PostView extends React.Component<Props, State> {
       {this.state.post.tags && !!this.state.post.tags.length && <div className="post-tags">
         {this.state.post.tags.map(tag => <span key={tag} className="post-tag">{tag}</span>)}
       </div>}
+      <DisqusThread
+        className="disqus-thread"
+        shortname="xapphire13"
+        identifier={this.state.post.id}
+        title={this.state.post.title}
+        url={this.getThreadUrl(this.state.post)}/>
     </div>;
+  }
+
+  private getThreadUrl(post: Post): string {
+    return `http://www.xapphire13.com/post/${post.id}`;
   }
 }
