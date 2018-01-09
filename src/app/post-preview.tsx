@@ -21,7 +21,7 @@ export class PostPreview extends React.Component<Props> {
     const isEdited = this.props.created.getTime() !== this.props.lastModified.getTime();
     const isClipped = this.props.markdownText.length > this.props.maxLength;
     const lengthInMin = Math.floor(readingTime(this.props.markdownText).time / 1000 / 60);
-    const postPath = `/post/${this.props.id}`;
+    const postPath = `/posts/${this.props.id}`;
 
     return <div className="post-preview">
       <Link className="post-title" to={postPath}>{this.props.title}</Link>
