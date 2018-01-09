@@ -5,7 +5,8 @@ import * as ReactMarkdown from "react-markdown";
 import * as ClientApi from "./client-api";
 import {RouteComponentProps} from "react-router-dom";
 import {BookOpen, Clock, Edit} from "react-feather";
-import {Post} from "./post";
+import {Post} from "../post";
+import {NotFound} from "./not-found";
 import readingTime = require("reading-time");
 import DisqusThread from "react-disqus-comments";
 
@@ -17,6 +18,7 @@ type Props = RouteComponentProps<Params>;
 
 type State = {
   post: Post | null;
+  error: boolean;
 };
 
 export class PostView extends React.Component<Props, State> {
@@ -24,25 +26,34 @@ export class PostView extends React.Component<Props, State> {
     super(props);
 
     this.state = {
-      post: null
+      post: null,
+      error: false
     }
   }
 
   public async componentDidMount(): Promise<void> {
     window.scrollTo(0, 0);
-    const post = await ClientApi.getPost(this.props.match.params.id);
 
-    this.setState({post});
+    try {
+      const post = await ClientApi.getPost(this.props.match.params.id);
+      this.setState({post});
+    } catch {
+      this.setState({error: true});
+    }
   }
 
   public render(): JSX.Element {
+    if (this.state.error) {
+      return <NotFound message="404: Post not found" />;
+    }
+
     if (!this.state.post) {
       return <div className="post-view">
         Loading...
       </div>;
     }
 
-    const isEdited = this.state.post.created.getTime() !== this.state.post.lastModified.getTime();
+    const isEdited = Date.parse(this.state.post.created) !== Date.parse(this.state.post.lastModified);
     const lengthInMin = Math.floor(readingTime(this.state.post.markdownText).time / 1000 / 60);
 
     return <div className="post-view">

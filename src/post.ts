@@ -1,8 +1,8 @@
 export interface Post {
   id: string;
   title: string;
-  created: Date;
-  lastModified: Date;
+  created: string;
+  lastModified: string;
   markdownText: string;
   tags: string[];
 }
