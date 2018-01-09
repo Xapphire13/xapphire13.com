@@ -1,12 +1,11 @@
-import MP from "./mock-posts";
-import {Post} from "./post";
-const MOCK_POSTS = new Array(20).fill(null).reduce<Post[]>(p => p.concat(...MP), []);
+import {Post} from "../post";
+import {PagedResponse} from "../paged-response";
 
-export function getPosts(): Promise<Post[]> {
-  return Promise.resolve(MOCK_POSTS);
+export function getPosts(continuationToken: string | null = null): Promise<PagedResponse<Post>> {
+  return fetch(`/api/posts${continuationToken ? `?continue=${continuationToken}` : ""}`)
+    .then(res => res.json());
 }
 
 export function getPost(id: string): Promise<Post> {
-  const post = MOCK_POSTS.find(post => post.id === id);
-  return post ? Promise.resolve(post) : Promise.reject(null);
+  return fetch(`/api/posts/${id}`).then(res => res.json());
 }

@@ -1,7 +1,7 @@
 import "./styles/home-page.less";
 import * as React from "react";
 import * as ClientApi from "./client-api";
-import {Post} from "./post";
+import {Post} from "../post";
 import {PostPreview} from "./post-preview";
 import throttle = require("throttleit");
 
@@ -10,6 +10,7 @@ const MAX_PREVIEW_LENGTH = 4000;
 type State = {
   loading: boolean;
   loadedPosts: Post[];
+  continuationToken: string | null;
 };
 
 export class HomePage extends React.Component<{}, State> {
@@ -17,7 +18,8 @@ export class HomePage extends React.Component<{}, State> {
     super(props);
     this.state = {
       loading: false,
-      loadedPosts: []
+      loadedPosts: [],
+      continuationToken: null
     };
   }
 
@@ -37,8 +39,8 @@ export class HomePage extends React.Component<{}, State> {
           id={post.id}
           key={i}
           title={post.title}
-          created={post.created}
-          lastModified={post.lastModified}
+          created={new Date(post.created)}
+          lastModified={new Date(post.lastModified)}
           markdownText={post.markdownText}
           tags={post.tags}
           maxLength={MAX_PREVIEW_LENGTH} />)}
@@ -51,24 +53,24 @@ export class HomePage extends React.Component<{}, State> {
       loading: true
     });
 
-    const posts = await ClientApi.getPosts();
+    const posts = await ClientApi.getPosts(this.state.continuationToken);
 
-    for (
-      let i = loadedPosts.length, c = 3;
-      loadedPosts.length < posts.length && c;
-      c--, i++) {
-      loadedPosts.push(posts[i]);
-    }
+    loadedPosts.push(...posts.values);
 
     this.setState({
       loadedPosts,
-      loading: false
+      loading: false,
+      continuationToken: posts.continuationToken
     });
   }
 
   private onScroll = throttle(() => {
     const app = document.getElementById("app")!;
     if (window.innerHeight + window.scrollY + 200 >= app.offsetHeight) {
+      if (!this.state.continuationToken) {
+        window.removeEventListener("scroll", this.onScroll);
+        return;
+      }
       this.loadPosts();
     }
   }, 500);
