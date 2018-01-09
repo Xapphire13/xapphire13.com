@@ -74,6 +74,6 @@ export class PostView extends React.Component<Props, State> {
   }
 
   private getThreadUrl(post: Post): string {
-    return `http://www.xapphire13.com/post/${post.id}`;
+    return `http://www.xapphire13.com/posts/${post.id}`;
   }
 }

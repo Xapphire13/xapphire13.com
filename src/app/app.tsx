@@ -17,7 +17,7 @@ export class App extends React.Component {
           <div className="app-content">
             <Switch>
               <Route exact path="/" component={HomePage} />
-              <Route path="/post/:id" component={PostView} />
+              <Route path="/posts/:id" component={PostView} />
               <Route component={NotFound} />
             </Switch>
           </div>
