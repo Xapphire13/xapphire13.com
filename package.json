@@ -4,7 +4,8 @@
   "description": "Xapphire13.com",
   "main": "./dist/index.js",
   "dependencies": {
-    "express": "^4.16.2"
+    "express": "^4.16.2",
+    "sqlite": "^2.9.0"
   },
   "devDependencies": {
     "@types/common-tags": "^1.4.0",
