@@ -1,8 +1,10 @@
 import "./styles/home-page.less";
 import * as React from "react";
 import * as ClientApi from "./client-api";
+import * as Utils from "./utils";
 import {Post} from "../post";
 import {PostPreview} from "./post-preview";
+import {Disposable} from "./disposable";
 import throttle = require("throttleit");
 
 const MAX_PREVIEW_LENGTH = 4000;
@@ -14,6 +16,8 @@ type State = {
 };
 
 export class HomePage extends React.Component<{}, State> {
+  private scrollSubscription: Disposable;
+
   constructor(props: any) {
     super(props);
     this.state = {
@@ -24,12 +28,12 @@ export class HomePage extends React.Component<{}, State> {
   }
 
   public componentDidMount(): void {
-    window.addEventListener("scroll", this.onScroll)
+    this.scrollSubscription = Utils.subscribeToEvent(window, "scroll", this.onScroll);
     this.loadPosts();
   }
 
   public componentWillUnmount(): void {
-    window.removeEventListener("scroll", this.onScroll);
+    this.scrollSubscription.dispose();
   }
 
   public render(): JSX.Element {
@@ -68,7 +72,7 @@ export class HomePage extends React.Component<{}, State> {
     const app = document.getElementById("app")!;
     if (window.innerHeight + window.scrollY + 200 >= app.offsetHeight) {
       if (!this.state.continuationToken) {
-        window.removeEventListener("scroll", this.onScroll);
+        this.scrollSubscription.dispose();
         return;
       }
       this.loadPosts();
