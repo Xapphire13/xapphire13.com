@@ -10,6 +10,7 @@ interface Request<TQuery = void, TParams = void, TBody = void> extends _Request 
   body: TBody;
 }
 
+const ENABLE_WRITE = false;
 const DEFAULT_PAGE_SIZE = 5;
 
 export class PostController {
@@ -18,7 +19,10 @@ export class PostController {
   public registerRoutes(): void {
     this.app.get("/api/posts", this.getPosts.bind(this));
     this.app.get("/api/posts/:id", this.getPost.bind(this));
-    this.app.post("/api/posts", this.postPost.bind(this));
+
+    if (ENABLE_WRITE) {
+      this.app.post("/api/posts", this.postPost.bind(this));
+    }
   }
 
   private async postPost(req: Request<void, void, Post>, res: Response): Promise<Response> {
