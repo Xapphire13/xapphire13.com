@@ -22,4 +22,6 @@ CREATE TABLE PostTags (
 );
 
 -- Down
+DROP TABLE PostTags;
 DROP TABLE Post;
+DROP TABLE Tag;
