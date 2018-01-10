@@ -23,13 +23,18 @@ export class PostController {
 
     let values: Post[];
     if (continuationToken) {
-      const records = await this.db.all(`SELECT * FROM Post WHERE id > ${continuationToken} LIMIT ${DEFAULT_PAGE_SIZE};`);
+      const records = await this.db.all(`
+        SELECT * FROM Post
+        WHERE id > ${continuationToken}
+        LIMIT ${DEFAULT_PAGE_SIZE};`);
 
-      values = await Promise.all(records.map<Promise<Post>>(async record => this.convertRecordToPost(record, await this.getTagsForPost(record.id))));
+      values = await Promise.all(records.map(async record => this.convertRecordToPost(record, await this.getTagsForPost(record.id))));
     } else {
-      const records = await this.db.all(`SELECT * FROM Post LIMIT ${DEFAULT_PAGE_SIZE};`);
+      const records = await this.db.all(`
+        SELECT * FROM Post
+        LIMIT ${DEFAULT_PAGE_SIZE};`);
 
-      values = await Promise.all(records.map<Promise<Post>>(async record => this.convertRecordToPost(record, await this.getTagsForPost(record.id))));
+      values = await Promise.all(records.map(async record => this.convertRecordToPost(record, await this.getTagsForPost(record.id))));
     }
 
     return res.json(<PagedResponse<Post>>{
@@ -40,13 +45,20 @@ export class PostController {
 
   private async getPost(req: Request<void, {id: string}>, res: Response): Promise<Response> {
     const {id} = req.params;
-    const post = this.convertRecordToPost(await this.db.get(`SELECT * FROM Post WHERE id = ${id};`), await this.getTagsForPost(+id));
+    const recordPromise = this.db.get(`
+      SELECT * FROM Post
+      WHERE id = ${id};`);
+    const tagsPromise = this.getTagsForPost(+id)
+    const post = this.convertRecordToPost(await recordPromise, await tagsPromise);
 
     return post ? res.json(post) : res.status(404).send();
   }
 
   private async getTagsForPost(id: number): Promise<string[]> {
-    return (await this.db.all(`SELECT name FROM Tag INNER JOIN (SELECT * FROM PostTags WHERE post_id = ${id}) AS Tags ON Tag.id = Tags.tag_id;`)).map(record => record.name);
+    return (await this.db.all(`
+      SELECT name FROM Tag
+      INNER JOIN (SELECT * FROM PostTags WHERE post_id = ${id}) AS Tags
+      ON Tag.id = Tags.tag_id;`)).map(record => record.name);
   }
 
   private convertRecordToPost(record: any, tags: string[]): Post {
