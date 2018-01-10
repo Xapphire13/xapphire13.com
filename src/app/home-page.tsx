@@ -12,18 +12,17 @@ const MAX_PREVIEW_LENGTH = 4000;
 type State = {
   loading: boolean;
   loadedPosts: Post[];
-  continuationToken: string | null;
 };
 
 export class HomePage extends React.Component<{}, State> {
   private scrollSubscription: Disposable;
+  private continuationToken: string | null;
 
   constructor(props: any) {
     super(props);
     this.state = {
       loading: false,
       loadedPosts: [],
-      continuationToken: null
     };
   }
 
@@ -57,25 +56,25 @@ export class HomePage extends React.Component<{}, State> {
       loading: true
     });
 
-    const posts = await ClientApi.getPosts(this.state.continuationToken);
+    const {continuationToken, values} = await ClientApi.getPosts(this.continuationToken);
+    this.continuationToken = continuationToken;
 
-    loadedPosts.push(...posts.values);
+    loadedPosts.push(...values);
 
     this.setState({
       loadedPosts,
-      loading: false,
-      continuationToken: posts.continuationToken
+      loading: false
     });
   }
 
   private onScroll = throttle(() => {
     const app = document.getElementById("app")!;
     if (window.innerHeight + window.scrollY + 200 >= app.offsetHeight) {
-      if (!this.state.continuationToken) {
+      if (this.continuationToken) {
+        this.loadPosts();
+      } else {
         this.scrollSubscription.dispose();
-        return;
       }
-      this.loadPosts();
     }
   }, 500);
 }
