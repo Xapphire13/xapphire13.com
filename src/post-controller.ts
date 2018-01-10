@@ -2,6 +2,7 @@ import {Express, Request as _Request, Response} from "express";
 import {Database} from "sqlite";
 import {Post} from "./post";
 import {PagedResponse} from "./paged-response";
+import sql = require("sql-tagged-template-literal");
 
 interface Request<TQuery = void, TParams = void, TBody = void> extends _Request {
   query: TQuery;
@@ -27,13 +28,13 @@ export class PostController {
     post.tags = post.tags ? post.tags.map(tag => tag.toLowerCase()) : [];
 
     // TODO, likely race condition here
-    const {id} = await (await this.db.exec(`
+    const {id} = await (await this.db.exec(sql`
       INSERT INTO Post (title, created, last_modified, markdown_text)
       VALUES (
-        ${JSON.stringify(post.title)},
-        ${JSON.stringify(post.created)},
-        ${JSON.stringify(post.lastModified)},
-        ${JSON.stringify(post.markdownText)});
+        ${post.title},
+        ${post.created},
+        ${post.lastModified},
+        ${post.markdownText});
       `)).get(`
       SELECT id FROM Post
       WHERE id = last_insert_rowid();
@@ -42,14 +43,14 @@ export class PostController {
     await Promise.all(post.tags.map(async tag => {
       tag = tag.toLowerCase();
 
-      await this.db.exec(`
+      await this.db.exec(sql`
         INSERT OR IGNORE INTO Tag (name)
-        VALUES (${JSON.stringify(tag)});
+        VALUES (${tag});
         `);
 
-      await this.db.exec(`
+      await this.db.exec(sql`
         INSERT OR IGNORE INTO PostTags
-        VALUES (${id}, (SELECT id FROM Tag WHERE name = ${JSON.stringify(tag)}));`)
+        VALUES (${id}, (SELECT id FROM Tag WHERE name = ${tag}));`)
     }));
 
     post.id = id;
@@ -62,7 +63,7 @@ export class PostController {
 
     let values: Post[];
     if (continuationToken) {
-      const records = await this.db.all(`
+      const records = await this.db.all(sql`
         SELECT * FROM Post
         WHERE id < ${continuationToken}
         ORDER BY id DESC
@@ -86,7 +87,7 @@ export class PostController {
 
   private async getPost(req: Request<void, {id: string}>, res: Response): Promise<Response> {
     const {id} = req.params;
-    const recordPromise = this.db.get(`
+    const recordPromise = this.db.get(sql`
       SELECT * FROM Post
       WHERE id = ${id};`);
     const tagsPromise = this.getTagsForPost(+id)
@@ -96,7 +97,7 @@ export class PostController {
   }
 
   private async getTagsForPost(id: number): Promise<string[]> {
-    return (await this.db.all(`
+    return (await this.db.all(sql`
       SELECT name FROM Tag
       INNER JOIN (SELECT * FROM PostTags WHERE post_id = ${id}) AS Tags
       ON Tag.id = Tags.tag_id

@@ -9,7 +9,8 @@ CREATE TABLE Post (
 
 CREATE TABLE Tag (
   id INTEGER PRIMARY KEY,
-  name TEXT NOT NULL
+  name TEXT NOT NULL,
+  CONSTRAINT UniqueName UNIQUE (name)
 );
 
 CREATE TABLE PostTags (
