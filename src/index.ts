@@ -10,22 +10,20 @@ async function main() {
 
   app.set('port', process.env.PORT || 80);
 
-  // Controllers
-  new PostController(app).registerRoutes();
-
-  // Routes
-  app.use("/app", express.static(APP_PATH));
-  app.get("*", (_req, res) => {
-    res.sendFile(path.join(APP_PATH, "index.html"));
-  });
-
   // Database
   const db = await sqlite.open(path.join(__dirname, "database.sqlite"), { promise: Promise });
   await db.migrate({
     migrationsPath: path.join(__dirname, "sql")
   });
 
-  console.log(await db.all("SELECT * FROM Post"));
+  // Controllers
+  new PostController(app, db).registerRoutes();
+
+  // Routes
+  app.use("/app", express.static(APP_PATH));
+  app.get("*", (_req, res) => {
+    res.sendFile(path.join(APP_PATH, "index.html"));
+  });
 
   const server = app.listen(app.get("port"), () => {
     console.log("Listening on port " + server.address().port);
