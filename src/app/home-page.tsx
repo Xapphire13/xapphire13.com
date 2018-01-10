@@ -1,8 +1,10 @@
 import "./styles/home-page.less";
 import * as React from "react";
 import * as ClientApi from "./client-api";
+import * as Utils from "./utils";
 import {Post} from "../post";
 import {PostPreview} from "./post-preview";
+import {Disposable} from "./disposable";
 import throttle = require("throttleit");
 
 const MAX_PREVIEW_LENGTH = 4000;
@@ -10,26 +12,27 @@ const MAX_PREVIEW_LENGTH = 4000;
 type State = {
   loading: boolean;
   loadedPosts: Post[];
-  continuationToken: string | null;
 };
 
 export class HomePage extends React.Component<{}, State> {
+  private scrollSubscription: Disposable;
+  private continuationToken: string | null;
+
   constructor(props: any) {
     super(props);
     this.state = {
       loading: false,
       loadedPosts: [],
-      continuationToken: null
     };
   }
 
   public componentDidMount(): void {
-    window.addEventListener("scroll", this.onScroll)
+    this.scrollSubscription = Utils.subscribeToEvent(window, "scroll", this.onScroll);
     this.loadPosts();
   }
 
   public componentWillUnmount(): void {
-    window.removeEventListener("scroll", this.onScroll);
+    this.scrollSubscription.dispose();
   }
 
   public render(): JSX.Element {
@@ -53,25 +56,25 @@ export class HomePage extends React.Component<{}, State> {
       loading: true
     });
 
-    const posts = await ClientApi.getPosts(this.state.continuationToken);
+    const {continuationToken, values} = await ClientApi.getPosts(this.continuationToken);
+    this.continuationToken = continuationToken;
 
-    loadedPosts.push(...posts.values);
+    loadedPosts.push(...values);
 
     this.setState({
       loadedPosts,
-      loading: false,
-      continuationToken: posts.continuationToken
+      loading: false
     });
   }
 
   private onScroll = throttle(() => {
     const app = document.getElementById("app")!;
     if (window.innerHeight + window.scrollY + 200 >= app.offsetHeight) {
-      if (!this.state.continuationToken) {
-        window.removeEventListener("scroll", this.onScroll);
-        return;
+      if (this.continuationToken) {
+        this.loadPosts();
+      } else {
+        this.scrollSubscription.dispose();
       }
-      this.loadPosts();
     }
   }, 500);
 }
