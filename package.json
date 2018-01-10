@@ -42,8 +42,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc -p ./src && webpack --config webpack.dev.js",
-    "build:prod": "tsc -p ./src && webpack --config webpack.prod.js",
+    "build": "tsc -p ./src && xcopy /Y /E /I \"./src/sql\" \"./dist/sql\" && webpack --config webpack.dev.js",
+    "build:prod": "tsc -p ./src && xcopy /Y /E /I \"./src/sql\" \"./dist/sql\" && webpack --config webpack.prod.js",
     "start": "node ./dist/index.js",
     "start:watch": "node ./scripts/watch.js"
   },
