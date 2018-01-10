@@ -1,4 +1,5 @@
-import * as express from "express";
+import express = require("express");
+import bodyParser = require("body-parser");
 import * as path from "path";
 import * as sqlite from "sqlite";
 import {PostController} from "./post-controller";
@@ -6,15 +7,17 @@ import {PostController} from "./post-controller";
 const APP_PATH = path.resolve(__dirname, "app");
 
 async function main() {
-  const app = express();
-
-  app.set('port', process.env.PORT || 80);
-
   // Database
   const db = await sqlite.open(path.join(__dirname, "database.sqlite"), { promise: Promise });
   await db.migrate({
     migrationsPath: path.join(__dirname, "sql")
   });
+
+  const app = express();
+
+  // Config
+  app.set('port', process.env.PORT || 80);
+  app.use(bodyParser.json());
 
   // Controllers
   new PostController(app, db).registerRoutes();
