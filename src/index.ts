@@ -28,6 +28,7 @@ async function main() {
     res.sendFile(path.join(APP_PATH, "index.html"));
   });
 
+  // Start!
   const server = app.listen(app.get("port"), () => {
     console.log("Listening on port " + server.address().port);
   });
