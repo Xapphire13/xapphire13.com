@@ -69,6 +69,7 @@
   },
   "homepage": "https://github.com/Xapphire13/xapphire13.com#readme",
   "jest": {
+    "mapCoverage": true,
     "globals": {
       "ts-jest": {
         "tsConfigFile": "tests/tsconfig.json"
