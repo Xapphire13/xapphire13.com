@@ -2,7 +2,7 @@ import express = require("express");
 import bodyParser = require("body-parser");
 import * as path from "path";
 import * as sqlite from "sqlite";
-import {PostRepository} from "./post-repository";
+import {SqlPostRepository} from "./post-repository-sql";
 import {PostController} from "./post-controller";
 
 const APP_PATH = path.resolve(__dirname, "app");
@@ -21,7 +21,7 @@ async function main() {
   app.use(bodyParser.json());
 
   // Controllers
-  new PostController(app, new PostRepository(db)).registerRoutes();
+  new PostController(app, new SqlPostRepository(db)).registerRoutes();
 
   // Routes
   app.use("/app", express.static(APP_PATH));
