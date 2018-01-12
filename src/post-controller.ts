@@ -2,6 +2,7 @@ import {Express, Request as _Request, Response} from "express";
 import {Database} from "sqlite";
 import {Post} from "./post";
 import {PagedResponse} from "./paged-response";
+import {isAuthorized} from "./auth-helper";
 import sql = require("sql-tagged-template-literal");
 
 interface Request<TQuery = void, TParams = void, TBody = void> extends _Request {
@@ -10,7 +11,6 @@ interface Request<TQuery = void, TParams = void, TBody = void> extends _Request 
   body: TBody;
 }
 
-const ENABLE_WRITE = false;
 const DEFAULT_PAGE_SIZE = 5;
 
 export class PostController {
@@ -19,13 +19,14 @@ export class PostController {
   public registerRoutes(): void {
     this.app.get("/api/posts", this.getPosts.bind(this));
     this.app.get("/api/posts/:id", this.getPost.bind(this));
-
-    if (ENABLE_WRITE) {
-      this.app.post("/api/posts", this.postPost.bind(this));
-    }
+    this.app.post("/api/posts", this.postPost.bind(this));
   }
 
   private async postPost(req: Request<void, void, Post>, res: Response): Promise<Response> {
+    if (!isAuthorized()) {
+      return res.status(401).send();
+    }
+
     const post = req.body;
     post.created = new Date().toJSON();
     post.lastModified = post.created;
