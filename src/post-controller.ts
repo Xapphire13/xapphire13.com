@@ -3,6 +3,7 @@ import {Database} from "sqlite";
 import {Post} from "./post";
 import {PagedResponse} from "./paged-response";
 import {isAuthorized} from "./auth-helper";
+import Semaphore from "semaphore-async-await";
 import sql = require("sql-tagged-template-literal");
 
 interface Request<TQuery = void, TParams = void, TBody = void> extends _Request {
@@ -14,12 +15,15 @@ interface Request<TQuery = void, TParams = void, TBody = void> extends _Request 
 const DEFAULT_PAGE_SIZE = 5;
 
 export class PostController {
+  private lock = new Semaphore(1);
+
   constructor(private app: Express, private db: Database) {}
 
   public registerRoutes(): void {
     this.app.get("/api/posts", this.getPosts.bind(this));
     this.app.get("/api/posts/:id", this.getPost.bind(this));
     this.app.post("/api/posts", this.postPost.bind(this));
+    this.app.patch("/api/posts/:id", this.patchPost.bind(this));
   }
 
   private async postPost(req: Request<void, void, Post>, res: Response): Promise<Response> {
@@ -32,35 +36,58 @@ export class PostController {
     post.lastModified = post.created;
     post.tags = post.tags ? post.tags.map(tag => tag.toLowerCase()) : [];
 
-    // TODO, likely race condition here
-    const {id} = await (await this.db.exec(sql`
+    await this.lock.acquire();
+
+    await this.db.exec(sql`
       INSERT INTO Post (title, created, last_modified, markdown_text)
       VALUES (
         ${post.title},
         ${post.created},
         ${post.lastModified},
         ${post.markdownText});
-      `)).get(`
+      `);
+
+    const {id} = await this.db.get(`
       SELECT id FROM Post
       WHERE id = last_insert_rowid();
       `);
 
-    await Promise.all(post.tags.map(async tag => {
-      tag = tag.toLowerCase();
+    await this.processTags(+id, post.tags);
 
-      await this.db.exec(sql`
-        INSERT OR IGNORE INTO Tag (name)
-        VALUES (${tag});
-        `);
-
-      await this.db.exec(sql`
-        INSERT OR IGNORE INTO PostTags
-        VALUES (${id}, (SELECT id FROM Tag WHERE name = ${tag}));`)
-    }));
+    this.lock.release();
 
     post.id = id;
 
     return res.status(201).json(post);
+  }
+
+  private async patchPost(req: Request<void, {id: string}, Post>, res: Response): Promise<Response> {
+    if (!isAuthorized()) {
+      return res.status(401).send();
+    }
+
+    const {id} = req.params;
+    const postPatch = req.body;
+    postPatch.lastModified = new Date().toJSON();
+    postPatch.tags = postPatch.tags ? postPatch.tags.map(tag => tag.toLowerCase()) : [];
+
+    await this.lock.acquire();
+
+    if (!(await this.db.get(sql`SELECT id FROM Post WHERE id = ${+id}`))) {
+      return res.status(404).send();
+    }
+
+    await this.db.exec(sql`
+      UPDATE Post
+      SET title = ${postPatch.title}, markdown_text = ${postPatch.markdownText}, last_modified = ${postPatch.lastModified}
+      WHERE id = ${+id}
+      `);
+
+    await this.processTags(+id, postPatch.tags);
+
+    this.lock.release();
+
+    return res.status(204).send();
   }
 
   private async getPosts(req: Request<{continue?: string}>, res: Response): Promise<Response> {
@@ -99,6 +126,21 @@ export class PostController {
     const post = this.convertRecordToPost(await recordPromise, await tagsPromise);
 
     return post ? res.json(post) : res.status(404).send();
+  }
+
+  private async processTags(postId: number, tags: string[]): Promise<any> {
+    return Promise.all(tags.map(async tag => {
+      tag = tag.toLowerCase();
+
+      await this.db.exec(sql`
+        INSERT OR IGNORE INTO Tag (name)
+        VALUES (${tag});
+        `);
+
+      await this.db.exec(sql`
+        INSERT OR IGNORE INTO PostTags
+        VALUES (${postId}, (SELECT id FROM Tag WHERE name = ${tag}));`)
+    }));
   }
 
   private async getTagsForPost(id: number): Promise<string[]> {
