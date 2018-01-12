@@ -24,6 +24,7 @@ export class PostController {
     this.app.get("/api/posts/:id", this.getPost.bind(this));
     this.app.post("/api/posts", this.postPost.bind(this));
     this.app.patch("/api/posts/:id", this.patchPost.bind(this));
+    this.app.delete("/api/posts/:id", this.deletePost.bind(this));
   }
 
   private async postPost(req: Request<void, void, Post>, res: Response): Promise<Response> {
@@ -73,7 +74,7 @@ export class PostController {
 
     await this.lock.acquire();
 
-    if (!(await this.db.get(sql`SELECT id FROM Post WHERE id = ${+id}`))) {
+    if (!await this.postExists(+id)) {
       return res.status(404).send();
     }
 
@@ -88,6 +89,23 @@ export class PostController {
     this.lock.release();
 
     return res.status(204).send();
+  }
+
+  private async deletePost(req: Request<void, {id: string}, void>, res: Response): Promise<Response> {
+    const {id} = req.params;
+
+    if (!await this.postExists(+id)) {
+      return res.status(404).send();
+    }
+
+    await this.lock.acquire();
+    await this.db.exec(sql`
+      DELETE FROM Post
+      WHERE id = ${+id}
+      `);
+    this.lock.release();
+
+    return res.send();
   }
 
   private async getPosts(req: Request<{continue?: string}>, res: Response): Promise<Response> {
@@ -126,6 +144,10 @@ export class PostController {
     const post = this.convertRecordToPost(await recordPromise, await tagsPromise);
 
     return post ? res.json(post) : res.status(404).send();
+  }
+
+  private postExists(id: number): Promise<boolean> {
+    return this.db.get(sql`SELECT id FROM Post WHERE id = ${+id}`);
   }
 
   private async processTags(postId: number, tags: string[]): Promise<any> {
