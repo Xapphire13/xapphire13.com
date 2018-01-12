@@ -15,8 +15,9 @@ type State = {
 };
 
 export class HomePage extends React.Component<{}, State> {
-  private scrollSubscription: Disposable;
+  private scrollSubscription: Disposable = { dispose: () => {} };
   private continuationToken: string | null;
+  private app: HTMLElement;
 
   constructor(props: any) {
     super(props);
@@ -26,9 +27,18 @@ export class HomePage extends React.Component<{}, State> {
     };
   }
 
-  public componentDidMount(): void {
-    this.scrollSubscription = Utils.subscribeToEvent(window, "scroll", this.onScroll);
-    this.loadPosts();
+  public async componentDidMount(): Promise<void> {
+    this.app = document.getElementById("app")!;
+
+    this.continuationToken = await this.loadPosts();
+
+    while (this.continuationToken && this.app.clientHeight <= window.innerHeight) {
+      this.continuationToken = await this.loadPosts();
+    }
+
+    if (this.continuationToken) {
+      this.scrollSubscription = Utils.subscribeToEvent(window, "scroll", this.onScroll);
+    }
   }
 
   public componentWillUnmount(): void {
@@ -50,14 +60,13 @@ export class HomePage extends React.Component<{}, State> {
     </div>;
   }
 
-  private async loadPosts(): Promise<void> {
+  private async loadPosts(): Promise<string | null> {
     const {loadedPosts} = this.state;
     this.setState({
       loading: true
     });
 
     const {continuationToken, values} = await ClientApi.getPosts(this.continuationToken);
-    this.continuationToken = continuationToken;
 
     loadedPosts.push(...values);
 
@@ -65,13 +74,14 @@ export class HomePage extends React.Component<{}, State> {
       loadedPosts,
       loading: false
     });
+
+    return continuationToken;
   }
 
-  private onScroll = throttle(() => {
-    const app = document.getElementById("app")!;
-    if (window.innerHeight + window.scrollY + 200 >= app.offsetHeight) {
+  private onScroll = throttle(async () => {
+    if (window.innerHeight + window.scrollY + 200 >= this.app.offsetHeight) {
       if (this.continuationToken) {
-        this.loadPosts();
+        this.continuationToken = await this.loadPosts();
       } else {
         this.scrollSubscription.dispose();
       }
