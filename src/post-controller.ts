@@ -1,3 +1,4 @@
+import * as boom from "boom";
 import {Express, Request as _Request, Response} from "express";
 import {Post} from "./post";
 import {PagedResponse} from "./paged-response";
@@ -33,7 +34,7 @@ export class PostController {
     const {id} = req.params;
 
     if (!await this.repository.getPost(+id)) {
-      return res.status(404).send();
+      throw boom.notFound();
     }
 
     const post = req.body;
@@ -47,7 +48,7 @@ export class PostController {
     const {id} = req.params;
 
     if (!await this.repository.getPost(+id)) {
-      return res.status(404).send();
+      throw boom.notFound();
     }
 
     await this.repository.deletePost(+id);
@@ -72,6 +73,10 @@ export class PostController {
 
     const post = await this.repository.getPost(+id);
 
-    return post ? res.json(post) : res.status(404).send();
+    if (!post) {
+      throw boom.notFound();
+    }
+
+    return res.json(post);
   });
 }
