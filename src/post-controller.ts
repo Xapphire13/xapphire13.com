@@ -1,7 +1,7 @@
 import {Express, Request as _Request, Response} from "express";
 import {Post} from "./post";
 import {PagedResponse} from "./paged-response";
-import {protectedRoute} from "./auth-helper";
+import {asyncRoute, protectedRoute} from "./route-helpers";
 import {PostRepository} from "./post-repository";
 
 interface Request<TQuery = void, TParams = void, TBody = void> extends _Request {
@@ -16,20 +16,20 @@ export class PostController {
   constructor(private app: Express, private repository: PostRepository) {}
 
   public registerRoutes(): void {
-    this.app.get("/api/posts", this.getPosts.bind(this));
-    this.app.get("/api/posts/:id", this.getPost.bind(this));
-    this.app.post("/api/posts", protectedRoute(this.postPost.bind(this)));
-    this.app.patch("/api/posts/:id", protectedRoute(this.patchPost.bind(this)));
-    this.app.delete("/api/posts/:id", protectedRoute(this.deletePost.bind(this)));
+    this.app.get("/api/posts", this.getPosts);
+    this.app.get("/api/posts/:id", this.getPost);
+    this.app.post("/api/posts", protectedRoute(this.postPost));
+    this.app.patch("/api/posts/:id", protectedRoute(this.patchPost));
+    this.app.delete("/api/posts/:id", protectedRoute(this.deletePost));
   }
 
-  private async postPost(req: Request<void, void, Post>, res: Response): Promise<Response> {
+  private postPost = asyncRoute(async (req: Request<void, void, Post>, res: Response): Promise<Response> => {
     const post = await this.repository.createPost(req.body);
 
     return res.status(201).json(post);
-  }
+  });
 
-  private async patchPost(req: Request<void, {id: string}, Post>, res: Response): Promise<Response> {
+  private patchPost = asyncRoute(async (req: Request<void, {id: string}, Post>, res: Response): Promise<Response> => {
     const {id} = req.params;
 
     if (!await this.repository.getPost(+id)) {
@@ -41,9 +41,9 @@ export class PostController {
     await this.repository.editPost(post);
 
     return res.status(204).send();
-  }
+  });
 
-  private async deletePost(req: Request<void, {id: string}, void>, res: Response): Promise<Response> {
+  private deletePost = asyncRoute(async (req: Request<void, {id: string}, void>, res: Response): Promise<Response> => {
     const {id} = req.params;
 
     if (!await this.repository.getPost(+id)) {
@@ -53,9 +53,9 @@ export class PostController {
     await this.repository.deletePost(+id);
 
     return res.send();
-  }
+  });
 
-  private async getPosts(req: Request<{continue?: string}>, res: Response): Promise<Response> {
+  private getPosts = asyncRoute(async (req: Request<{continue?: string}>, res: Response): Promise<Response> => {
     let continuationToken = req.query.continue;
 
     const values = await this.repository.getPosts(DEFAULT_PAGE_SIZE, continuationToken ? +continuationToken : undefined);
@@ -65,13 +65,13 @@ export class PostController {
       values,
       continuationToken
     });
-  }
+  });
 
-  private async getPost(req: Request<void, {id: string}>, res: Response): Promise<Response> {
+  private getPost = asyncRoute(async (req: Request<void, {id: string}>, res: Response): Promise<Response> => {
     const {id} = req.params;
 
     const post = await this.repository.getPost(+id);
 
     return post ? res.json(post) : res.status(404).send();
-  }
+  });
 }
