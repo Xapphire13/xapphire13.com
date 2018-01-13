@@ -6,6 +6,7 @@ import {BrowserRouter, Route, Switch} from "react-router-dom";
 import {HomePage} from "./home-page";
 import {NotFound} from "./not-found";
 import {PostView} from "./post-view";
+import {AdminPage} from "./admin-page";
 import GitHubButton = require("react-github-button");
 
 export class App extends React.Component {
@@ -18,6 +19,7 @@ export class App extends React.Component {
             <Switch>
               <Route exact path="/" component={HomePage} />
               <Route path="/posts/:id" component={PostView} />
+              <Route path="/admin" component={AdminPage} />
               <Route component={NotFound} />
             </Switch>
           </div>

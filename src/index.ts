@@ -5,6 +5,7 @@ import * as path from "path";
 import * as sqlite from "sqlite";
 import {SqlPostRepository} from "./post-repository-sql";
 import {PostController} from "./post-controller";
+import {AuthController} from "./auth-controller";
 
 const APP_PATH = path.resolve(__dirname, "app");
 
@@ -23,6 +24,7 @@ async function main() {
 
   // Controllers
   new PostController(app, new SqlPostRepository(db)).registerRoutes();
+  new AuthController(app).registerRoutes();
 
   // Routes
   app.use("/app", express.static(APP_PATH));

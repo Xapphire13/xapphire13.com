@@ -2,6 +2,12 @@ import * as boom from "boom";
 import * as express from "express";
 import {isAuthorized} from "./auth-helper";
 
+export interface Request<TQuery = void, TParams = void, TBody = void> extends express.Request {
+  query: TQuery;
+  params: TParams;
+  body: TBody;
+}
+
 export function protectedRoute(handler: express.RequestHandler): express.RequestHandler {
   return (req, res, next) => {
     if (!isAuthorized()) {

@@ -1,15 +1,9 @@
 import * as boom from "boom";
-import {Express, Request as _Request, Response} from "express";
+import {Express, Response} from "express";
 import {Post} from "./post";
 import {PagedResponse} from "./paged-response";
-import {asyncRoute, protectedRoute} from "./route-helpers";
+import {asyncRoute, protectedRoute, Request} from "./route-helpers";
 import {PostRepository} from "./post-repository";
-
-interface Request<TQuery = void, TParams = void, TBody = void> extends _Request {
-  query: TQuery;
-  params: TParams;
-  body: TBody;
-}
 
 const DEFAULT_PAGE_SIZE = 5;
 
