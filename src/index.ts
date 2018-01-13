@@ -1,5 +1,6 @@
 import express = require("express");
 import bodyParser = require("body-parser");
+import * as boom from "boom";
 import * as path from "path";
 import * as sqlite from "sqlite";
 import {SqlPostRepository} from "./post-repository-sql";
@@ -28,6 +29,13 @@ async function main() {
   app.get("*", (_req, res) => {
     res.sendFile(path.join(APP_PATH, "index.html"));
   });
+
+  // Error handler
+  app.use(<express.ErrorRequestHandler>((err, _req, res, _next) => {
+    const boomError: boom.Boom = boom.isBoom(err) ? err : boom.badImplementation(err);
+
+    return res.status(boomError.output.statusCode).json(boomError.output.payload);
+  }));
 
   // Start!
   const server = app.listen(app.get("port"), () => {
