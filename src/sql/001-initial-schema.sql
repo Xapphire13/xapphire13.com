@@ -22,17 +22,16 @@ CREATE TABLE PostTags (
 );
 
 CREATE TABLE User (
-  id INTEGER PRIMARY KEY,
+  id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
   password_hash TEXT,
-  token_secret TEXT
+  token_secret TEXT,
+  authenticator_secret TEXT
 );
 
 CREATE TABLE Admins (
-  id INTEGER PRIMARY KEY,
-  user_id INTEGER NOT NULL,
-  CONSTRAINT FK_UserId FOREIGN KEY (user_id) REFERENCES User(id),
-  CONSTRAINT UniqueUser UNIQUE (user_id)
+  user_id TEXT PRIMARY KEY,
+  CONSTRAINT FK_UserId FOREIGN KEY (user_id) REFERENCES User(id)
 );
 
 -- Down

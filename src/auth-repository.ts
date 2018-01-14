@@ -2,6 +2,7 @@ import {User} from "./user";
 
 export interface AuthRepository {
   getAdmin(): Promise<User>;
-  storeSecret(userId: number, secret: string): Promise<void>;
-  storePasswordHash(userId: number, hash: string): Promise<void>;
+  storeTokenSecret(userId: string, secret: string): Promise<void>;
+  storePasswordHash(userId: string, hash: string): Promise<void>;
+  storeAuthenticatorSecret(userId: string, secret: string): Promise<void>;
 }

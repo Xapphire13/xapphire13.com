@@ -16,11 +16,12 @@ export class SqlAuthRepository implements AuthRepository {
       id: record.id,
       name: record.name,
       passwordHash: record.password_hash,
-      tokenSecret: record.token_secret
+      tokenSecret: record.token_secret,
+      authenticatorSecret: record.authenticator_secret
     }
   }
 
-  public storeSecret(userId: number, secret: string): Promise<any> {
+  public storeTokenSecret(userId: string, secret: string): Promise<any> {
     return this.db.exec(sql`
       UPDATE User
       SET token_secret = (${secret})
@@ -28,10 +29,18 @@ export class SqlAuthRepository implements AuthRepository {
       `);
   }
 
-  public storePasswordHash(userId: number, hash: string): Promise<any> {
+  public storePasswordHash(userId: string, hash: string): Promise<any> {
     return this.db.exec(sql`
       UPDATE User
       SET password_hash = (${hash})
+      WHERE id = ${userId};
+      `);
+  }
+
+  public storeAuthenticatorSecret(userId: string, secret: string): Promise<any> {
+    return this.db.exec(sql`
+      UPDATE User
+      SET authenticator_secret = (${secret})
       WHERE id = ${userId};
       `);
   }
