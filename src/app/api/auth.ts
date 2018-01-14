@@ -1,9 +1,12 @@
 export async function getTempToken(password: string): Promise<any> {
   const response = await fetch("/api/auth", {
     method: "POST",
-    body: {
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
       pass: btoa(password)
-    }
+    })
   });
 
   if (!response.ok) {

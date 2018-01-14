@@ -4,6 +4,7 @@
   "description": "Xapphire13.com",
   "main": "./dist/index.js",
   "dependencies": {
+    "@types/jsonwebtoken": "^7.2.5",
     "bcrypt": "^1.0.3",
     "body-parser": "^1.18.2",
     "boom": "^7.1.1",
@@ -14,6 +15,7 @@
     "sqlite": "^2.9.0"
   },
   "devDependencies": {
+    "@types/bcrypt": "^1.0.0",
     "@types/body-parser": "^1.16.8",
     "@types/boom": "^7.1.0",
     "@types/common-tags": "^1.4.0",

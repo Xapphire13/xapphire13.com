@@ -4,6 +4,7 @@ import * as boom from "boom";
 import * as path from "path";
 import * as sqlite from "sqlite";
 import {SqlPostRepository} from "./post-repository-sql";
+import {SqlAuthRepository} from "./auth-repository-sql";
 import {PostController} from "./post-controller";
 import {AuthController} from "./auth-controller";
 
@@ -24,7 +25,7 @@ async function main() {
 
   // Controllers
   new PostController(app, new SqlPostRepository(db)).registerRoutes();
-  new AuthController(app).registerRoutes();
+  new AuthController(app, new SqlAuthRepository(db)).registerRoutes();
 
   // Routes
   app.use("/app", express.static(APP_PATH));
@@ -35,6 +36,10 @@ async function main() {
   // Error handler
   app.use(<express.ErrorRequestHandler>((err, _req, res, _next) => {
     const boomError: boom.Boom = boom.isBoom(err) ? err : boom.badImplementation(err);
+
+    if(boomError.isServer) {
+      console.error(boomError.message);
+    }
 
     return res.status(boomError.output.statusCode).json(boomError.output.payload);
   }));
