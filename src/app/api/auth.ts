@@ -1,4 +1,4 @@
-export async function getTempToken(password: string): Promise<any> {
+export async function getTempToken(password: string): Promise<{tempToken: string, authenticatorUrl: string}> {
   const response = await fetch("/api/auth", {
     method: "POST",
     headers: {
