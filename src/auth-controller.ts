@@ -3,48 +3,72 @@ import * as crypto from "crypto";
 import * as jwt from "jsonwebtoken";
 import * as bcrypt from "bcrypt";
 import {Express, Response} from "express";
-import {asyncRoute, Request} from "./route-helpers";
-import {AuthRepository} from "./auth-repository";
+import {authenticationInfo, asyncRoute, Request} from "./route-helpers";
+import {UserRepository} from "./user-repository";
 import {User} from "./user";
 import otplib = require("otplib");
 
 export class AuthController {
-  constructor(private app: Express, private repository: AuthRepository) {}
+  constructor(private app: Express, private repository: UserRepository) {}
 
   public registerRoutes(): void {
+    this.app.get("/api/permissions", this.getPermissions);
     this.app.post("/api/auth", this.post);
   }
 
-  private post = asyncRoute(async (req: Request<void, void, {pass: string, token: string, authCode: string}>, res: Response): Promise<Response> => {
-    const {authCode, pass, token} = req.body;
+  private getPermissions = authenticationInfo(this.repository, (authInfo) => asyncRoute(async (_req: Request<{user: string}>, res: Response): Promise<Response> => {
+    if (!authInfo) {
+      throw boom.badRequest("No auth token");
+    }
 
+    return res.json({
+      admin: authInfo.admin,
+      username: authInfo.user.id
+    });
+  }));
 
-    if (pass) {
-      const admin = await this.repository.getAdmin();
-      const password = Buffer.from(pass, "base64").toString("utf8");
-      const tempToken = await this.getTempToken(admin, password);
+  private post = asyncRoute(async (req: Request<void, void, {username?: string, password?: string, tempToken?: string, authCode?: string}>, res: Response): Promise<Response> => {
+    if (req.body) {
+      if (req.body.username && req.body.password) {
+        const {username, password} = req.body;
 
-      if (!admin.authenticatorSecret) {
-        let secret = "";
-        const validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"
-        for(const value of crypto.randomBytes(16).values()) {
-          secret += validChars[Math.floor((value/256) * validChars.length)];
+        const user = await this.repository.getUser(username);
+        const tempToken = await this.getTempToken(user, Buffer.from(password, "base64").toString("utf8"));
+
+        if (!user.authenticatorSecret) {
+          let secret = "";
+          const validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"
+          for(const value of crypto.randomBytes(16).values()) {
+            secret += validChars[Math.floor((value/256) * validChars.length)];
+          }
+          user.authenticatorSecret = secret;
+          await this.repository.storeAuthenticatorSecret(user.id, user.authenticatorSecret);
         }
-        admin.authenticatorSecret = secret;
-        await this.repository.storeAuthenticatorSecret(admin.id, admin.authenticatorSecret);
+
+        return res.json({
+          tempToken,
+          authenticatorUrl: `otpauth://totp/Xapphire13?secret=${user.authenticatorSecret}`
+        });
+      } else if (req.body.tempToken && req.body.authCode) {
+        const {tempToken, authCode} = req.body;
+
+        const decodedToken = (() => {
+          const decodedToken = jwt.decode(tempToken);
+
+          if (!decodedToken) {
+            throw boom.unauthorized("Invalid token");
+          }
+
+          return decodedToken as {user: string, type: string};
+        })();
+
+        const user = await this.repository.getUser(decodedToken.user);
+        const authToken = await this.getAuthToken(user, authCode, tempToken);
+
+        return res.json({
+          token: authToken
+        });
       }
-
-      return res.json({
-        token: tempToken,
-        authenticatorUrl: `otpauth://totp/Xapphire13?secret=${admin.authenticatorSecret}`
-      });
-    } else if (authCode && token) {
-      const admin = await this.repository.getAdmin();
-      const authToken = await this.getAuthToken(admin, authCode, token);
-
-      return res.json({
-        token: authToken
-      });
     }
 
     throw boom.badRequest();

@@ -4,7 +4,7 @@ import * as boom from "boom";
 import * as path from "path";
 import * as sqlite from "sqlite";
 import {SqlPostRepository} from "./post-repository-sql";
-import {SqlAuthRepository} from "./auth-repository-sql";
+import {SqlUserRepository} from "./user-repository-sql";
 import {PostController} from "./post-controller";
 import {AuthController} from "./auth-controller";
 
@@ -24,8 +24,9 @@ async function main() {
   app.use(bodyParser.json());
 
   // Controllers
-  new PostController(app, new SqlPostRepository(db)).registerRoutes();
-  new AuthController(app, new SqlAuthRepository(db)).registerRoutes();
+  const userRepository = new SqlUserRepository(db);
+  new PostController(app, new SqlPostRepository(db), userRepository).registerRoutes();
+  new AuthController(app, userRepository).registerRoutes();
 
   // Routes
   app.use("/app", express.static(APP_PATH));

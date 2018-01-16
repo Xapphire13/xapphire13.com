@@ -1,15 +1,16 @@
 import {Database} from "sqlite";
-import {AuthRepository} from "./auth-repository";
+import {UserRepository} from "./user-repository";
 import {User} from "./user";
 import sql = require("sql-tagged-template-literal");
 
-export class SqlAuthRepository implements AuthRepository {
+export class SqlUserRepository implements UserRepository {
   constructor(private db: Database) {}
 
-  public async getAdmin(): Promise<User> {
+  public async getUser(userId: string): Promise<User> {
     const record = await this.db.get(sql`
-      SELECT * FROM User
-      LIMIT 1;
+      SELECT *
+      FROM User
+      WHERE id = ${userId};
       `);
 
     return {
@@ -19,6 +20,15 @@ export class SqlAuthRepository implements AuthRepository {
       tokenSecret: record.token_secret,
       authenticatorSecret: record.authenticator_secret
     }
+  }
+
+  public async isAdmin(userId: string): Promise<boolean> {
+    return !!await this.db.get(sql`
+      SELECT *
+      FROM Admins
+      INNER JOIN User on Admins.user_id = User.id;
+      WHERE user_id = ${userId}
+      `);
   }
 
   public storeTokenSecret(userId: string, secret: string): Promise<any> {

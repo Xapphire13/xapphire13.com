@@ -2,20 +2,21 @@ import * as boom from "boom";
 import {Express, Response} from "express";
 import {Post} from "./post";
 import {PagedResponse} from "./paged-response";
-import {asyncRoute, protectedRoute, Request} from "./route-helpers";
+import {asyncRoute, adminRoute, Request} from "./route-helpers";
 import {PostRepository} from "./post-repository";
+import {UserRepository} from "./user-repository";
 
 const DEFAULT_PAGE_SIZE = 5;
 
 export class PostController {
-  constructor(private app: Express, private repository: PostRepository) {}
+  constructor(private app: Express, private repository: PostRepository, private userRepository: UserRepository) {}
 
   public registerRoutes(): void {
     this.app.get("/api/posts", this.getPosts);
     this.app.get("/api/posts/:id", this.getPost);
-    this.app.post("/api/posts", protectedRoute(this.postPost));
-    this.app.patch("/api/posts/:id", protectedRoute(this.patchPost));
-    this.app.delete("/api/posts/:id", protectedRoute(this.deletePost));
+    this.app.post("/api/posts", adminRoute(this.userRepository, this.postPost));
+    this.app.patch("/api/posts/:id", adminRoute(this.userRepository, this.patchPost));
+    this.app.delete("/api/posts/:id", adminRoute(this.userRepository, this.deletePost));
   }
 
   private postPost = asyncRoute(async (req: Request<void, void, Post>, res: Response): Promise<Response> => {
