@@ -3,8 +3,8 @@ import bodyParser = require("body-parser");
 import * as boom from "boom";
 import * as path from "path";
 import * as sqlite from "sqlite";
-import {SqlPostRepository} from "./post-repository-sql";
-import {SqlUserRepository} from "./user-repository-sql";
+import {SqlPostRepository} from "./sql-post-repository";
+import {SqlUserRepository} from "./sql-user-repository";
 import {PostController} from "./post-controller";
 import {AuthController} from "./auth-controller";
 

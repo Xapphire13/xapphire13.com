@@ -16,8 +16,8 @@ export function adminRoute(userRepository: UserRepository, handler: express.Requ
       throw boom.unauthorized();
     }
 
-    return handler(req, res, next);
-  });
+    return handler;
+  })(req, res, next);
 }
 
 export function asyncRoute(handler: express.RequestHandler): express.RequestHandler {
@@ -51,10 +51,10 @@ export function authenticationInfo(
         throw boom.unauthorized("Invalid token");
       }
 
-      return decodedToken as {user: string, type: string};
+      return decodedToken as {username: string, type: string};
     })();
 
-    const user = await userRepository.getUser(decodedToken.user);
+    const user = await userRepository.getUser(decodedToken.username);
     if (!user) {
       throw boom.badRequest("Invalid user");
     }
@@ -69,6 +69,6 @@ export function authenticationInfo(
       admin: await userRepository.isAdmin(user.id)
     };
 
-    return handler(authInfo)(req, res, next);
+    return (await Promise.resolve((handler(authInfo))))(req, res, next);
   });
 }

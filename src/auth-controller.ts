@@ -34,6 +34,7 @@ export class AuthController {
 
         const user = await this.repository.getUser(username);
         const tempToken = await this.getTempToken(user, Buffer.from(password, "base64").toString("utf8"));
+        const sendAuthenticatorUrl = !user.authenticatorSecret;
 
         if (!user.authenticatorSecret) {
           let secret = "";
@@ -47,7 +48,7 @@ export class AuthController {
 
         return res.json({
           tempToken,
-          authenticatorUrl: `otpauth://totp/Xapphire13?secret=${user.authenticatorSecret}`
+          authenticatorUrl: sendAuthenticatorUrl ? `otpauth://totp/Xapphire13?secret=${user.authenticatorSecret}` : undefined
         });
       } else if (req.body.tempToken && req.body.authCode) {
         const {tempToken, authCode} = req.body;
@@ -59,10 +60,10 @@ export class AuthController {
             throw boom.unauthorized("Invalid token");
           }
 
-          return decodedToken as {user: string, type: string};
+          return decodedToken as {username: string, type: string};
         })();
 
-        const user = await this.repository.getUser(decodedToken.user);
+        const user = await this.repository.getUser(decodedToken.username);
         const authToken = await this.getAuthToken(user, authCode, tempToken);
 
         return res.json({
@@ -85,7 +86,7 @@ export class AuthController {
 
     return new Promise<string>((res, rej) => jwt.sign({
       type: "auth",
-      user: user.id
+      username: user.username
     }, user.tokenSecret, {
       expiresIn: "30d"
     }, (err, token) => err ? rej(err) : res(token)));
@@ -108,7 +109,7 @@ export class AuthController {
 
     return new Promise<string>((res, rej) => jwt.sign({
       type: "temporary",
-      user: user.id
+      username: user.username
     }, user.tokenSecret, {
       expiresIn: "10m"
     }, (err, token) => err ? rej(err) : res(token)));

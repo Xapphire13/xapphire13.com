@@ -5,24 +5,25 @@ import {QRCode} from "react-qr-svg";
 
 type State = {
   authenticatorUrl?: string;
-  token?: string;
+  tempToken?: string;
+  isAdmin: boolean;
 };
 
 export class AdminPage extends React.Component<any, State> {
   constructor(props: any) {
     super(props);
 
-    this.state = {};
+    this.state = {isAdmin: false};
   }
 
   public render(): JSX.Element {
-    if (!this.state.authenticatorUrl && !this.state.token) {
+    if (!this.state.isAdmin && !this.state.authenticatorUrl && !this.state.tempToken) {
       return <div className="admin-page">
         {this.renderPasswordLogin()}
       </div>
-    } else if (this.state.authenticatorUrl) {
+    } else if (this.state.tempToken) {
       return <div className="admin-page">
-        {this.renderAuthenticatorQr()}
+        {this.renderAuthCode()}
       </div>
     }
 
@@ -33,15 +34,17 @@ export class AdminPage extends React.Component<any, State> {
 
   private renderPasswordLogin(): JSX.Element {
     return <div>
+      <label htmlFor="username">Username:</label>
+      <input id="username" type="text" name="username" />
       <label htmlFor="password">Password:</label>
       <input id="password" type="password" name="password" />
       <button onClick={this.submitPassword}>Login</button>
     </div>;
   }
 
-  private renderAuthenticatorQr(): JSX.Element {
+  private renderAuthCode(): JSX.Element {
     return <div>
-      <QRCode className="authenticator-qr" value={this.state.authenticatorUrl!}/>
+      {this.state.authenticatorUrl && <QRCode className="authenticator-qr" value={this.state.authenticatorUrl}/>}
       <label htmlFor="auth-code">Authenticator Code:</label>
       <input id="auth-code" type="text" name="auth-code" />
       <button onClick={this.submitAuthCode}>Login</button>
@@ -53,14 +56,15 @@ export class AdminPage extends React.Component<any, State> {
   }
 
   private submitPassword = async (): Promise<void> => {
+    const usernameInput = document.getElementById("username")! as HTMLInputElement;
     const passwordInput = document.getElementById("password")! as HTMLInputElement;
-    const {authenticatorUrl, token} = await ClientApi.getTempToken(passwordInput.value);
-    this.setState({authenticatorUrl, token});
+    const {authenticatorUrl, tempToken} = await ClientApi.getTempToken(usernameInput.value, passwordInput.value);
+    this.setState({authenticatorUrl, tempToken});
   }
 
   private submitAuthCode = async (): Promise<void> => {
     const authCodeInput = document.getElementById("auth-code")! as HTMLInputElement;
-    const token = await ClientApi.getAuthToken(authCodeInput.value, this.state.token!);
-    this.setState({authenticatorUrl: undefined, token});
+    await ClientApi.getAuthToken(authCodeInput.value, this.state.tempToken!);
+    this.setState({authenticatorUrl: undefined, tempToken: undefined, isAdmin: true});
   };
 }

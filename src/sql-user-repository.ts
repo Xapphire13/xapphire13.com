@@ -6,15 +6,16 @@ import sql = require("sql-tagged-template-literal");
 export class SqlUserRepository implements UserRepository {
   constructor(private db: Database) {}
 
-  public async getUser(userId: string): Promise<User> {
+  public async getUser(username: string): Promise<User> {
     const record = await this.db.get(sql`
       SELECT *
       FROM User
-      WHERE id = ${userId};
+      WHERE username = ${username};
       `);
 
     return {
       id: record.id,
+      username: record.username,
       name: record.name,
       passwordHash: record.password_hash,
       tokenSecret: record.token_secret,
@@ -22,7 +23,7 @@ export class SqlUserRepository implements UserRepository {
     }
   }
 
-  public async isAdmin(userId: string): Promise<boolean> {
+  public async isAdmin(userId: number): Promise<boolean> {
     return !!await this.db.get(sql`
       SELECT *
       FROM Admins
@@ -31,7 +32,7 @@ export class SqlUserRepository implements UserRepository {
       `);
   }
 
-  public storeTokenSecret(userId: string, secret: string): Promise<any> {
+  public storeTokenSecret(userId: number, secret: string): Promise<any> {
     return this.db.exec(sql`
       UPDATE User
       SET token_secret = (${secret})
@@ -39,7 +40,7 @@ export class SqlUserRepository implements UserRepository {
       `);
   }
 
-  public storePasswordHash(userId: string, hash: string): Promise<any> {
+  public storePasswordHash(userId: number, hash: string): Promise<any> {
     return this.db.exec(sql`
       UPDATE User
       SET password_hash = (${hash})
@@ -47,7 +48,7 @@ export class SqlUserRepository implements UserRepository {
       `);
   }
 
-  public storeAuthenticatorSecret(userId: string, secret: string): Promise<any> {
+  public storeAuthenticatorSecret(userId: number, secret: string): Promise<any> {
     return this.db.exec(sql`
       UPDATE User
       SET authenticator_secret = (${secret})
