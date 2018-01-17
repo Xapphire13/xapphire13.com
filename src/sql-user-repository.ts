@@ -13,6 +13,10 @@ export class SqlUserRepository implements UserRepository {
       WHERE username = ${username};
       `);
 
+    if (!record) {
+      throw new Error("User doesn't exist");
+    }
+
     return {
       id: record.id,
       username: record.username,

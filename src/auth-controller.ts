@@ -2,32 +2,34 @@ import * as boom from "boom";
 import * as crypto from "crypto";
 import * as jwt from "jsonwebtoken";
 import * as bcrypt from "bcrypt";
-import {Express, Response} from "express";
-import {authenticationInfo, asyncRoute, Request} from "./route-helpers";
+import {Application} from "express";
 import {UserRepository} from "./user-repository";
 import {User} from "./user";
+import {ApiController, Route, HttpMethod, RouteHandlerParams} from "./api-controller";
 import otplib = require("otplib");
 
-export class AuthController {
-  constructor(private app: Express, private repository: UserRepository) {}
-
-  public registerRoutes(): void {
-    this.app.get("/api/permissions", this.getPermissions);
-    this.app.post("/api/auth", this.post);
+export class AuthController extends ApiController {
+  constructor(app: Application, private repository: UserRepository) {
+    super(app);
   }
 
-  private getPermissions = authenticationInfo(this.repository, (authInfo) => asyncRoute(async (_req: Request<{user: string}>, res: Response): Promise<Response> => {
+  @Route("permissions", HttpMethod.GET)
+  public async getPermissions({authInfo}: RouteHandlerParams): Promise<{username: string, admin: boolean}> {
     if (!authInfo) {
       throw boom.badRequest("No auth token");
     }
 
-    return res.json({
-      admin: authInfo.admin,
-      username: authInfo.user.id
-    });
-  }));
+    const user = await this.repository.getUser(authInfo.username);
+    const isAdmin = await this.repository.isAdmin(user.id);
 
-  private post = asyncRoute(async (req: Request<void, void, {username?: string, password?: string, tempToken?: string, authCode?: string}>, res: Response): Promise<Response> => {
+    return {
+      username: authInfo.username,
+      admin: isAdmin
+    };
+  }
+
+  @Route("auth", HttpMethod.POST)
+  public async post({req}: RouteHandlerParams<void, void, {username?: string, password?: string, challenge?: string, challengeResponse?: string}>): Promise<{authenticatorUrl?: string, challenge?: string, token?: string}> {
     if (req.body) {
       if (req.body.username && req.body.password) {
         const {username, password} = req.body;
@@ -46,15 +48,15 @@ export class AuthController {
           await this.repository.storeAuthenticatorSecret(user.id, user.authenticatorSecret);
         }
 
-        return res.json({
-          tempToken,
+        return {
+          challenge: tempToken,
           authenticatorUrl: sendAuthenticatorUrl ? `otpauth://totp/Xapphire13?secret=${user.authenticatorSecret}` : undefined
-        });
-      } else if (req.body.tempToken && req.body.authCode) {
-        const {tempToken, authCode} = req.body;
+        };
+      } else if (req.body.challenge && req.body.challengeResponse) {
+        const {challenge, challengeResponse} = req.body;
 
         const decodedToken = (() => {
-          const decodedToken = jwt.decode(tempToken);
+          const decodedToken = jwt.decode(challenge);
 
           if (!decodedToken) {
             throw boom.unauthorized("Invalid token");
@@ -64,16 +66,16 @@ export class AuthController {
         })();
 
         const user = await this.repository.getUser(decodedToken.username);
-        const authToken = await this.getAuthToken(user, authCode, tempToken);
+        const authToken = await this.getAuthToken(user, challengeResponse, challenge);
 
-        return res.json({
+        return {
           token: authToken
-        });
+        };
       }
     }
 
     throw boom.badRequest();
-  });
+  };
 
   private async getAuthToken(user: User, authCode: string, tempToken: string): Promise<string> {
     const token = new Promise<string | object>((res, rej) => jwt.verify(tempToken, user.tokenSecret, (err, valid) => err ? rej(err) : res(valid)));
@@ -97,7 +99,7 @@ export class AuthController {
       user.passwordHash = await bcrypt.hash(password, 10);
       await this.repository.storePasswordHash(user.id, user.passwordHash);
     } else if (!await bcrypt.compare(password, user.passwordHash)) { // Password set, check it
-      throw boom.unauthorized("Incorrect password");
+      throw boom.unauthorized("Incorrect username/password");
     }
 
     // Password is good, generate temporary token

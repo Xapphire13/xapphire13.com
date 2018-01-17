@@ -5,7 +5,7 @@ import {QRCode} from "react-qr-svg";
 
 type State = {
   authenticatorUrl?: string;
-  tempToken?: string;
+  challenge?: string;
   isAdmin: boolean;
 };
 
@@ -17,13 +17,13 @@ export class AdminPage extends React.Component<any, State> {
   }
 
   public render(): JSX.Element {
-    if (!this.state.isAdmin && !this.state.authenticatorUrl && !this.state.tempToken) {
+    if (!this.state.isAdmin && !this.state.authenticatorUrl && !this.state.challenge) {
       return <div className="admin-page">
         {this.renderPasswordLogin()}
       </div>
-    } else if (this.state.tempToken) {
+    } else if (this.state.challenge) {
       return <div className="admin-page">
-        {this.renderAuthCode()}
+        {this.renderAuthChallenge()}
       </div>
     }
 
@@ -42,7 +42,7 @@ export class AdminPage extends React.Component<any, State> {
     </div>;
   }
 
-  private renderAuthCode(): JSX.Element {
+  private renderAuthChallenge(): JSX.Element {
     return <div>
       {this.state.authenticatorUrl && <QRCode className="authenticator-qr" value={this.state.authenticatorUrl}/>}
       <label htmlFor="auth-code">Authenticator Code:</label>
@@ -58,13 +58,13 @@ export class AdminPage extends React.Component<any, State> {
   private submitPassword = async (): Promise<void> => {
     const usernameInput = document.getElementById("username")! as HTMLInputElement;
     const passwordInput = document.getElementById("password")! as HTMLInputElement;
-    const {authenticatorUrl, tempToken} = await ClientApi.getTempToken(usernameInput.value, passwordInput.value);
-    this.setState({authenticatorUrl, tempToken});
+    const {authenticatorUrl, challenge} = await ClientApi.getTempToken(usernameInput.value, passwordInput.value);
+    this.setState({authenticatorUrl, challenge});
   }
 
   private submitAuthCode = async (): Promise<void> => {
     const authCodeInput = document.getElementById("auth-code")! as HTMLInputElement;
-    await ClientApi.getAuthToken(authCodeInput.value, this.state.tempToken!);
-    this.setState({authenticatorUrl: undefined, tempToken: undefined, isAdmin: true});
+    await ClientApi.getAuthToken(authCodeInput.value, this.state.challenge!);
+    this.setState({authenticatorUrl: undefined, challenge: undefined, isAdmin: true});
   };
 }
