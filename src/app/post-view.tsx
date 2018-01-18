@@ -2,7 +2,7 @@ import "./styles/post-view.less"
 import * as React from "react";
 import * as moment from "moment";
 import * as ReactMarkdown from "react-markdown";
-import * as ClientApi from "./client-api";
+import * as ClientApi from "./api/client-api";
 import {RouteComponentProps} from "react-router-dom";
 import {BookOpen, Clock, Edit} from "react-feather";
 import {Post} from "../post";
