@@ -81,7 +81,7 @@ export abstract class ApiController {
   }
 }
 
-export function Route(path: string, method: HttpMethod) {
+export function route(path: string, method: HttpMethod) {
     return function (target: any, key: string) {
         if (!target.__routes__) target.__routes__ = {};
         if (!target.__routes__[method]) target.__routes__[method] = [];

@@ -5,7 +5,7 @@ import * as bcrypt from "bcrypt";
 import {Application} from "express";
 import {UserRepository} from "./user-repository";
 import {User} from "./user";
-import {ApiController, Route, HttpMethod, RouteHandlerParams} from "./api-controller";
+import {ApiController, route, HttpMethod, RouteHandlerParams} from "./api-controller";
 import otplib = require("otplib");
 
 export class AuthController extends ApiController {
@@ -13,7 +13,7 @@ export class AuthController extends ApiController {
     super(app);
   }
 
-  @Route("permissions", HttpMethod.GET)
+  @route("permissions", HttpMethod.GET)
   public async getPermissions({authInfo}: RouteHandlerParams): Promise<{username: string, admin: boolean}> {
     if (!authInfo) {
       throw boom.badRequest("No auth token");
@@ -28,7 +28,7 @@ export class AuthController extends ApiController {
     };
   }
 
-  @Route("auth", HttpMethod.POST)
+  @route("auth", HttpMethod.POST)
   public async post({req}: RouteHandlerParams<void, void, {username?: string, password?: string, challenge?: string, challengeResponse?: string}>): Promise<{authenticatorUrl?: string, challenge?: string, token?: string}> {
     if (req.body) {
       if (req.body.username && req.body.password) {
