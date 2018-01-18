@@ -1,6 +1,6 @@
 import "./styles/home-page.less";
 import * as React from "react";
-import * as ClientApi from "./client-api";
+import * as ClientApi from "./api/client-api";
 import * as Utils from "./utils";
 import {Post} from "../post";
 import {PostPreview} from "./post-preview";

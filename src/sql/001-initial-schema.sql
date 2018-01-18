@@ -21,7 +21,24 @@ CREATE TABLE PostTags (
   CONSTRAINT FK_TagId FOREIGN KEY (tag_id) REFERENCES Tag(id)
 );
 
+CREATE TABLE User (
+  id INTEGER PRIMARY KEY,
+  username TEXT NOT NULL,
+  name TEXT NOT NULL,
+  password_hash TEXT,
+  token_secret TEXT,
+  authenticator_secret TEXT,
+  CONSTRAINT UniqueUsername UNIQUE (username)
+);
+
+CREATE TABLE Admins (
+  user_id INTEGER PRIMARY KEY,
+  CONSTRAINT FK_UserId FOREIGN KEY (user_id) REFERENCES User(id)
+);
+
 -- Down
 DROP TABLE PostTags;
 DROP TABLE Post;
 DROP TABLE Tag;
+DROP TABLE User;
+DROP TABLE Admins;

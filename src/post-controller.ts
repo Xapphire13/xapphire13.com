@@ -1,36 +1,30 @@
 import * as boom from "boom";
-import {Express, Request as _Request, Response} from "express";
+import {Application} from "express";
 import {Post} from "./post";
 import {PagedResponse} from "./paged-response";
-import {asyncRoute, protectedRoute} from "./route-helpers";
 import {PostRepository} from "./post-repository";
-
-interface Request<TQuery = void, TParams = void, TBody = void> extends _Request {
-  query: TQuery;
-  params: TParams;
-  body: TBody;
-}
+import {UserRepository} from "./user-repository";
+import {ApiController, route, HttpMethod, RouteHandlerParams, AuthInfo} from "./api-controller";
 
 const DEFAULT_PAGE_SIZE = 5;
 
-export class PostController {
-  constructor(private app: Express, private repository: PostRepository) {}
-
-  public registerRoutes(): void {
-    this.app.get("/api/posts", this.getPosts);
-    this.app.get("/api/posts/:id", this.getPost);
-    this.app.post("/api/posts", protectedRoute(this.postPost));
-    this.app.patch("/api/posts/:id", protectedRoute(this.patchPost));
-    this.app.delete("/api/posts/:id", protectedRoute(this.deletePost));
+export class PostController extends ApiController {
+  constructor(app: Application, private repository: PostRepository, private userRepository: UserRepository) {
+    super(app);
   }
 
-  private postPost = asyncRoute(async (req: Request<void, void, Post>, res: Response): Promise<Response> => {
+  @route("posts", HttpMethod.POST)
+  public async postPost({req, res, authInfo}: RouteHandlerParams<void, void, Post>): Promise<Post> {
+    await this.checkAuthorization(authInfo);
     const post = await this.repository.createPost(req.body);
 
-    return res.status(201).json(post);
-  });
+    res.status(201)
+    return post;
+  }
 
-  private patchPost = asyncRoute(async (req: Request<void, {id: string}, Post>, res: Response): Promise<Response> => {
+  @route("posts/:id", HttpMethod.PATCH)
+  public async patchPost({req, res, authInfo}: RouteHandlerParams<void, {id: string}, Post>): Promise<void> {
+    await this.checkAuthorization(authInfo);
     const {id} = req.params;
 
     if (!await this.repository.getPost(+id)) {
@@ -41,10 +35,12 @@ export class PostController {
     post.id = id;
     await this.repository.editPost(post);
 
-    return res.status(204).send();
-  });
+    res.status(204);
+  }
 
-  private deletePost = asyncRoute(async (req: Request<void, {id: string}, void>, res: Response): Promise<Response> => {
+  @route("posts/:id", HttpMethod.DELETE)
+  public async deletePost({req, authInfo}: RouteHandlerParams<void, {id: string}, void>): Promise<void> {
+    await this.checkAuthorization(authInfo);
     const {id} = req.params;
 
     if (!await this.repository.getPost(+id)) {
@@ -52,23 +48,23 @@ export class PostController {
     }
 
     await this.repository.deletePost(+id);
+  }
 
-    return res.send();
-  });
-
-  private getPosts = asyncRoute(async (req: Request<{continue?: string}>, res: Response): Promise<Response> => {
-    let continuationToken = req.query.continue;
+  @route("posts", HttpMethod.GET)
+  public async getPosts({req}: RouteHandlerParams<{continue?: string}>): Promise<PagedResponse<Post>> {
+    let continuationToken = req.query.continue || null;
 
     const values = await this.repository.getPosts(DEFAULT_PAGE_SIZE, continuationToken ? +continuationToken : undefined);
-    continuationToken = values.length ? values[values.length - 1].id : undefined;
+    continuationToken = values.length ? values[values.length - 1].id : null;
 
-    return res.json(<PagedResponse<Post>>{
+    return {
       values,
       continuationToken
-    });
-  });
+    };
+  }
 
-  private getPost = asyncRoute(async (req: Request<void, {id: string}>, res: Response): Promise<Response> => {
+  @route("posts/:id", HttpMethod.GET)
+  public async getPost({req}: RouteHandlerParams<void, {id: string}>): Promise<Post> {
     const {id} = req.params;
 
     const post = await this.repository.getPost(+id);
@@ -77,6 +73,12 @@ export class PostController {
       throw boom.notFound();
     }
 
-    return res.json(post);
-  });
+    return post;
+  }
+
+  private async checkAuthorization(authInfo: AuthInfo | null): Promise<void> {
+    if (!authInfo || !await this.userRepository.isAdmin((await this.userRepository.getUser(authInfo.username)).id)) {
+      throw boom.unauthorized();
+    }
+  }
 }
