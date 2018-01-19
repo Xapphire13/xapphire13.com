@@ -1,48 +1,39 @@
 import * as boom from "boom";
-import {Application} from "express";
-import {Post} from "./post";
+import {Post as PostEntity} from "./post";
 import {PagedResponse} from "./paged-response";
 import {PostRepository} from "./post-repository";
-import {UserRepository} from "./user-repository";
-import {ApiController, route, HttpMethod, RouteHandlerParams, AuthInfo} from "./api-controller";
+import {Authorized, JsonController, Get, Post, Patch, Delete, HttpCode, Body, QueryParam, Param} from "routing-controllers";
+import {Inject} from "typedi";
 
 const DEFAULT_PAGE_SIZE = 5;
 
-export class PostController extends ApiController {
-  constructor(app: Application, private repository: PostRepository, private userRepository: UserRepository) {
-    super(app);
+@JsonController("/api")
+export class PostController {
+  constructor(@Inject("PostRepository") private repository: PostRepository) {}
+
+  @Post("/posts")
+  @Authorized()
+  @HttpCode(201)
+  public async postPost(@Body() post: PostEntity): Promise<PostEntity> {
+    return this.repository.createPost(post);
   }
 
-  @route("posts", HttpMethod.POST)
-  public async postPost({req, res, authInfo}: RouteHandlerParams<void, void, Post>): Promise<Post> {
-    await this.checkAuthorization(authInfo);
-    const post = await this.repository.createPost(req.body);
-
-    res.status(201)
-    return post;
-  }
-
-  @route("posts/:id", HttpMethod.PATCH)
-  public async patchPost({req, res, authInfo}: RouteHandlerParams<void, {id: string}, Post>): Promise<void> {
-    await this.checkAuthorization(authInfo);
-    const {id} = req.params;
-
+  @Patch("/posts/:id")
+  @Authorized()
+  @HttpCode(204)
+  public async patchPost(@Param("id") id: string, @Body() post: PostEntity): Promise<void> {
     if (!await this.repository.getPost(+id)) {
       throw boom.notFound();
     }
 
-    const post = req.body;
     post.id = id;
     await this.repository.editPost(post);
-
-    res.status(204);
   }
 
-  @route("posts/:id", HttpMethod.DELETE)
-  public async deletePost({req, authInfo}: RouteHandlerParams<void, {id: string}, void>): Promise<void> {
-    await this.checkAuthorization(authInfo);
-    const {id} = req.params;
-
+  @Delete("/posts/:id")
+  @Authorized()
+  @HttpCode(200)
+  public async deletePost(@Param("id") id: string): Promise<void> {
     if (!await this.repository.getPost(+id)) {
       throw boom.notFound();
     }
@@ -50,23 +41,19 @@ export class PostController extends ApiController {
     await this.repository.deletePost(+id);
   }
 
-  @route("posts", HttpMethod.GET)
-  public async getPosts({req}: RouteHandlerParams<{continue?: string}>): Promise<PagedResponse<Post>> {
-    let continuationToken = req.query.continue || null;
-
+  @Get("/posts")
+  public async getPosts(@QueryParam("continue") continuationToken?: string): Promise<PagedResponse<PostEntity>> {
     const values = await this.repository.getPosts(DEFAULT_PAGE_SIZE, continuationToken ? +continuationToken : undefined);
-    continuationToken = values.length ? values[values.length - 1].id : null;
+    continuationToken = values.length ? values[values.length - 1].id : undefined;
 
     return {
       values,
-      continuationToken
+      continuationToken: continuationToken || null
     };
   }
 
-  @route("posts/:id", HttpMethod.GET)
-  public async getPost({req}: RouteHandlerParams<void, {id: string}>): Promise<Post> {
-    const {id} = req.params;
-
+  @Get("/posts/:id")
+  public async getPost(@Param("id") id: string): Promise<PostEntity> {
     const post = await this.repository.getPost(+id);
 
     if (!post) {
@@ -74,11 +61,5 @@ export class PostController extends ApiController {
     }
 
     return post;
-  }
-
-  private async checkAuthorization(authInfo: AuthInfo | null): Promise<void> {
-    if (!authInfo || !await this.userRepository.isAdmin((await this.userRepository.getUser(authInfo.username)).id)) {
-      throw boom.unauthorized();
-    }
   }
 }
