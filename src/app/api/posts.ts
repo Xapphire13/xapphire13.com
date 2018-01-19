@@ -1,4 +1,4 @@
-import {Post} from "../../post";
+import {Post} from "../../models/post";
 import {PagedResponse} from "../../paged-response";
 
 export async function getPosts(continuationToken: string | null = null): Promise<PagedResponse<Post>> {

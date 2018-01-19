@@ -1,6 +1,6 @@
 import {Database} from "sqlite";
 import {UserRepository} from "./user-repository";
-import {User} from "./user";
+import {User} from "../models/user";
 import sql = require("sql-tagged-template-literal");
 
 export class SqlUserRepository implements UserRepository {
