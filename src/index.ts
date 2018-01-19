@@ -28,15 +28,16 @@ async function main() {
   app.use(bodyParser.json());
 
   // Controllers
+  const getToken = (authHeader: string = ""): string | null => {
+    const matches = /Bearer (.*)/i.exec(authHeader);
+    return matches && matches[1];
+  };
   const userRepository = new SqlUserRepository(db);
   useExpressServer(app, {
     controllers: [path.join(__dirname, "/*-controller.js")],
     defaultErrorHandler: false,
     authorizationChecker: async (action, _roles) => {
-      const token = (() => {
-        const matches = /Bearer (.*)/i.exec(action.request.get("Authorization") || "");
-        return matches && matches[1];
-      })();
+      const token = getToken(action.request.get("Authorization"));
 
       if (!token) {
         return false;
@@ -55,6 +56,16 @@ async function main() {
       const user = await userRepository.getUser(username);
 
       return await new Promise<boolean>(res => jwt.verify(token, user.tokenSecret, (err: any) => res(!err)));
+    },
+    currentUserChecker: async (action) => {
+      const token = getToken(action.request.get("Authorization"));
+
+      if(!token) {
+        return null;
+      }
+
+      const {username} = jwt.decode(token) as any;
+      return userRepository.getUser(username);
     }
   });
 
