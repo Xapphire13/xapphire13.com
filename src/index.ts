@@ -44,13 +44,13 @@ async function main() {
       }
 
       const {username} = (() => {
-        const decodedToken = jwt.decode(token);
+        const decodedToken = jwt.decode(token) as any;
 
-        if (!decodedToken) {
+        if (!decodedToken || decodedToken.type !== "auth") {
           throw new Error("Invalid token");
         }
 
-        return decodedToken as {username: string, type: string};
+        return decodedToken;
       })();
 
       const user = await userRepository.getUser(username);
