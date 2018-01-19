@@ -1,4 +1,4 @@
-import {Post} from "./post";
+import {Post} from "../models/post";
 import {Database} from "sqlite";
 import {PostRepository} from "./post-repository";
 import Semaphore from "semaphore-async-await";

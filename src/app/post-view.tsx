@@ -5,7 +5,7 @@ import * as ReactMarkdown from "react-markdown";
 import * as ClientApi from "./api/client-api";
 import {RouteComponentProps} from "react-router-dom";
 import {BookOpen, Clock, Edit} from "react-feather";
-import {Post} from "../post";
+import {Post} from "../models/post";
 import {NotFound} from "./not-found";
 import readingTime = require("reading-time");
 import DisqusThread from "react-disqus-comments";

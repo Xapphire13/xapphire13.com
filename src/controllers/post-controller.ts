@@ -1,7 +1,7 @@
 import * as boom from "boom";
-import {Post as PostEntity} from "./post";
-import {PagedResponse} from "./paged-response";
-import {PostRepository} from "./post-repository";
+import {Post as PostEntity} from "../models/post";
+import {PagedResponse} from "../paged-response";
+import {PostRepository} from "../repositories/post-repository";
 import {Authorized, JsonController, Get, Post, Patch, Delete, HttpCode, Body, QueryParam, Param} from "routing-controllers";
 import {Inject} from "typedi";
 

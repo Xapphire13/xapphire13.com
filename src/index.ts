@@ -2,13 +2,13 @@ import "reflect-metadata";
 import "./error-handler";
 import * as path from "path";
 import * as sqlite from "sqlite";
+import * as jwt from "jsonwebtoken";
 import express = require("express");
 import bodyParser = require("body-parser");
 import {useExpressServer, useContainer} from "routing-controllers";
-import {SqlUserRepository} from "./sql-user-repository";
+import {SqlUserRepository} from "./repositories/sql-user-repository";
+import {SqlPostRepository} from "./repositories/sql-post-repository";
 import {Container} from "typedi";
-import {SqlPostRepository} from "./sql-post-repository";
-import * as jwt from "jsonwebtoken";
 
 const APP_PATH = path.resolve(__dirname, "app");
 
@@ -34,7 +34,7 @@ async function main() {
   };
   const userRepository = new SqlUserRepository(db);
   useExpressServer(app, {
-    controllers: [path.join(__dirname, "/*-controller.js")],
+    controllers: [path.join(__dirname, "controllers/*.js")],
     defaultErrorHandler: false,
     authorizationChecker: async (action, _roles) => {
       const token = getToken(action.request.get("Authorization"));
