@@ -1,12 +1,14 @@
-import express = require("express");
-import bodyParser = require("body-parser");
-import * as boom from "boom";
+import "reflect-metadata";
+import "./error-handler";
 import * as path from "path";
 import * as sqlite from "sqlite";
-import {SqlPostRepository} from "./sql-post-repository";
+import express = require("express");
+import bodyParser = require("body-parser");
+import {useExpressServer, useContainer} from "routing-controllers";
 import {SqlUserRepository} from "./sql-user-repository";
-import {PostController} from "./post-controller";
-import {AuthController} from "./auth-controller";
+import {Container} from "typedi";
+import {SqlPostRepository} from "./sql-post-repository";
+import * as jwt from "jsonwebtoken";
 
 const APP_PATH = path.resolve(__dirname, "app");
 
@@ -20,30 +22,49 @@ async function main() {
   const app = express();
 
   // Config
+  useContainer(Container);
+  Container.set("PostRepository", new SqlPostRepository(db));
   app.set('port', process.env.PORT || 80);
   app.use(bodyParser.json());
 
   // Controllers
   const userRepository = new SqlUserRepository(db);
-  new PostController(app, new SqlPostRepository(db), userRepository).registerRoutes();
-  new AuthController(app, userRepository).registerRoutes();
+  useExpressServer(app, {
+    controllers: [path.join(__dirname, "/*-controller.js")],
+    defaultErrorHandler: false,
+    authorizationChecker: async (action, _roles) => {
+      const token = (() => {
+        const matches = /Bearer (.*)/i.exec(action.request.get("Authorization") || "");
+        return matches && matches[1];
+      })();
 
-  // Routes
-  app.use("/app", express.static(APP_PATH));
-  app.get("*", (_req, res) => {
-    res.sendFile(path.join(APP_PATH, "index.html"));
+      if (!token) {
+        return false;
+      }
+
+      const {username} = (() => {
+        const decodedToken = jwt.decode(token);
+
+        if (!decodedToken) {
+          throw new Error("Invalid token");
+        }
+
+        return decodedToken as {username: string, type: string};
+      })();
+
+      const user = await userRepository.getUser(username);
+
+      return await new Promise<boolean>(res => jwt.verify(token, user.tokenSecret, (err: any) => res(!err)));
+    }
   });
 
-  // Error handler
-  app.use(<express.ErrorRequestHandler>((err, _req, res, _next) => {
-    const boomError: boom.Boom = boom.isBoom(err) ? err : boom.badImplementation(err);
-
-    if(boomError.isServer) {
-      console.error(boomError.message);
+  // non-controller routes
+  app.use("/app", express.static(APP_PATH));
+  app.use((_req, res) => {
+    if (!res.headersSent) {
+      res.sendFile(path.join(APP_PATH, "index.html"));
     }
-
-    return res.status(boomError.output.statusCode).json(boomError.output.payload);
-  }));
+  });
 
   // Start!
   const server = app.listen(app.get("port"), () => {

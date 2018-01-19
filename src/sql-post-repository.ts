@@ -3,7 +3,9 @@ import {Database} from "sqlite";
 import {PostRepository} from "./post-repository";
 import Semaphore from "semaphore-async-await";
 import sql = require("sql-tagged-template-literal");
+import {Service} from "typedi";
 
+@Service()
 export class SqlPostRepository implements PostRepository {
   private lock = new Semaphore(1);
 
