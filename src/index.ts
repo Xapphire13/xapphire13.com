@@ -6,9 +6,9 @@ import * as jwt from "jsonwebtoken";
 import express = require("express");
 import bodyParser = require("body-parser");
 import {useExpressServer, useContainer} from "routing-controllers";
-import {SqlUserRepository} from "./repositories/sql-user-repository";
-import {SqlPostRepository} from "./repositories/sql-post-repository";
 import {Container} from "typedi";
+import registerDependencies from "./production-registry";
+import {UserRepository} from "./repositories/user-repository";
 
 const APP_PATH = path.resolve(__dirname, "app");
 
@@ -22,8 +22,8 @@ async function main() {
   const app = express();
 
   // Config
+  registerDependencies(db);
   useContainer(Container);
-  Container.set("PostRepository", new SqlPostRepository(db));
   app.set('port', process.env.PORT || 80);
   app.use(bodyParser.json());
 
@@ -32,7 +32,6 @@ async function main() {
     const matches = /Bearer (.*)/i.exec(authHeader);
     return matches && matches[1];
   };
-  const userRepository = new SqlUserRepository(db);
   useExpressServer(app, {
     controllers: [path.join(__dirname, "controllers/*.js")],
     defaultErrorHandler: false,
@@ -53,7 +52,7 @@ async function main() {
         return decodedToken;
       })();
 
-      const user = await userRepository.getUser(username);
+      const user = await Container.get<UserRepository>("UserRepository").getUser(username);
 
       return await new Promise<boolean>(res => jwt.verify(token, user.tokenSecret, (err: any) => res(!err)));
     },
@@ -65,7 +64,7 @@ async function main() {
       }
 
       const {username} = jwt.decode(token) as any;
-      return userRepository.getUser(username);
+      return Container.get<UserRepository>("UserRepository").getUser(username);
     }
   });
 
