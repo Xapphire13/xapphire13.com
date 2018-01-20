@@ -14,7 +14,7 @@ const APP_PATH = path.resolve(__dirname, "app");
 
 async function main() {
   // Database
-  const db = await sqlite.open(path.join(__dirname, "database.sqlite"), { promise: Promise });
+  const db = await sqlite.open(path.resolve(__dirname, "../database.sqlite"), { promise: Promise });
   await db.migrate({
     migrationsPath: path.join(__dirname, "sql")
   });
