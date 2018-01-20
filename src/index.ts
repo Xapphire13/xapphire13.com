@@ -7,8 +7,9 @@ import express = require("express");
 import bodyParser = require("body-parser");
 import {useExpressServer, useContainer} from "routing-controllers";
 import {Container} from "typedi";
-import registerDependencies from "./production-registry";
 import {UserRepository} from "./repositories/user-repository";
+import {Logger} from "./logger";
+import registerDependencies from "./production-registry";
 
 const APP_PATH = path.resolve(__dirname, "app");
 
@@ -78,7 +79,7 @@ async function main() {
 
   // Start!
   const server = app.listen(app.get("port"), () => {
-    console.log("Listening on port " + server.address().port);
+    Container.get<Logger>("Logger").debug("Listening on port " + server.address().port);
   });
 }
 
