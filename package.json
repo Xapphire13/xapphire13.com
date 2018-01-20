@@ -5,7 +5,8 @@
   "main": "./dist/index.js",
   "scripts": {
     "test": "jest",
-    "build": "tsc -p ./src && xcopy /Y /E /I \"./src/sql\" \"./dist/sql\" && webpack --config webpack.dev.js",
+    "clean": "rmdir /S /Q .\\dist",
+    "build": "npm run clean && tsc -p ./src && xcopy /Y /E /I \"./src/sql\" \"./dist/sql\" && webpack --config webpack.dev.js",
     "build:prod": "tsc -p ./src && xcopy /Y /E /I \"./src/sql\" \"./dist/sql\" && webpack --config webpack.prod.js",
     "start": "node ./dist/index.js",
     "start:debug": "node --inspect-brk ./dist/index.js",
