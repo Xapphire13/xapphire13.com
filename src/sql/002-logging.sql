@@ -3,7 +3,8 @@ CREATE TABLE Log (
   id INTEGER PRIMARY KEY,
   message TEXT,
   exception TEXT,
-  timestamp TIME NOT NULL
+  timestamp TIME NOT NULL,
+  level INTEGER NOT NULL
 );
 
 CREATE TRIGGER MaxLogMessages
