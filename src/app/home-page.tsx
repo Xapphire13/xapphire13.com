@@ -12,6 +12,7 @@ const MAX_PREVIEW_LENGTH = 4000;
 type State = {
   loading: boolean;
   loadedPosts: Post[];
+  allPostsLoaded: boolean;
 };
 
 export class HomePage extends React.Component<{}, State> {
@@ -22,8 +23,9 @@ export class HomePage extends React.Component<{}, State> {
   constructor(props: any) {
     super(props);
     this.state = {
-      loading: false,
+      loading: true,
       loadedPosts: [],
+      allPostsLoaded: false
     };
   }
 
@@ -46,7 +48,7 @@ export class HomePage extends React.Component<{}, State> {
   }
 
   public render(): JSX.Element {
-    return <div className={`home-page${this.state.loading ? " loading" : ""}`}>
+    return <div className="home-page">
       {this.state.loadedPosts.map((post, i) =>
         <PostPreview
           id={post.id}
@@ -57,7 +59,18 @@ export class HomePage extends React.Component<{}, State> {
           markdownText={post.markdownText}
           tags={post.tags}
           maxLength={MAX_PREVIEW_LENGTH} />)}
+        <this.loadingMessage />
     </div>;
+  }
+
+  private loadingMessage = (): JSX.Element => {
+    if (this.state.loading) {
+      return <p className="post-loading-status">Loading...</p>
+    } else if (this.state.loadedPosts.length === 0) {
+      return <p className="post-loading-status">No posts to load...</p>
+    }
+
+    return <p className="post-loading-status">Looks like you've reached the end...</p>
   }
 
   private async loadPosts(): Promise<string | null> {
@@ -72,7 +85,8 @@ export class HomePage extends React.Component<{}, State> {
 
     this.setState({
       loadedPosts,
-      loading: false
+      loading: false,
+      allPostsLoaded: !continuationToken
     });
 
     return continuationToken;
