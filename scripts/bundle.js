@@ -2,14 +2,14 @@ const fs = require("fs");
 const globby = require("globby");
 const path = require("path");
 const yazl = require("yazl");
-const {DIST_PATH} = require("./config");
+const {DIST_PATH, ROOT_PATH} = require("./config");
 
 module.exports = function(outpath) {
   const distFiles = globby.sync(path.join(DIST_PATH, "**"));
   const zipfile = new yazl.ZipFile();
 
   distFiles.forEach(file => {
-    zipfile.addFile(file, path.relative(DIST_PATH, file));
+    zipfile.addFile(file, path.relative(ROOT_PATH, file));
   });
 
   zipfile.addFile("./package.json", "package.json");
