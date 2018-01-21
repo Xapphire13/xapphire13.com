@@ -12,8 +12,8 @@ export class SqlLogger implements Logger {
 
   public log(message: string): Promise<any> {
     return this.db.exec(sql`
-      INSERT INTO Log (message, timestamp)
-      VALUES (${message}, datetime("now"));
+      INSERT INTO Log (message, timestamp, level)
+      VALUES (${message}, datetime("now"), 1);
       `);
   }
 
@@ -31,8 +31,8 @@ export class SqlLogger implements Logger {
     }
 
     return this.db.exec(sql`
-      INSERT INTO Log (message, exception, timestamp)
-      VALUES (${message}, ${exception}, datetime("now"));
+      INSERT INTO Log (message, exception, timestamp, level)
+      VALUES (${message}, ${exception}, datetime("now"), 0);
       `);
   }
 }

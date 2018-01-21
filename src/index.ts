@@ -3,13 +3,14 @@ import "./error-handler";
 import * as path from "path";
 import * as sqlite from "sqlite";
 import * as jwt from "jsonwebtoken";
+import registerProductionDependencies from "./production-registry";
+import registerDevelopmentDependencies from "./development-registry";
 import express = require("express");
 import bodyParser = require("body-parser");
 import {useExpressServer, useContainer} from "routing-controllers";
 import {Container} from "typedi";
 import {UserRepository} from "./repositories/user-repository";
 import {Logger} from "./logger";
-import registerDependencies from "./production-registry";
 
 const APP_PATH = path.resolve(__dirname, "app");
 
@@ -23,7 +24,11 @@ async function main() {
   const app = express();
 
   // Config
-  registerDependencies(db);
+  if (process.env.NODE_ENV === "production") {
+    registerProductionDependencies(db);
+  } else {
+    registerDevelopmentDependencies(db);
+  }
   useContainer(Container);
   app.set('port', process.env.PORT || 80);
   app.use(bodyParser.json());
