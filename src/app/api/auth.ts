@@ -9,7 +9,7 @@ export async function getTempToken(username: string, password: string): Promise<
       password: btoa(password)
     })
   });
-
+  
   if (!response.ok) {
     throw new Error(response.statusText);
   }

@@ -1,23 +1,24 @@
 import "./styles/admin-page.less";
 import * as React from "react";
-import {UserSignIn} from "./user-sign-in";
+import {Redirect} from "react-router-dom";
+import {User} from "./models/user";
 
-type State = {
-  user: any;
+type Props = {
+  user?: User;
 };
 
-export class AdminPage extends React.Component<any, State> {
-  constructor(props: any) {
+export class AdminPage extends React.Component<Props> {
+  constructor(props: Props) {
     super(props);
 
     this.state = {user: null};
   }
 
   public render(): JSX.Element {
-    return <div className="admin-page">
-      {this.state.user ?
-        <div></div> :
-        <UserSignIn />}
-    </div>;
+    return this.props.user ?
+    <div className="admin-page">
+      Welcome {this.props.user.username}
+    </div> :
+    <Redirect to="/login"/>;
   }
 }
