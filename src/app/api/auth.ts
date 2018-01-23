@@ -9,7 +9,7 @@ export async function getTempToken(username: string, password: string): Promise<
       password: btoa(password)
     })
   });
-  
+
   if (!response.ok) {
     throw new Error(response.statusText);
   }
@@ -33,5 +33,5 @@ export async function getAuthToken(challengeResponse: string, challenge: string)
     throw new Error(response.statusText);
   }
 
-  return await response.json();
+  return (await response.json()).token;
 }

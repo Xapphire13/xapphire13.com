@@ -20,3 +20,24 @@ export async function getPost(id: string): Promise<Post> {
 
   return response.json();
 }
+
+export async function createPost(title: string, markdownText: string, tags?: string[]): Promise<Post> {
+  const response = await fetch("/api/posts", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${window.localStorage.getItem("token")}`
+    },
+    body: JSON.stringify({
+      title,
+      markdownText,
+      tags
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error(response.statusText);
+  }
+
+  return response.json();
+}

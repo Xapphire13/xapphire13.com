@@ -109,7 +109,8 @@ export class LoginPage extends React.Component<Props, State> {
     try {
       const {authenticatorUrl, challenge} = await ClientApi.getTempToken(this.state.username, this.state.password);
       this.setState({authenticatorUrl, challenge, error: false});
-    } catch {
+    } catch (err) {
+      console.error(err);
       this.setState({error: true});
     }
   }
@@ -125,7 +126,8 @@ export class LoginPage extends React.Component<Props, State> {
       this.props.onAuthenticated({
         username: this.state.username
       }, token);
-    } catch {
+    } catch (err) {
+      console.error(err);
       this.setState({error: true});
     }
   };
