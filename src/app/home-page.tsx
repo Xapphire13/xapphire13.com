@@ -2,12 +2,19 @@ import "./styles/home-page.less";
 import * as React from "react";
 import * as ClientApi from "./api/client-api";
 import * as Utils from "./utils";
+import {RouteComponentProps} from "react-router";
 import {Post} from "../models/post";
 import {PostPreview} from "./post-preview";
 import {Disposable} from "./disposable";
+import {User} from "./models/user";
+import {PlusCircle} from "react-feather";
 import throttle = require("throttleit");
 
 const MAX_PREVIEW_LENGTH = 4000;
+
+type Props = {
+  user: User | null;
+} & RouteComponentProps<any>;
 
 type State = {
   loading: boolean;
@@ -15,12 +22,12 @@ type State = {
   allPostsLoaded: boolean;
 };
 
-export class HomePage extends React.Component<{}, State> {
+export class HomePage extends React.Component<Props, State> {
   private scrollSubscription: Disposable = { dispose: () => {} };
   private continuationToken: string | null;
   private app: HTMLElement;
 
-  constructor(props: any) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       loading: true,
@@ -49,6 +56,7 @@ export class HomePage extends React.Component<{}, State> {
 
   public render(): JSX.Element {
     return <div className="home-page">
+      {this.props.user && <this.newPost />}
       {this.state.loadedPosts.map((post, i) =>
         <PostPreview
           id={post.id}
@@ -62,6 +70,10 @@ export class HomePage extends React.Component<{}, State> {
         <this.loadingMessage />
     </div>;
   }
+
+  private newPost = (): JSX.Element => <div className="new-post" title="New post" onClick={() => this.props.history.push("/post")}>
+    <PlusCircle className="new-post-icon"/>
+  </div>;
 
   private loadingMessage = (): JSX.Element => {
     if (this.state.loading) {

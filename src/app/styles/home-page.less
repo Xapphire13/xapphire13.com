@@ -10,4 +10,28 @@
   .post-loading-status {
     text-align: center;
   }
+
+  .new-post {
+    margin-left: auto;
+    margin-right: auto;
+    width: 5em;
+
+    .new-post-icon {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      width: 3em;
+      height: 3em;
+      color: #995DE8;
+    }
+
+    &:hover {
+      cursor: pointer;
+
+      .new-post-icon {
+        clip-path: circle(1.4em at 1.5em 1.5em);
+        background: lighten(#995DE8, 20%);
+      }
+    }
+  }
 }
