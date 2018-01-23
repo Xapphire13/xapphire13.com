@@ -4,6 +4,7 @@ import * as ClientApi from "./api/client-api";
 import {User} from "./models/user";
 import {QRCode} from "react-qr-svg";
 import {MessageBar} from "./message-bar";
+import {Button} from "./button";
 
 type Props = {
   onAuthenticated: (user: User, token: string) => void;
@@ -60,7 +61,7 @@ export class LoginPage extends React.Component<Props, State> {
         onKeyPress={this.onEnter(this.submitPassword)}
         value={this.state.password}
         onChange={(ev) => this.setState({password: ev.target.value})} />
-      <button onClick={this.submitPassword}>Login</button>
+      <Button text="Login" onClick={this.submitPassword}/>
     </div>;
   }
 
@@ -77,7 +78,7 @@ export class LoginPage extends React.Component<Props, State> {
             value={this.state.code}
             onChange={(ev) => this.setState({code: ev.target.value})}
             onKeyPress={this.onEnter(this.submitAuthCode)} />
-          <button onClick={this.submitAuthCode}>Submit</button>
+          <Button text="Submit" onClick={this.submitAuthCode}/>
         </div>
       </div>
     </div>;

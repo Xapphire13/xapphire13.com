@@ -9,6 +9,7 @@ import TagsInput = require("react-tagsinput");
 import {Send} from "react-feather";
 import {MessageBar} from "./message-bar";
 import {RouteComponentProps} from "react-router";
+import {Button} from "./button";
 require("codemirror/mode/markdown/markdown");
 
 type State = {
@@ -43,9 +44,7 @@ export class NewPostPage extends React.Component<RouteComponentProps<any>, State
           placeholder="Title..."
           value={this.state.title}
           onChange={ev => this.setState({title: ev.target.value})}/>
-          <button onClick={this.onSubmit}>
-            <span className="button-text">Post</span><Send className="button-icon" />
-          </button>
+          <Button text="Post" icon={(props) => <Send {...props} />} onClick={this.onSubmit} />
       </div>
       <TagsInput value={this.state.tags} onChange={tags => this.setState({tags})}/>
       <CodeMirror
