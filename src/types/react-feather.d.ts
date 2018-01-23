@@ -5,4 +5,5 @@ declare module "react-feather" {
   export class Edit extends React.Component<React.HTMLAttributes<any>> {}
   export class BookOpen extends React.Component<React.HTMLAttributes<any>> {}
   export class PlusCircle extends React.Component<React.HTMLAttributes<any>> {}
+  export class Send extends React.Component<React.HTMLAttributes<any>> {}
 }
