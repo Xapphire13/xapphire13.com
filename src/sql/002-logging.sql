@@ -1,18 +1,16 @@
 -- Up
 CREATE TABLE Log (
-  id INTEGER PRIMARY KEY,
+  timestamp TIME NOT NULL,
   message TEXT,
   exception TEXT,
-  timestamp TIME NOT NULL,
   level INTEGER NOT NULL
 );
 
 CREATE TRIGGER MaxLogMessages
 AFTER INSERT ON Log
-WHEN (SELECT COUNT(*) FROM Log) > 200
 BEGIN
   DELETE FROM Log
-  WHERE ID IN (SELECT id FROM Log ORDER BY id ASC LIMIT 1);
+  WHERE timestamp < datetime("now", "-7 days");
 END;
 
 -- Down
