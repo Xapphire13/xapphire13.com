@@ -7,6 +7,7 @@ import * as ClientApi from "./api/client-api";
 import CodeMirror = require("react-codemirror");
 import TagsInput = require("react-tagsinput");
 import {Send} from "react-feather";
+import {MessageBar} from "./message-bar";
 import {RouteComponentProps} from "react-router";
 require("codemirror/mode/markdown/markdown");
 
@@ -33,7 +34,7 @@ export class NewPostPage extends React.Component<RouteComponentProps<any>, State
 
   public render(): JSX.Element {
     return <div className="new-post-page">
-      {this.state.errorText && <div className="error-message">{this.state.errorText}</div>}
+      {this.state.errorText && <MessageBar type="error" message={this.state.errorText} />}
       <div style={{display: "flex", flexDirection: "row"}}>
         <input
           type="text"

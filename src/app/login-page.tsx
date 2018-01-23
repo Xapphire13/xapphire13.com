@@ -3,6 +3,7 @@ import * as React from "react";
 import * as ClientApi from "./api/client-api";
 import {User} from "./models/user";
 import {QRCode} from "react-qr-svg";
+import {MessageBar} from "./message-bar";
 
 type Props = {
   onAuthenticated: (user: User, token: string) => void;
@@ -32,17 +33,13 @@ export class LoginPage extends React.Component<Props, State> {
   public render(): JSX.Element {
     if (!this.state.authenticatorUrl && !this.state.challenge) {
       return <div className="login-page">
-        {this.state.error && <div className="error-message">
-          Incorrect username or password
-        </div>}
+        {this.state.error && <MessageBar type="error" message="Incorrect username or password" />}
         <this.passwordLogin />
       </div>
     }
 
     return <div className="login-page">
-      {this.state.error && <div className="error-message">
-        Incorrect code
-      </div>}
+      {this.state.error && <MessageBar type="error" message="Incorrect code" />}
       <this.authChallenge />
     </div>
   }
