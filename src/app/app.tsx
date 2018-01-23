@@ -9,21 +9,21 @@ import {PostView} from "./post-view";
 import {AdminPage} from "./admin-page";
 import {LoginPage} from "./login-page";
 import {User} from "./models/user";
+import {AuthManager} from "./auth-manager";
 import GitHubButton = require("react-github-button");
 
 type State = {
-  user?: User;
+  user: User | null;
 };
 
 export const App = withRouter(class App extends React.Component<RouteComponentProps<any>, State> {
+  private authManager = new AuthManager();
+
   constructor(props: any) {
     super(props);
 
-    const username = window.localStorage.getItem("username");
     this.state = {
-      user: username ? {
-        username
-      } : undefined
+      user: this.authManager.user
     };
   }
 
@@ -35,7 +35,7 @@ export const App = withRouter(class App extends React.Component<RouteComponentPr
           <Switch>
             <Route exact path="/" component={HomePage} />
             <Route path="/posts/:id" component={PostView} />
-            <Route path="/admin" render={() => <AdminPage user={this.state.user} />} />
+            <Route path="/admin" render={(props) => <AdminPage user={this.state.user} {...props} />} />
             <Route path="/login" render={() => <LoginPage onAuthenticated={this.onAuthenticated} />} />
             <Route component={NotFound} />
           </Switch>
@@ -48,9 +48,8 @@ export const App = withRouter(class App extends React.Component<RouteComponentPr
   }
 
   private onAuthenticated = (user: User, token: string): void => {
-    window.localStorage.setItem("username", user.username);
-    window.localStorage.setItem("token", token);
+    this.authManager.onSignedIn(user.username, token);
     this.setState({user});
-    this.props.history.replace("/admin");
+    this.props.history.goBack();
   }
 });
