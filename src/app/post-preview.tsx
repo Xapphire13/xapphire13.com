@@ -39,9 +39,9 @@ export class PostPreview extends React.Component<Props, State> {
     return <div className="post-preview">
       <div style={{display: "flex", flexDirection: "row"}}>
         <Link className="post-title" to={postPath}>{this.props.title}</Link>
-        <Menu right isOpen={this.state.menuOpen} close={() => this.setState({menuOpen: false})}>
-          <MenuTrigger>
-            <MenuIcon onClick={() => this.setState({menuOpen: !this.state.menuOpen})} />
+        <Menu right className="post-menu" isOpen={this.state.menuOpen} close={() => this.setState({menuOpen: false})}>
+          <MenuTrigger onClick={() => this.setState({menuOpen: !this.state.menuOpen})}>
+            <MenuIcon />
           </MenuTrigger>
           <MenuItem label="Edit" icon={(props) => <Edit {...props}/>} onClick={() => console.log("edit")}/>
           <MenuItem label="Delete" icon={(props) => <Trash2 {...props}/>} onClick={() => console.log("delete")}/>

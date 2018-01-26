@@ -3,8 +3,9 @@ import * as React from "react";
 
 type MenuProps = {
   isOpen: boolean;
-  right?: boolean;
   close: () => void;
+  right?: boolean;
+  className?: string;
 };
 
 type MenuState = {
@@ -45,7 +46,7 @@ export class Menu extends React.Component<MenuProps, MenuState> {
     const trigger = this.props.children.find((child: any) => child.type === MenuTrigger) as React.ReactElement<any>;
     const items = this.props.children.filter((child: any) => child.type === MenuItem) as React.ReactElement<any>[];
 
-    return <div style={{position: "relative", display: "inline-block"}} ref={ref => this.ref = ref}>
+    return <div className={this.props.className} style={{position: "relative", display: "inline-block"}} ref={ref => this.ref = ref}>
       {trigger}
       <div className="menu" tabIndex={0} ref={ref => this.props.isOpen && ref && ref.focus()} onBlur={() => this.props.close && this.props.close()}
         style={{
@@ -74,9 +75,13 @@ export class Menu extends React.Component<MenuProps, MenuState> {
   }
 }
 
-export class MenuTrigger extends React.Component {
+type MenuTriggerProps = {
+  onClick?: () => void;
+};
+
+export class MenuTrigger extends React.Component<MenuTriggerProps> {
   render() {
-    return <div className="menu-trigger">
+    return <div className="menu-trigger" onClick={this.props.onClick}>
       {this.props.children}
     </div>
   }
