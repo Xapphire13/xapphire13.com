@@ -84,7 +84,7 @@ export class MenuTrigger extends React.Component {
 
 type MenuItemProps = {
   label: string;
-  icon?: React.ReactElement<any>;
+  icon?: (props: {className: string}) => React.ReactElement<any>;
   separator?: boolean;
   disabled?: boolean;
   setRef?: (ref: HTMLDivElement) => void;
@@ -102,9 +102,7 @@ export class MenuItem extends React.Component<MenuItemProps> {
       ref={this.props.setRef}
       onClick={!this.props.disabled ? this.props.onClick : undefined}>
       <div className="menu-item-label">{this.props.label}</div>
-      {this.props.icon && React.cloneElement(this.props.icon, {
-        className: `${this.props.icon.props.className || ""} menu-item-icon`.trim()
-      })}
+      {this.props.icon && this.props.icon({className: "menu-item-icon"})}
     </div>;
   }
 

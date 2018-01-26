@@ -43,8 +43,8 @@ export class PostPreview extends React.Component<Props, State> {
           <MenuTrigger>
             <MenuIcon onClick={() => this.setState({menuOpen: !this.state.menuOpen})} />
           </MenuTrigger>
-          <MenuItem label="Edit" icon={<Edit />} onClick={() => console.log("edit")}/>
-          <MenuItem label="Delete" icon={<Trash2 />} onClick={() => console.log("delete")}/>
+          <MenuItem label="Edit" icon={(props) => <Edit {...props}/>} onClick={() => console.log("edit")}/>
+          <MenuItem label="Delete" icon={(props) => <Trash2 {...props}/>} onClick={() => console.log("delete")}/>
         </Menu>
       </div>
       <div className="post-details">
