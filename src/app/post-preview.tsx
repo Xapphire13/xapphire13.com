@@ -3,7 +3,8 @@ import * as React from "react";
 import * as moment from "moment";
 import * as ReactMarkdown from "react-markdown";
 import {Link} from "react-router-dom";
-import {BookOpen, Clock, Edit} from "react-feather";
+import {BookOpen, Clock, Edit, Menu as MenuIcon, Trash2} from "react-feather";
+import {Menu, MenuItem, MenuTrigger} from "./menu";
 import readingTime = require("reading-time");
 
 type Props = {
@@ -16,7 +17,19 @@ type Props = {
   maxLength: number
 };
 
-export class PostPreview extends React.Component<Props> {
+type State = {
+  menuOpen: boolean;
+};
+
+export class PostPreview extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+
+    this.state = {
+      menuOpen: false
+    };
+  }
+
   public render(): JSX.Element {
     const isEdited = this.props.created.getTime() !== this.props.lastModified.getTime();
     const isClipped = this.props.markdownText.length > this.props.maxLength;
@@ -24,7 +37,16 @@ export class PostPreview extends React.Component<Props> {
     const postPath = `/posts/${this.props.id}`;
 
     return <div className="post-preview">
-      <Link className="post-title" to={postPath}>{this.props.title}</Link>
+      <div style={{display: "flex", flexDirection: "row"}}>
+        <Link className="post-title" to={postPath}>{this.props.title}</Link>
+        <Menu right isOpen={this.state.menuOpen} close={() => this.setState({menuOpen: false})}>
+          <MenuTrigger>
+            <MenuIcon onClick={() => this.setState({menuOpen: !this.state.menuOpen})} />
+          </MenuTrigger>
+          <MenuItem label="Edit" icon={<Edit />} onClick={() => console.log("edit")}/>
+          <MenuItem label="Delete" icon={<Trash2 />} onClick={() => console.log("delete")}/>
+        </Menu>
+      </div>
       <div className="post-details">
         <span className="post-details-created" title={this.props.created.toLocaleString()}>
           <Clock className="icon" />{moment(this.props.created).fromNow()}
