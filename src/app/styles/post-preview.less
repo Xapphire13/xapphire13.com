@@ -5,6 +5,16 @@
   padding: 1em;
   text-align: justify;
 
+  &:hover, &:focus-within {
+    .post-menu {
+      visibility: visible;
+    }
+  }
+
+  .post-menu {
+    visibility: hidden;
+  }
+
   .post-details {
     color: #666;
   }
