@@ -1,6 +1,6 @@
 -- Up
 CREATE TABLE Post (
-  id INTEGER PRIMARY KEY,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
   title TEXT NOT NULL,
   created TIME NOT NULL,
   last_modified TIME NOT NULL,
@@ -22,7 +22,7 @@ CREATE TABLE PostTags (
 );
 
 CREATE TABLE User (
-  id INTEGER PRIMARY KEY,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
   username TEXT NOT NULL,
   name TEXT NOT NULL,
   password_hash TEXT,
