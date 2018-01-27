@@ -8,7 +8,7 @@ import {NotFound} from "./not-found";
 import {PostView} from "./post-view";
 import {AdminPage} from "./admin-page";
 import {LoginPage} from "./login-page";
-import {NewPostPage} from "./new-post-page";
+import {EditPostPage} from "./edit-post-page";
 import {User} from "./models/user";
 import {AuthManager} from "./auth-manager";
 import GitHubButton = require("react-github-button");
@@ -35,8 +35,9 @@ export const App = withRouter(class App extends React.Component<RouteComponentPr
         <div className="app-content">
           <Switch>
             <Route exact path="/" render={(props) => <HomePage user={this.state.user} {...props} />} />
-            <Route path="/post" component={NewPostPage} />
-            <Route path="/posts/:id" component={PostView} />
+            <Route path="/post" component={EditPostPage} />
+            <Route exact path="/posts/:id" component={PostView} />
+            <Route path="/posts/:id/edit" component={EditPostPage} />
             <Route path="/admin" render={(props) => <AdminPage user={this.state.user} {...props} />} />
             <Route path="/login" render={() => <LoginPage onAuthenticated={this.onAuthenticated} />} />
             <Route component={NotFound} />

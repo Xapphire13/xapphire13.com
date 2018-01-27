@@ -66,7 +66,13 @@ export class HomePage extends React.Component<Props, State> {
           lastModified={new Date(post.lastModified)}
           markdownText={post.markdownText}
           tags={post.tags}
-          maxLength={MAX_PREVIEW_LENGTH} />)}
+          maxLength={MAX_PREVIEW_LENGTH}
+          delete={async () => {
+            await ClientApi.deletePost(post.id);
+            this.setState({
+              loadedPosts: this.state.loadedPosts.filter(loadedPost => post.id != loadedPost.id)
+            });
+          }} />)}
         <this.loadingMessage />
     </div>;
   }

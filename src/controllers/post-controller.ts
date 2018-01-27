@@ -2,7 +2,7 @@ import * as boom from "boom";
 import {Post as PostEntity} from "../models/post";
 import {PagedResponse} from "../paged-response";
 import {PostRepository} from "../repositories/post-repository";
-import {Authorized, JsonController, Get, Post, Patch, Delete, HttpCode, Body, QueryParam, Param} from "routing-controllers";
+import {OnUndefined, Authorized, JsonController, Get, Post, Patch, Delete, HttpCode, Body, QueryParam, Param} from "routing-controllers";
 import {Inject} from "typedi";
 
 const DEFAULT_PAGE_SIZE = 5;
@@ -20,7 +20,7 @@ export class PostController {
 
   @Patch("/posts/:id")
   @Authorized()
-  @HttpCode(204)
+  @OnUndefined(204)
   public async patchPost(@Param("id") id: string, @Body() post: PostEntity): Promise<void> {
     if (!await this.repository.getPost(+id)) {
       throw boom.notFound();
@@ -32,7 +32,7 @@ export class PostController {
 
   @Delete("/posts/:id")
   @Authorized()
-  @HttpCode(200)
+  @OnUndefined(200)
   public async deletePost(@Param("id") id: string): Promise<void> {
     if (!await this.repository.getPost(+id)) {
       throw boom.notFound();

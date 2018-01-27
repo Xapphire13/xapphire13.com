@@ -2,7 +2,7 @@ import "./styles/post-preview.less";
 import * as React from "react";
 import * as moment from "moment";
 import * as ReactMarkdown from "react-markdown";
-import {Link} from "react-router-dom";
+import {Link, withRouter, RouteComponentProps} from "react-router-dom";
 import {BookOpen, Clock, Edit, Menu as MenuIcon, Trash2} from "react-feather";
 import {Menu, MenuItem, MenuTrigger} from "./menu";
 import readingTime = require("reading-time");
@@ -14,14 +14,15 @@ type Props = {
   lastModified: Date;
   markdownText: string;
   tags?: string[];
-  maxLength: number
-};
+  maxLength: number;
+  delete: () => void;
+} & RouteComponentProps<any>;
 
 type State = {
   menuOpen: boolean;
 };
 
-export class PostPreview extends React.Component<Props, State> {
+export const PostPreview = withRouter(class PostPreview extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
@@ -43,8 +44,8 @@ export class PostPreview extends React.Component<Props, State> {
           <MenuTrigger onClick={() => this.setState({menuOpen: !this.state.menuOpen})}>
             <MenuIcon />
           </MenuTrigger>
-          <MenuItem label="Edit" icon={(props) => <Edit {...props}/>} onClick={() => console.log("edit")}/>
-          <MenuItem label="Delete" icon={(props) => <Trash2 {...props}/>} onClick={() => console.log("delete")}/>
+          <MenuItem label="Edit" icon={(props) => <Edit {...props}/>} onClick={() => this.props.history.push(`${postPath}/edit`)}/>
+          <MenuItem label="Delete" icon={(props) => <Trash2 {...props}/>} onClick={() => {this.props.delete(); this.setState({menuOpen: false})}}/>
         </Menu>
       </div>
       <div className="post-details">
@@ -67,4 +68,4 @@ export class PostPreview extends React.Component<Props, State> {
       </div>}
     </div>;
   }
-}
+});
