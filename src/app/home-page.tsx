@@ -60,7 +60,7 @@ export class HomePage extends React.Component<Props, State> {
   public render(): JSX.Element {
     return <div className="home-page" ref={ref => this.ref = ref}>
       {this.props.user && <this.newPost />}
-      {this.state.loadedPosts.map(post => <PostPreview
+      {this.state.loadedPosts.map((post, i) => <PostPreview
         key={post.id}
         id={post.id}
         title={post.title}
@@ -72,9 +72,8 @@ export class HomePage extends React.Component<Props, State> {
         edit={() => this.props.history.push(`/posts/${post.id}/edit`)}
         delete={async () => {
           await ClientApi.deletePost(post.id);
-          this.setState({
-            loadedPosts: this.state.loadedPosts.filter(loadedPost => post.id != loadedPost.id)
-          });
+          delete this.state.loadedPosts[i];
+          this.setState({});
         }} />)}
       {this.loadingMessage()}
     </div>;
