@@ -69,6 +69,7 @@ export class HomePage extends React.Component<Props, State> {
         markdownText={post.markdownText}
         tags={post.tags}
         maxLength={MAX_PREVIEW_LENGTH}
+        edit={() => this.props.history.push(`/posts/${post.id}/edit`)}
         delete={async () => {
           await ClientApi.deletePost(post.id);
           this.setState({
