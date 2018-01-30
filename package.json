@@ -5,6 +5,7 @@
   "main": "./dist/index.js",
   "scripts": {
     "test": "jest",
+    "bundle": "node ./scripts/bundle.js",
     "clean": "rmdir /S /Q .\\dist",
     "build": "npm run clean && tsc -p ./src && xcopy /Y /E /I \"./src/sql\" \"./dist/sql\" && webpack --config webpack.dev.js",
     "build:prod": "tsc -p ./src && xcopy /Y /E /I \"./src/sql\" \"./dist/sql\" && webpack --config webpack.prod.js",
