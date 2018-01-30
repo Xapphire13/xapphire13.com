@@ -24,7 +24,7 @@ export class App extends React.Component<RouteComponentProps<any>> {
         <div className="app-content">
           <Switch>
             <Route exact path="/" render={(props) => <HomePage user={this.authManager.user} {...props} />} />
-            <ProtectedRoute path="/post" component={EditPostPage} isAuthorized={this.authManager.isAuthorized} />
+            <ProtectedRoute path="/posts/new" component={EditPostPage} isAuthorized={this.authManager.isAuthorized} />
             <Route exact path="/posts/:id" component={PostView} />
             <ProtectedRoute path="/posts/:id/edit" component={EditPostPage} isAuthorized={this.authManager.isAuthorized} />
             <ProtectedRoute path="/admin" render={(props) => <AdminPage user={this.authManager.user!} {...props} />} isAuthorized={this.authManager.isAuthorized} />

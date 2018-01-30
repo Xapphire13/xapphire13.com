@@ -79,7 +79,7 @@ export class HomePage extends React.Component<Props, State> {
     </div>;
   }
 
-  private newPost = (): JSX.Element => <div className="new-post" title="New post" onClick={() => this.props.history.push("/post")}>
+  private newPost = (): JSX.Element => <div className="new-post" title="New post" onClick={() => this.props.history.push("/posts/new")}>
     <PlusCircle className="new-post-icon"/>
   </div>;
 

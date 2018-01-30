@@ -5,7 +5,7 @@ import * as React from "react";
 import * as ReactMarkdown from "react-markdown";
 import * as ClientApi from "./api/client-api";
 import TagsInput = require("react-tagsinput");
-import {UnControlled as CodeMirror} from "react-codemirror2";
+import {Controlled as CodeMirror} from "react-codemirror2";
 import {Save, Send} from "react-feather";
 import {MessageBar} from "./message-bar";
 import {RouteComponentProps} from "react-router";
@@ -74,7 +74,7 @@ export class EditPostPage extends React.Component<Props, State> {
       <TagsInput value={this.state.tags} onChange={tags => this.setState({tags})}/>
       <CodeMirror
         value={this.state.markdownText}
-        onChange={(_editor, _data, value) => this.setState({markdownText: value})}
+        onBeforeChange={(_editor, _data, value) => this.setState({markdownText: value})}
         options={{
           mode: "markdown",
           lineNumbers: true
