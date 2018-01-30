@@ -1,19 +1,16 @@
 import {Logger} from "./logger";
-import {Database} from "sqlite";
 import {Inject} from "typedi";
+import {LogRepository} from "./repositories/log-repository"
 
 export class SqlLogger implements Logger {
-  constructor(@Inject("Database") private db: Database) {}
+  constructor(@Inject("LogRepository") private repository: LogRepository) {}
 
   public debug(): Promise<void> {
     return Promise.resolve();
   }
 
   public log(message: string): Promise<any> {
-    return this.db.run(`
-      INSERT INTO Log (timestamp, message, level)
-      VALUES (datetime("now"), $message, 1);
-      `, {$message: message});
+    return this.repository.createLog(1, message);
   }
 
   public error(message: string): Promise<void>
@@ -29,12 +26,6 @@ export class SqlLogger implements Logger {
       exception = messageOrException.stack;
     }
 
-    return this.db.run(`
-      INSERT INTO Log (timestamp, message, exception, level)
-      VALUES (datetime("now"), $message, $exception, 0);
-      `, {
-        $message: message,
-        $exception: exception
-      });
+    return this.repository.createLog(0, message, exception);
   }
 }
