@@ -4,26 +4,17 @@ import {RouteComponentProps} from "react-router-dom";
 import {User} from "./models/user";
 
 type Props = {
-  user: User | null;
+  user: User;
 } & RouteComponentProps<any>;
 
 export class AdminPage extends React.Component<Props> {
   constructor(props: Props) {
     super(props);
-
-    this.state = {user: null};
-  }
-
-  public componentDidMount(): void {
-    if (!this.props.user) {
-      this.props.history.push("/login");
-    }
   }
 
   public render(): JSX.Element {
-    return this.props.user ?
-    <div className="admin-page">
+    return <div className="admin-page">
       Welcome {this.props.user.username}
-    </div> : <div/>;
+    </div>;
   }
 }
