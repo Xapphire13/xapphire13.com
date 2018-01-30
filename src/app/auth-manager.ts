@@ -15,6 +15,10 @@ export class AuthManager {
     return this.username ? {username: this.username} : null;
   }
 
+  public get isAuthorized(): boolean {
+    return !!this.username && !!this.token;
+  }
+
   public onSignedIn(username: string, token: string): void {
     this.storage.setItem("username", this.username = username);
     this.storage.setItem("token", this.token = token);

@@ -5,10 +5,11 @@ import {User} from "./models/user";
 import {QRCode} from "react-qr-svg";
 import {MessageBar} from "./message-bar";
 import {Button} from "./button";
+import {RouteComponentProps} from "react-router-dom";
 
 type Props = {
   onAuthenticated: (user: User, token: string) => void;
-};
+} & RouteComponentProps<any>;
 
 type State = {
   authenticatorUrl?: string;
@@ -124,6 +125,8 @@ export class LoginPage extends React.Component<Props, State> {
       this.props.onAuthenticated({
         username: this.state.username
       }, token);
+      const {from} = this.props.location.state as {from: string};
+      this.props.history.replace(from);
     } catch (err) {
       console.error(err);
       this.setState({error: true});

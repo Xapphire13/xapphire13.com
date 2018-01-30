@@ -2,7 +2,7 @@ import "./styles/app.less";
 import "react-github-button/assets/style.less";
 import * as React from "react";
 import {AppHeader} from "./app-header";
-import {withRouter, Route, Switch, RouteComponentProps} from "react-router-dom";
+import {Route, Switch, RouteComponentProps} from "react-router-dom";
 import {HomePage} from "./home-page";
 import {NotFound} from "./not-found";
 import {PostView} from "./post-view";
@@ -11,22 +11,11 @@ import {LoginPage} from "./login-page";
 import {EditPostPage} from "./edit-post-page";
 import {User} from "./models/user";
 import {AuthManager} from "./auth-manager";
+import {ProtectedRoute} from "./route-helpers";
 import GitHubButton = require("react-github-button");
 
-type State = {
-  user: User | null;
-};
-
-export const App = withRouter(class App extends React.Component<RouteComponentProps<any>, State> {
+export class App extends React.Component<RouteComponentProps<any>> {
   private authManager = new AuthManager();
-
-  constructor(props: any) {
-    super(props);
-
-    this.state = {
-      user: this.authManager.user
-    };
-  }
 
   public render(): JSX.Element {
     return <div id="app">
@@ -34,12 +23,12 @@ export const App = withRouter(class App extends React.Component<RouteComponentPr
       <div className="app-content-wrapper">
         <div className="app-content">
           <Switch>
-            <Route exact path="/" render={(props) => <HomePage user={this.state.user} {...props} />} />
-            <Route path="/post" component={EditPostPage} />
+            <Route exact path="/" render={(props) => <HomePage user={this.authManager.user} {...props} />} />
+            <ProtectedRoute path="/post" component={EditPostPage} isAuthorized={this.authManager.isAuthorized} />
             <Route exact path="/posts/:id" component={PostView} />
-            <Route path="/posts/:id/edit" component={EditPostPage} />
-            <Route path="/admin" render={(props) => <AdminPage user={this.state.user} {...props} />} />
-            <Route path="/login" render={() => <LoginPage onAuthenticated={this.onAuthenticated} />} />
+            <ProtectedRoute path="/posts/:id/edit" component={EditPostPage} isAuthorized={this.authManager.isAuthorized} />
+            <ProtectedRoute path="/admin" render={(props) => <AdminPage user={this.authManager.user!} {...props} />} isAuthorized={this.authManager.isAuthorized} />
+            <Route path="/login" render={(props) => <LoginPage {...props} onAuthenticated={this.onAuthenticated} />} />
             <Route component={NotFound} />
           </Switch>
         </div>
@@ -50,9 +39,5 @@ export const App = withRouter(class App extends React.Component<RouteComponentPr
     </div>;
   }
 
-  private onAuthenticated = (user: User, token: string): void => {
-    this.authManager.onSignedIn(user.username, token);
-    this.setState({user});
-    this.props.history.goBack();
-  }
-});
+  private onAuthenticated = (user: User, token: string): void => this.authManager.onSignedIn(user.username, token);
+}
