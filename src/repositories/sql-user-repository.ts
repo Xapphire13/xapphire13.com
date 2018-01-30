@@ -10,7 +10,7 @@ export class SqlUserRepository implements UserRepository {
     const record = await this.db.get(sql`
       SELECT *
       FROM User
-      WHERE username = ${username};
+      WHERE username = ${username} COLLATE NOCASE;
       `);
 
     if (!record) {

@@ -125,7 +125,7 @@ export class LoginPage extends React.Component<Props, State> {
       this.props.onAuthenticated({
         username: this.state.username
       }, token);
-      const {from} = this.props.location.state as {from: string};
+      const {from="/"} = this.props.location.state as {from: string} || {};
       this.props.history.replace(from);
     } catch (err) {
       console.error(err);
