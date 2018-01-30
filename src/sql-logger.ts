@@ -1,7 +1,6 @@
 import {Logger} from "./logger";
 import {Database} from "sqlite";
 import {Inject} from "typedi";
-import sql = require("sql-tagged-template-literal");
 
 export class SqlLogger implements Logger {
   constructor(@Inject("Database") private db: Database) {}
@@ -11,10 +10,10 @@ export class SqlLogger implements Logger {
   }
 
   public log(message: string): Promise<any> {
-    return this.db.exec(sql`
+    return this.db.run(`
       INSERT INTO Log (timestamp, message, level)
-      VALUES (datetime("now"), ${message}, 1);
-      `);
+      VALUES (datetime("now"), $message, 1);
+      `, {$message: message});
   }
 
   public error(message: string): Promise<void>
@@ -30,9 +29,12 @@ export class SqlLogger implements Logger {
       exception = messageOrException.stack;
     }
 
-    return this.db.exec(sql`
+    return this.db.run(`
       INSERT INTO Log (timestamp, message, exception, level)
-      VALUES (datetime("now"), ${message}, ${exception}, 0);
-      `);
+      VALUES (datetime("now"), $message, $exception, 0);
+      `, {
+        $message: message,
+        $exception: exception
+      });
   }
 }
