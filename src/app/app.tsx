@@ -2,7 +2,7 @@ import "./styles/app.less";
 import "react-github-button/assets/style.less";
 import * as React from "react";
 import {AppHeader} from "./app-header";
-import {Redirect, Route, Switch, RouteComponentProps} from "react-router-dom";
+import {Route, Switch, RouteComponentProps} from "react-router-dom";
 import {HomePage} from "./home-page";
 import {NotFound} from "./not-found";
 import {PostView} from "./post-view";
@@ -28,9 +28,7 @@ export class App extends React.Component<RouteComponentProps<any>> {
             <Route exact path="/posts/:id" component={PostView} />
             <ProtectedRoute path="/posts/:id/edit" component={EditPostPage} isAuthorized={this.authManager.isAuthorized} />
             <ProtectedRoute path="/admin" render={(props) => <AdminPage user={this.authManager.user!} {...props} />} isAuthorized={this.authManager.isAuthorized} />
-            {this.authManager.isAuthorized ?
-              <Redirect to="/" />:
-              <Route path="/login" render={(props) => <LoginPage {...props} onAuthenticated={this.onAuthenticated} />} />}
+            <Route path="/login" render={(props) => <LoginPage {...props} onAuthenticated={this.onAuthenticated} isAuthorized={this.authManager.isAuthorized} />} />
             <Route component={NotFound} />
           </Switch>
         </div>

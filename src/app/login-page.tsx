@@ -5,9 +5,10 @@ import {User} from "./models/user";
 import {QRCode} from "react-qr-svg";
 import {MessageBar} from "./message-bar";
 import {Button} from "./button";
-import {RouteComponentProps} from "react-router-dom";
+import {RouteComponentProps, Redirect} from "react-router-dom";
 
 type Props = {
+  isAuthorized: boolean,
   onAuthenticated: (user: User, token: string) => void;
 } & RouteComponentProps<any>;
 
@@ -33,6 +34,10 @@ export class LoginPage extends React.Component<Props, State> {
   }
 
   public render(): JSX.Element {
+    if (this.props.isAuthorized) {
+      return <Redirect to="/" />;
+    }
+
     if (!this.state.authenticatorUrl && !this.state.challenge) {
       return <div className="login-page">
         {this.state.error && <MessageBar type="error" message="Incorrect username or password" />}
