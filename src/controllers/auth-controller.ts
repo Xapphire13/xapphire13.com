@@ -1,11 +1,11 @@
+import * as bcrypt from "bcrypt";
 import * as boom from "boom";
 import * as crypto from "crypto";
 import * as jwt from "jsonwebtoken";
-import * as bcrypt from "bcrypt";
-import {UserRepository} from "../repositories/user-repository";
-import {User} from "../models/user";
-import {JsonController, Get, Post, Body, CurrentUser} from "routing-controllers";
+import {Body, CurrentUser, Get, JsonController, Post} from "routing-controllers";
 import {Inject} from "typedi";
+import {User} from "../models/user";
+import {UserRepository} from "../repositories/user-repository";
 import otplib = require("otplib");
 
 @JsonController("/api")
@@ -33,9 +33,9 @@ export class AuthController {
 
       if (!user.authenticatorSecret) {
         let secret = "";
-        const validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"
-        for(const value of crypto.randomBytes(16).values()) {
-          secret += validChars[Math.floor((value/256) * validChars.length)];
+        const validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+        for (const value of crypto.randomBytes(16).values()) {
+          secret += validChars[Math.floor((value / 256) * validChars.length)];
         }
         user.authenticatorSecret = secret;
         await this.repository.storeAuthenticatorSecret(user.id, user.authenticatorSecret);

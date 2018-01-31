@@ -37,25 +37,24 @@ export class ContinuationToken {
   }
 }
 
-
 export function getPagingAdvice(pageSize: number, continuationToken: ContinuationToken): PagingAdvice {
   const {id = "", offset = 0} = continuationToken ? continuationToken : {};
 
   return {
     from: id,
     limit: pageSize + offset
-  }
+  };
 }
 
-export function createPage<T extends any>(idKey: string, createHashString: (item: T) => string) {
+export function createPage<T extends any>(idKey: string, createHashString: (item: T) => string): (pageSize: number, values: T[], previousToken?: ContinuationToken) => Page<T> {
   const getContinuationToken = (pageSize: number, values: T[]) => values.length < pageSize ? null : createToken(idKey, createHashString)(values).toBase64();
 
-  return (pageSize: number, values: T[], previousToken?: ContinuationToken): Page => {
-    if(!values.length || !previousToken) {
+  return (pageSize: number, values: T[], previousToken?: ContinuationToken): Page<T> => {
+    if (!values.length || !previousToken) {
       return {
         values: values,
         continuationToken: getContinuationToken(pageSize, values)
-      }
+      };
     }
 
     const idsDiffer = `${values[0][idKey]}` !== previousToken.id;
@@ -69,7 +68,7 @@ export function createPage<T extends any>(idKey: string, createHashString: (item
       values,
       continuationToken: getContinuationToken(pageSize, values)
     };
-  }
+  };
 }
 
 const createToken = <T extends any>(idKey: string, createHashString: (item: T) => string) => (values: T[]): ContinuationToken => {

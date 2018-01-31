@@ -1,5 +1,5 @@
-import {Post} from "../models/post";
 import {Database} from "sqlite";
+import {Post} from "../models/post";
 import {PostRepository} from "./post-repository";
 import Semaphore from "semaphore-async-await";
 
@@ -37,6 +37,7 @@ export class SqlPostRepository implements PostRepository {
     this.lock.release();
 
     post.id = id;
+
     return post;
   }
 
@@ -114,7 +115,7 @@ export class SqlPostRepository implements PostRepository {
         VALUES ($postId, (SELECT id FROM Tag WHERE name = $tag));`, {
           $postId: postId,
           $tag: tag
-        })
+        });
     }));
   }
 
