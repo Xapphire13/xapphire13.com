@@ -30,8 +30,8 @@ export class SqlUserRepository implements UserRepository {
     return !!await this.db.get(`
       SELECT *
       FROM Admins
-      INNER JOIN User on Admins.user_id = User.id;
-      WHERE user_id = $userId
+      INNER JOIN User on Admins.user_id = User.id
+      WHERE user_id = $userId;
       `, {$userId: userId});
   }
 
