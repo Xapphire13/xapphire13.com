@@ -1,5 +1,23 @@
 import {createPage, hash, getPagingAdvice, ContinuationToken} from "../src/pagination";
 
+describe("ContinuationToken", () => {
+  test("can be constructed from an id, offset and a hash", () => {
+    const token = new ContinuationToken("foo", 1, 2);
+
+    expect(token.id).toBe("foo");
+    expect(token.offset).toBe(1);
+    expect(token.hash).toBe(2);
+  });
+
+  test("can be constructed from a base64 token", () => {
+    const token = new ContinuationToken(new Buffer("foo_1_2").toString("base64"));
+
+    expect(token.id).toBe("foo");
+    expect(token.offset).toBe(1);
+    expect(token.hash).toBe(2);
+  });
+});
+
 describe("getPagingAdvice()", () => {
   test("returns a limit equal to offset + pagesize", async () => {
     const offset = 5;
@@ -11,20 +29,12 @@ describe("getPagingAdvice()", () => {
     expect(result.limit).toBe(offset + pageSize);
   });
 
-  test(".from is $id when id is not a date", () => {
+  test(".from is to id from the continuation token", () => {
     const token = new ContinuationToken("foo", 0, 0);
 
     const result = getPagingAdvice(5, token);
 
-    expect(result.from).toBe("$id");
-  });
-
-  test(".from is datetime($id) when id is a date", () => {
-    const token = new ContinuationToken(new Date().toJSON(), 0, 0);
-
-    const result = getPagingAdvice(5, token);
-
-    expect(result.from).toBe("datetime($id)");
+    expect(result.from).toBe("foo");
   });
 });
 

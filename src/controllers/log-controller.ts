@@ -1,10 +1,10 @@
 import {LogRepository} from "../repositories/log-repository";
 import {Log} from "../models/log";
 import {JsonController, Get, Authorized, QueryParam} from "routing-controllers";
-import {PagedResponse} from "../paged-response";
+import {createPage, getPagingAdvice, ContinuationToken, Page} from "../pagination";
 import {Inject} from "typedi";
 
-const DEFAULT_PAGE_SIZE = 20;
+export const DEFAULT_PAGE_SIZE = 20;
 
 @JsonController("/api")
 export class LogController {
@@ -12,13 +12,15 @@ export class LogController {
 
   @Get("/logs")
   @Authorized()
-  public async getLogs(@QueryParam("fromTimestamp") fromTimestamp?: string): Promise<PagedResponse<Log>> {
-    const logs = await this.repository.getLogs(DEFAULT_PAGE_SIZE, fromTimestamp);
-    const continuationToken = logs.length ? logs[logs.length - 1].timestamp : null;
-
-    return {
-      values: logs,
-      continuationToken
+  public async getLogs(@QueryParam("continue") continuationToken?: string): Promise<Page<Log>> {
+    const token = continuationToken && new ContinuationToken(continuationToken);
+    const pagingAdvice = token && getPagingAdvice(DEFAULT_PAGE_SIZE, token);
+    const pageSize = pagingAdvice ? pagingAdvice.limit : DEFAULT_PAGE_SIZE;
+    let logs = await this.repository.getLogs(pageSize, pagingAdvice && pagingAdvice.from);
+    if (token) {
+      logs = logs.slice(token.offset);
     }
+
+    return createPage(pageSize, "timestamp", log => `${log.timestamp}_${log.level}_${log.message}_${log.exception}`, logs);
   }
 }
