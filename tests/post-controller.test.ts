@@ -1,60 +1,43 @@
-import * as express from "express";
-import {PostRepository} from "../src/post-repository";
-import {PostController} from "../src/post-controller";
+import {PostRepository} from "../src/repositories/post-repository";
+import {PostController} from "../src/controllers/post-controller";
+import {Boom, isBoom} from "boom";
 
 test("getPost() calls through to the repository", async () => {
   const mockRepository = new MockRepository();
-  const mockApp = new MockApp();
-  const controller = new PostController(<any>mockApp, mockRepository);
+  const controller = new PostController(mockRepository);
   const id = "42";
 
-  controller.registerRoutes();
-  const getPost = mockApp.getHandlers["/api/posts/:id"];
-
-  await getPost(
-    <any>{params: {id}},
-    <any>new MockResponse(),
-    <any>null);
+  try {
+    await controller.getPost(id);
+  } catch {}
 
   expect(mockRepository.getPost.mock.calls).toEqual([[+id]]);
 });
 
 test("getPost() returns 404 when not found", async () => {
   const mockRepository = new MockRepository();
-  const mockApp = new MockApp();
-  const controller = new PostController(<any>mockApp, mockRepository);
-  const mockResponse = new MockResponse();
+  const controller = new PostController(mockRepository);
   const id = "42";
 
-  controller.registerRoutes();
-  const getPost = mockApp.getHandlers["/api/posts/:id"];
-
-  await getPost(
-    <any>{params: {id}},
-    <any>mockResponse,
-    <any>null);
-
-  expect(mockResponse.status.mock.calls).toEqual([[404]]);
+  try {
+    await controller.getPost(id);
+  } catch (err) {
+    expect(isBoom(err)).toBeTruthy();
+    expect((<Boom>err).output.statusCode).toBe(404)
+  }
 });
 
 test("getPost() returns post when found", async () => {
   const mockRepository = new MockRepository();
-  const mockApp = new MockApp();
-  const controller = new PostController(<any>mockApp, mockRepository);
-  const mockResponse = new MockResponse();
+  const controller = new PostController(mockRepository);
   const id = "42";
   const post = {};
 
   mockRepository.getPost.mockReturnValue(post);
-  controller.registerRoutes();
-  const getPost = mockApp.getHandlers["/api/posts/:id"];
 
-  await getPost(
-    <any>{params: {id}},
-    <any>mockResponse,
-    <any>null);
+  const result = await controller.getPost(id);
 
-  expect(mockResponse.json.mock.calls).toEqual([[post]]);
+  expect(result).toEqual(post);
 });
 
 // Helpers
@@ -65,33 +48,4 @@ class MockRepository implements PostRepository {
   public editPost = jest.fn();
   public getPost = jest.fn();
   public getPosts = jest.fn();
-}
-
-class MockResponse {
-  public status = jest.fn().mockReturnThis();
-  public send = jest.fn().mockReturnThis();
-  public json = jest.fn();
-}
-
-class MockApp {
-  public getHandlers: {[path: string]: express.RequestHandler} = {};
-  public postHandlers: {[path: string]: express.RequestHandler} = {};
-  public patchHandlers: {[path: string]: express.RequestHandler} = {};
-  public deleteHandlers: {[path: string]: express.RequestHandler} = {};
-
-  public get(path: string, handler: express.RequestHandler) {
-    this.getHandlers[path] = handler;
-  }
-
-  public post(path: string, handler: express.RequestHandler) {
-    this.postHandlers[path] = handler;
-  }
-
-  public patch(path: string, handler: express.RequestHandler) {
-    this.patchHandlers[path] = handler;
-  }
-
-  public delete(path: string, handler: express.RequestHandler) {
-    this.deleteHandlers[path] = handler;
-  }
 }
