@@ -1,4 +1,4 @@
-import "./styles/post-view.less"
+import "./styles/post-view.less";
 import * as ClientApi from "./api/client-api";
 import * as React from "react";
 import * as ReactMarkdown from "react-markdown";
