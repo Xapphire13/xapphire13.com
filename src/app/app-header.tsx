@@ -1,6 +1,6 @@
 import "./styles/app-header.less";
 import * as React from "react";
-import {Link ,NavLink} from "react-router-dom";
+import {Link, NavLink} from "react-router-dom";
 
 const ROUTES: {text: string, path: string, exact?: boolean}[] = [
   {
@@ -28,12 +28,12 @@ export class AppHeader extends React.Component {
         <div className="navigation-menu-content">
           {ROUTES.map((route, i) => <NavLink
             key={route.text}
-            className={`navigation-menu-item navigation-menu-item-${i+1}`}
+            className={`navigation-menu-item navigation-menu-item-${i + 1}`}
             activeClassName="selected"
             exact={route.exact}
             to={route.path}>{route.text}</NavLink>)}
         </div>
       </nav>
-    </header>
+    </header>;
   }
 }

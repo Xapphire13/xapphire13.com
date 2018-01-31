@@ -1,11 +1,11 @@
 import "./styles/login-page.less";
-import * as React from "react";
 import * as ClientApi from "./api/client-api";
-import {User} from "./models/user";
-import {QRCode} from "react-qr-svg";
-import {MessageBar} from "./message-bar";
+import * as React from "react";
+import {Redirect, RouteComponentProps} from "react-router-dom";
 import {Button} from "./button";
-import {RouteComponentProps, Redirect} from "react-router-dom";
+import {MessageBar} from "./message-bar";
+import {QRCode} from "react-qr-svg";
+import {User} from "./models/user";
 
 type Props = {
   isAuthorized: boolean,
@@ -19,7 +19,7 @@ type State = {
   password: string;
   code: string;
   error: boolean;
-}
+};
 
 export class LoginPage extends React.Component<Props, State> {
   constructor(props: Props) {
@@ -42,60 +42,54 @@ export class LoginPage extends React.Component<Props, State> {
       return <div className="login-page">
         {this.state.error && <MessageBar type="error" message="Incorrect username or password" />}
         <this.passwordLogin />
-      </div>
+      </div>;
     }
 
     return <div className="login-page">
       {this.state.error && <MessageBar type="error" message="Incorrect code" />}
       <this.authChallenge />
-    </div>
-  }
-
-  private passwordLogin = (): JSX.Element => {
-    return <div>
-      <h1>Sign in</h1>
-      <input
-        type="text"
-        name="username"
-        placeholder="Username"
-        value={this.state.username}
-        onChange={(ev) => this.setState({username: ev.target.value})} />
-      <input
-        type="password"
-        name="password"
-        placeholder="Password"
-        onKeyPress={this.onEnter(this.submitPassword)}
-        value={this.state.password}
-        onChange={(ev) => this.setState({password: ev.target.value})} />
-      <Button text="Login" onClick={this.submitPassword}/>
     </div>;
   }
 
-  private authChallenge = (): JSX.Element => {
-    return <div>
-      <h1>Two-Factor Authentication</h1>
-      <div className="auth-challenge-content">
-        {this.state.authenticatorUrl && <this.qrCode url={this.state.authenticatorUrl} />}
-        <div className="auth-challenge-input">
-          <input
-            type="number"
-            name="auth-code"
-            placeholder="Enter authenticator code"
-            value={this.state.code}
-            onChange={(ev) => this.setState({code: ev.target.value})}
-            onKeyPress={this.onEnter(this.submitAuthCode)} />
-          <Button text="Submit" onClick={this.submitAuthCode}/>
-        </div>
+  private passwordLogin = (): JSX.Element => <div>
+    <h1>Sign in</h1>
+    <input
+      type="text"
+      name="username"
+      placeholder="Username"
+      value={this.state.username}
+      onChange={(ev) => this.setState({username: ev.target.value})} />
+    <input
+      type="password"
+      name="password"
+      placeholder="Password"
+      onKeyPress={this.onEnter(this.submitPassword)}
+      value={this.state.password}
+      onChange={(ev) => this.setState({password: ev.target.value})} />
+    <Button text="Login" onClick={this.submitPassword}/>
+  </div>
+
+  private authChallenge = (): JSX.Element => <div>
+    <h1>Two-Factor Authentication</h1>
+    <div className="auth-challenge-content">
+      {this.state.authenticatorUrl && <this.qrCode url={this.state.authenticatorUrl} />}
+      <div className="auth-challenge-input">
+        <input
+          type="number"
+          name="auth-code"
+          placeholder="Enter authenticator code"
+          value={this.state.code}
+          onChange={(ev) => this.setState({code: ev.target.value})}
+          onKeyPress={this.onEnter(this.submitAuthCode)} />
+        <Button text="Submit" onClick={this.submitAuthCode}/>
       </div>
-    </div>;
-  }
+    </div>
+  </div>
 
-  private qrCode = (props: {url: string}): JSX.Element => {
-    return <div className="auth-challenge-qr">
-      <p>First, scan this QR code into your authenticator app</p>
-      <QRCode className="authenticator-qr" value={props.url} />
-    </div>;
-  }
+  private qrCode = (props: {url: string}): JSX.Element => <div className="auth-challenge-qr">
+    <p>First, scan this QR code into your authenticator app</p>
+    <QRCode className="authenticator-qr" value={props.url} />
+  </div>
 
   private onEnter(func: React.KeyboardEventHandler<any>): React.KeyboardEventHandler<any> {
     return (evt) => {
@@ -130,11 +124,11 @@ export class LoginPage extends React.Component<Props, State> {
       this.props.onAuthenticated({
         username: this.state.username
       }, token);
-      const {from="/"} = this.props.location.state as {from: string} || {};
+      const {from = "/"} = this.props.location.state as {from: string} || {};
       this.props.history.replace(from);
     } catch (err) {
       console.error(err);
       this.setState({error: true});
     }
-  };
+  }
 }

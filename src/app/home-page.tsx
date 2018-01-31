@@ -1,13 +1,13 @@
 import "./styles/home-page.less";
-import * as React from "react";
 import * as ClientApi from "./api/client-api";
+import * as React from "react";
 import * as Utils from "./utils";
-import {RouteComponentProps} from "react-router";
+import {Disposable} from "./disposable";
+import {PlusCircle} from "react-feather";
 import {Post} from "../models/post";
 import {PostPreview} from "./post-preview";
-import {Disposable} from "./disposable";
+import {RouteComponentProps} from "react-router";
 import {User} from "./models/user";
-import {PlusCircle} from "react-feather";
 import throttle = require("throttleit");
 
 const MAX_PREVIEW_LENGTH = 4000;
@@ -23,7 +23,7 @@ type State = {
 };
 
 export class HomePage extends React.Component<Props, State> {
-  private scrollSubscription: Disposable = { dispose: () => {} };
+  private scrollSubscription: Disposable = {dispose: () => {}};
   private ref: HTMLDivElement | null;
 
   constructor(props: Props) {
@@ -81,19 +81,19 @@ export class HomePage extends React.Component<Props, State> {
 
   private newPost = (): JSX.Element => <div className="new-post" title="New post" onClick={() => this.props.history.push("/posts/new")}>
     <PlusCircle className="new-post-icon"/>
-  </div>;
+  </div>
 
   private loadingMessage = (): JSX.Element | null => {
     if (this.state.allPostsLoaded) {
       if (this.state.loadedPosts.length === 0) {
-        return <p className="post-loading-status">No posts to load...</p>
+        return <p className="post-loading-status">No posts to load...</p>;
       }
 
-      return <p className="post-loading-status">Looks like you've reached the end...</p>
+      return <p className="post-loading-status">Looks like you've reached the end...</p>;
     }
 
     if (this.state.loading) {
-      return <p className="post-loading-status">Loading...</p>
+      return <p className="post-loading-status">Loading...</p>;
     }
 
     return null;

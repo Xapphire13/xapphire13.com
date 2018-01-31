@@ -1,5 +1,5 @@
-import {Post} from "../../models/post";
 import {PagedResponse} from "../../paged-response";
+import {Post} from "../../models/post";
 
 export async function getPosts(continuationToken: string | null = null): Promise<PagedResponse<Post>> {
   const response = await fetch(`/api/posts${continuationToken ? `?continue=${continuationToken}` : ""}`);
@@ -26,7 +26,7 @@ export async function createPost(title: string, markdownText: string, tags?: str
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${window.localStorage.getItem("token")}`
+      Authorization: `Bearer ${window.localStorage.getItem("token")}`
     },
     body: JSON.stringify({
       title,
@@ -47,7 +47,7 @@ export async function savePost(id: string, title: string, markdownText: string, 
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${window.localStorage.getItem("token")}`
+      Authorization: `Bearer ${window.localStorage.getItem("token")}`
     },
     body: JSON.stringify({
       title,
@@ -66,7 +66,7 @@ export async function deletePost(id: string): Promise<void> {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${window.localStorage.getItem("token")}`
+      Authorization: `Bearer ${window.localStorage.getItem("token")}`
     }
   });
 

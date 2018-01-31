@@ -26,7 +26,7 @@ export class Menu extends React.Component<MenuProps, MenuState> {
   }
 
   public componentWillReceiveProps(nextProps: MenuProps): void {
-    this.setState({ display: !nextProps.isOpen ? "none" : undefined });
+    this.setState({display: !nextProps.isOpen ? "none" : undefined});
   }
 
   public componentDidMount(): void {
@@ -53,9 +53,9 @@ export class Menu extends React.Component<MenuProps, MenuState> {
           width: this.state.width,
           display: this.state.display,
           [this.props.right ? "right" : "left"]: this.xPos,
-          top: this.ref && this.ref.clientHeight,
+          top: this.ref && this.ref.clientHeight
         }}>
-        {items.map((child, i) => React.cloneElement(child, { key: i, setRef: (ref: HTMLDivElement) => this.childRefs.push(ref) }))}
+        {items.map((child, i) => React.cloneElement(child, {key: i, setRef: (ref: HTMLDivElement) => this.childRefs.push(ref)}))}
       </div>
     </div>;
   }
@@ -80,10 +80,10 @@ type MenuTriggerProps = {
 };
 
 export class MenuTrigger extends React.Component<MenuTriggerProps> {
-  render() {
+  public render(): JSX.Element {
     return <div className="menu-trigger" onClick={this.props.onClick}>
       {this.props.children}
-    </div>
+    </div>;
   }
 }
 
@@ -97,7 +97,7 @@ type MenuItemProps = {
 };
 
 export class MenuItem extends React.Component<MenuItemProps> {
-  render() {
+  public render(): JSX.Element {
     if (this.props.separator) {
       return this.renderSeparator();
     }
@@ -111,7 +111,7 @@ export class MenuItem extends React.Component<MenuItemProps> {
     </div>;
   }
 
-  renderSeparator() {
+  private renderSeparator(): JSX.Element {
     return <div className="menu-item-separator" />;
   }
 }
