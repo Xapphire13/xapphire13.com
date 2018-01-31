@@ -1,6 +1,7 @@
 import * as React from "react";
 import {Redirect, Route, RouteProps} from "react-router-dom";
 
+// tslint:disable-next-line variable-name
 export const ProtectedRoute = ({component: Component, render, isAuthorized, ...rest}: RouteProps & {isAuthorized: boolean}) => <Route
   {...rest}
   render={(props) =>
@@ -8,7 +9,7 @@ export const ProtectedRoute = ({component: Component, render, isAuthorized, ...r
       (render ? render(props) : Component && <Component {...props} />) :
       <Redirect to={{
         pathname: "/login",
-        state: { from: props.location }
+        state: {from: props.location}
       }} />
   }
-/>
+/>;

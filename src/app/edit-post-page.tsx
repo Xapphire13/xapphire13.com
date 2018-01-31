@@ -1,16 +1,16 @@
 import "./styles/edit-post-page.less";
 import "codemirror/lib/codemirror.css";
+import "codemirror/mode/markdown/markdown";
 import "react-tagsinput/react-tagsinput.css";
+import * as ClientApi from "./api/client-api";
 import * as React from "react";
 import * as ReactMarkdown from "react-markdown";
-import * as ClientApi from "./api/client-api";
-import TagsInput = require("react-tagsinput");
-import {Controlled as CodeMirror} from "react-codemirror2";
 import {Save, Send} from "react-feather";
+import {Button} from "./button";
+import {Controlled as CodeMirror} from "react-codemirror2";
 import {MessageBar} from "./message-bar";
 import {RouteComponentProps} from "react-router";
-import {Button} from "./button";
-require("codemirror/mode/markdown/markdown");
+import TagsInput = require("react-tagsinput");
 
 type Props = RouteComponentProps<{
   id: string;
@@ -89,7 +89,8 @@ export class EditPostPage extends React.Component<Props, State> {
     this.setState({titleMissing});
 
     if (titleMissing) {
-      this.setState({errorText: "Title can't be empty"})
+      this.setState({errorText: "Title can't be empty"});
+
       return;
     }
 

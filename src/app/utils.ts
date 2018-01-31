@@ -7,6 +7,7 @@ export function subscribeToEvent<K extends keyof WindowEventMap>(target: EventTa
     target.removeEventListener(event, listener);
     dispose = () => {};
   };
+
   return {
     dispose
   };

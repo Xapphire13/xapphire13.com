@@ -1,17 +1,17 @@
 import "./styles/app.less";
 import "react-github-button/assets/style.less";
 import * as React from "react";
+import {Route, RouteComponentProps, Switch} from "react-router-dom";
+import {AdminPage} from "./admin-page";
 import {AppHeader} from "./app-header";
-import {Route, Switch, RouteComponentProps} from "react-router-dom";
+import {AuthManager} from "./auth-manager";
+import {EditPostPage} from "./edit-post-page";
 import {HomePage} from "./home-page";
+import {LoginPage} from "./login-page";
 import {NotFound} from "./not-found";
 import {PostView} from "./post-view";
-import {AdminPage} from "./admin-page";
-import {LoginPage} from "./login-page";
-import {EditPostPage} from "./edit-post-page";
-import {User} from "./models/user";
-import {AuthManager} from "./auth-manager";
 import {ProtectedRoute} from "./route-helpers";
+import {User} from "./models/user";
 import GitHubButton = require("react-github-button");
 
 export class App extends React.Component<RouteComponentProps<any>> {

@@ -1,10 +1,10 @@
 import "./styles/post-preview.less";
 import * as React from "react";
-import * as moment from "moment";
 import * as ReactMarkdown from "react-markdown";
-import {Link} from "react-router-dom";
+import * as moment from "moment";
 import {BookOpen, Clock, Edit, Menu as MenuIcon, Trash2} from "react-feather";
 import {Menu, MenuItem, MenuTrigger} from "./menu";
+import {Link} from "react-router-dom";
 import readingTime = require("reading-time");
 
 type Props = {
@@ -46,7 +46,7 @@ export class PostPreview extends React.Component<Props, State> {
             <MenuIcon />
           </MenuTrigger>
           <MenuItem label="Edit" icon={(props) => <Edit {...props}/>} onClick={() => this.props.edit()}/>
-          <MenuItem label="Delete" icon={(props) => <Trash2 {...props}/>} onClick={() => {this.props.delete(); this.setState({menuOpen: false})}}/>
+          <MenuItem label="Delete" icon={(props) => <Trash2 {...props}/>} onClick={() => { this.props.delete(); this.setState({menuOpen: false}); }}/>
         </Menu>
       </div>
       <div className="post-details">
@@ -69,4 +69,4 @@ export class PostPreview extends React.Component<Props, State> {
       </div>}
     </div>;
   }
-};
+}

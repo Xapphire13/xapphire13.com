@@ -1,14 +1,14 @@
 import "./styles/post-view.less"
-import * as React from "react";
-import * as moment from "moment";
-import * as ReactMarkdown from "react-markdown";
 import * as ClientApi from "./api/client-api";
-import {RouteComponentProps} from "react-router-dom";
+import * as React from "react";
+import * as ReactMarkdown from "react-markdown";
+import * as moment from "moment";
 import {BookOpen, Clock, Edit} from "react-feather";
-import {Post} from "../models/post";
-import {NotFound} from "./not-found";
-import readingTime = require("reading-time");
 import DisqusThread from "react-disqus-comments";
+import {NotFound} from "./not-found";
+import {Post} from "../models/post";
+import {RouteComponentProps} from "react-router-dom";
+import readingTime = require("reading-time");
 
 type Params = {
   id: string;
@@ -28,7 +28,7 @@ export class PostView extends React.Component<Props, State> {
     this.state = {
       post: null,
       error: false
-    }
+    };
   }
 
   public async componentDidMount(): Promise<void> {
