@@ -1,7 +1,7 @@
 import * as moment from "moment";
-import {LogRepository} from "../src/repositories/log-repository";
-import {LogController, DEFAULT_PAGE_SIZE} from "../src/controllers/log-controller";
+import {DEFAULT_PAGE_SIZE, LogController} from "../src/controllers/log-controller";
 import {Log} from "../src/models/log";
+import {LogRepository} from "../src/repositories/log-repository";
 
 test("Returns logs from the repository", async () => {
   const mockLogRepository = new MockLogRepository();
@@ -29,9 +29,7 @@ test("Returns first page when no token given", async () => {
   const mockLogRepository = new MockLogRepository();
   const controller = new LogController(mockLogRepository);
   const logs: Log[] = createLogs(2 * DEFAULT_PAGE_SIZE, 1);
-  mockLogRepository.getLogs.mockImplementation((limit: number) => {
-    return logs.slice(0, limit);
-  });
+  mockLogRepository.getLogs.mockImplementation((limit: number) => logs.slice(0, limit));
 
   const result = await controller.getLogs();
 
@@ -43,10 +41,9 @@ test("Returns second page when token is given (all the same time)", async () => 
   const mockLogRepository = new MockLogRepository();
   const controller = new LogController(mockLogRepository);
   const logs: Log[] = createLogs(2 * DEFAULT_PAGE_SIZE, 1);
-  mockLogRepository.getLogs.mockImplementation((limit: number, fromTimestamp?: string) => {
-    return logs.filter(log => fromTimestamp ? Date.parse(log.timestamp) <= Date.parse(fromTimestamp) : true)
-      .slice(0, limit);
-  });
+  mockLogRepository.getLogs.mockImplementation((limit: number, fromTimestamp?: string) =>
+    logs.filter(log => fromTimestamp ? Date.parse(log.timestamp) <= Date.parse(fromTimestamp) : true).slice(0, limit)
+  );
 
   let result = await controller.getLogs();
   result = await controller.getLogs(result.continuationToken!);
@@ -59,10 +56,9 @@ test("Returns second page when token is given (all different times)", async () =
   const mockLogRepository = new MockLogRepository();
   const controller = new LogController(mockLogRepository);
   const logs: Log[] = createLogs(2 * DEFAULT_PAGE_SIZE, 1, true);
-  mockLogRepository.getLogs.mockImplementation((limit: number, fromTimestamp?: string) => {
-    return logs.filter(log => fromTimestamp ? Date.parse(log.timestamp) <= Date.parse(fromTimestamp) : true)
-      .slice(0, limit);
-  });
+  mockLogRepository.getLogs.mockImplementation((limit: number, fromTimestamp?: string) =>
+    logs.filter(log => fromTimestamp ? Date.parse(log.timestamp) <= Date.parse(fromTimestamp) : true).slice(0, limit)
+  );
 
   let result = await controller.getLogs();
   result = await controller.getLogs(result.continuationToken!);
@@ -75,10 +71,9 @@ test("Returns empty page when all items have been served (count === pageSize)", 
   const mockLogRepository = new MockLogRepository();
   const controller = new LogController(mockLogRepository);
   const logs: Log[] = createLogs(DEFAULT_PAGE_SIZE, 1, true);
-  mockLogRepository.getLogs.mockImplementation((limit: number, fromTimestamp?: string) => {
-    return logs.filter(log => fromTimestamp ? Date.parse(log.timestamp) <= Date.parse(fromTimestamp) : true)
-      .slice(0, limit);
-  });
+  mockLogRepository.getLogs.mockImplementation((limit: number, fromTimestamp?: string) =>
+    logs.filter(log => fromTimestamp ? Date.parse(log.timestamp) <= Date.parse(fromTimestamp) : true).slice(0, limit)
+  );
 
   let result = await controller.getLogs();
   result = await controller.getLogs(result.continuationToken!);
@@ -92,10 +87,9 @@ test("Returns empty page when all items have been served (count < pageSize)", as
   const controller = new LogController(mockLogRepository);
   const count = Math.floor(DEFAULT_PAGE_SIZE / 2);
   const logs: Log[] = createLogs(count, 1, true);
-  mockLogRepository.getLogs.mockImplementation((limit: number, fromTimestamp?: string) => {
-    return logs.filter(log => fromTimestamp ? Date.parse(log.timestamp) <= Date.parse(fromTimestamp) : true)
-      .slice(0, limit);
-  });
+  mockLogRepository.getLogs.mockImplementation((limit: number, fromTimestamp?: string) =>
+    logs.filter(log => fromTimestamp ? Date.parse(log.timestamp) <= Date.parse(fromTimestamp) : true).slice(0, limit)
+  );
 
   const result = await controller.getLogs();
 
@@ -108,7 +102,7 @@ function createLogs(count: number, level: number, staggerTime: boolean = false):
   const now = moment();
   let delta = 0;
 
-  for(let i = 0; i < count; i++) {
+  for (let i = 0; i < count; i++) {
     if (staggerTime) delta++;
 
     logs.push({
