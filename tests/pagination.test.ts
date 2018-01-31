@@ -40,7 +40,7 @@ describe("getPagingAdvice()", () => {
 
 describe("createPage()", () => {
   test("returns empty page when no values", () => {
-    const result = createPage(10, "id", () => "", []);
+    const result = createPage("id", () => "")(10, []);
 
     expect(result.continuationToken).toBeNull();
     expect(result.values).toEqual([]);
@@ -48,28 +48,28 @@ describe("createPage()", () => {
 
   test("returns all given values when it's the first page", () => {
     const values = [{id: 2}, {id: 1}];
-    const result = createPage(10, "id", item => `${item.id}`, values);
+    const result = createPage<any>("id", item => `${item.id}`)(10, values);
 
     expect(result.values).toEqual(values);
   });
 
   test("returns null continuationToken when first page contains all items", () => {
     const values = [{id: 2}, {id: 1}];
-    const result = createPage(10, "id", item => `${item.id}`, values);
+    const result = createPage<any>("id", item => `${item.id}`)(10, values);
 
     expect(result.continuationToken).toBeNull();
   });
 
   test("returns continuationToken when first page isn't all items", () => {
     const values = [{id: 2}, {id: 1}];
-    const result = createPage(1, "id", item => `${item.id}`, values);
+    const result = createPage<any>("id", item => `${item.id}`)(1, values);
 
     expect(result.continuationToken).not.toBeNull();
   });
 
   test("returns continuationToken when first page is exactly pageSize", () => {
     const values = [{id: 2}, {id: 1}];
-    const result = createPage(values.length, "id", item => `${item.id}`, values);
+    const result = createPage<any>("id", item => `${item.id}`)(values.length, values);
 
     expect(result.continuationToken).not.toBeNull();
   });
@@ -77,7 +77,7 @@ describe("createPage()", () => {
   test("skips the items from the previous page", () => {
     const values = [{id: 3}, {id: 2}, {id: 1}];
     const token = new ContinuationToken("3", 1, hash(["3"]))
-    const result = createPage(10, "id", item => `${item.id}`, values, token);
+    const result = createPage<any>("id", item => `${item.id}`)(10, values, token);
 
     expect(result.values).toEqual(values.slice(1));
   });
@@ -95,7 +95,7 @@ describe("createPage()", () => {
     }];
     const getHashString = (item: any) => `${item.group}_${item.value}`;
     const token = new ContinuationToken("2", 2, hash([getHashString(values[0]), getHashString(values[1])]))
-    const result = createPage(10, "group", getHashString, values, token);
+    const result = createPage("group", getHashString)(10, values, token);
 
     expect(result.values).toEqual(values.slice(2));
   });
@@ -103,7 +103,7 @@ describe("createPage()", () => {
   test("returns all items when the previous token's id has been removed", () => {
     const values = [{id: 2}, {id: 1}];
     const token = new ContinuationToken("3", 1, hash(["3"]))
-    const result = createPage(10, "id", item => `${item.id}`, values, token);
+    const result = createPage<any>("id", item => `${item.id}`)(10, values, token);
 
     expect(result.values).toEqual(values);
   });
@@ -121,7 +121,7 @@ describe("createPage()", () => {
     }];
     const getHashString = (item: any) => `${item.group}_${item.value}`;
     const token = new ContinuationToken("2", 1, hash([getHashString(values[1])]))
-    const result = createPage(10, "group", getHashString, values, token);
+    const result = createPage("group", getHashString)(10, values, token);
 
     expect(result.values).toEqual(values);
   });
@@ -140,7 +140,7 @@ describe("createPage()", () => {
     const getHashString = (item: any) => `${item.group}_${item.value}`;
     const token = new ContinuationToken("2", 2, hash([getHashString(values[0]), getHashString(values[1])]))
     values = values.slice(1);
-    const result = createPage(10, "group", getHashString, values, token);
+    const result = createPage("group", getHashString)(10, values, token);
 
     expect(result.values).toEqual(values);
   });
