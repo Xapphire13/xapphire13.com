@@ -15,15 +15,14 @@ export class ContinuationToken {
   public offset: number;
   public hash: number;
 
+  constructor(token64: string)
   constructor(id: string, offset: number, hash: number)
-  constructor(token64: string) {
-    let id: string = arguments[0];
-    let offset: number = arguments[1];
-    let hash: number = arguments[2];
+  constructor(idOrToken64: string, offset?: number, hash?: number) {
+    let id = idOrToken64;
 
-    if (arguments.length === 1) {
+    if (offset == undefined || hash == undefined) {
       let offsetStr, hashStr: string;
-      [id = "", offsetStr = "0", hashStr = "0"] = new Buffer(token64, "base64").toString().split("_");
+      [id = "", offsetStr = "0", hashStr = "0"] = new Buffer(idOrToken64, "base64").toString().split("_");
       offset = ~~offsetStr;
       hash = ~~hashStr;
     }
@@ -42,14 +41,8 @@ export class ContinuationToken {
 export function getPagingAdvice(pageSize: number, continuationToken: ContinuationToken): PagingAdvice {
   const {id = "", offset = 0} = continuationToken ? continuationToken : {};
 
-  let from = "$id";
-
-  if (!isNaN(Date.parse(id))) {
-    from = "datetime($id)"
-  }
-
   return {
-    from,
+    from: id,
     limit: pageSize + offset
   }
 }
