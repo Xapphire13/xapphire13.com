@@ -47,42 +47,36 @@ export function getPagingAdvice(pageSize: number, continuationToken: Continuatio
   }
 }
 
-export function createPage<T extends any>(pageSize: number, idKey: string, createHashString: (item: T) => string, values: T[], previousToken?: ContinuationToken): Page {
-  if (!values.length) {
+export function createPage<T extends any>(idKey: string, createHashString: (item: T) => string) {
+  const getContinuationToken = (pageSize: number, values: T[]) => values.length < pageSize ? null : createToken(idKey, createHashString)(values).toBase64();
+
+  return (pageSize: number, values: T[], previousToken?: ContinuationToken): Page => {
+    if(!values.length || !previousToken) {
+      return {
+        values: values,
+        continuationToken: getContinuationToken(pageSize, values)
+      }
+    }
+
+    const idsDiffer = `${values[0][idKey]}` !== previousToken.id;
+    const hashesDiffer = hash(values.slice(0, previousToken.offset).map(createHashString)) !== previousToken.hash;
+
+    if (!idsDiffer && !hashesDiffer) {
+      values = values.slice(previousToken.offset);
+    }
+
     return {
       values,
-      continuationToken: null
-    }
+      continuationToken: getContinuationToken(pageSize, values)
+    };
   }
-
-  if (!previousToken) {
-    return {
-      values: values,
-      continuationToken: values.length < pageSize ? null : createToken(idKey, values, createHashString).toBase64()
-    }
-  }
-
-  const idsDiffer = `${values[0][idKey]}` !== previousToken.id;
-  const hashesDiffer = hash(values.slice(0, previousToken.offset).map(createHashString)) !== previousToken.hash;
-
-  if (idsDiffer || hashesDiffer) {
-    return {
-      values,
-      continuationToken: values.length < pageSize ? null : createToken(idKey, values, createHashString).toBase64()
-    }
-  }
-
-  return {
-    values: values.slice(previousToken.offset),
-    continuationToken: values.length < pageSize ? null : createToken(idKey, values.slice(previousToken.offset), createHashString).toBase64()
-  };
 }
 
-function createToken<T extends any>(idKey: string, values: T[], createHashString: (item: T) => string): ContinuationToken {
+const createToken = <T extends any>(idKey: string, createHashString: (item: T) => string) => (values: T[]): ContinuationToken => {
   const firstItem: T = values[0];
 
   return new ContinuationToken(firstItem[idKey], values.length, hash(values.map(createHashString)));
-}
+};
 
 export function hash(inputs: string[]): number {
   return crc32.str(inputs.join("_"));

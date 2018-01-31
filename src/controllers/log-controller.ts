@@ -8,6 +8,8 @@ export const DEFAULT_PAGE_SIZE = 20;
 
 @JsonController("/api")
 export class LogController {
+  private createPage = createPage<Log>("timestamp", log => `${log.timestamp}_${log.level}_${log.message}_${log.exception}`);
+
   constructor(@Inject("LogRepository") private repository: LogRepository) {}
 
   @Get("/logs")
@@ -21,6 +23,6 @@ export class LogController {
       logs = logs.slice(token.offset);
     }
 
-    return createPage(pageSize, "timestamp", log => `${log.timestamp}_${log.level}_${log.message}_${log.exception}`, logs);
+    return this.createPage(pageSize, logs);
   }
 }
