@@ -1,4 +1,4 @@
-import {createPage, hash, getPagingAdvice, ContinuationToken} from "../src/pagination";
+import {ContinuationToken, createPage, getPagingAdvice, hash} from "../src/pagination";
 
 describe("ContinuationToken", () => {
   test("can be constructed from an id, offset and a hash", () => {
@@ -76,14 +76,14 @@ describe("createPage()", () => {
 
   test("skips the items from the previous page", () => {
     const values = [{id: 3}, {id: 2}, {id: 1}];
-    const token = new ContinuationToken("3", 1, hash(["3"]))
+    const token = new ContinuationToken("3", 1, hash(["3"]));
     const result = createPage<any>("id", item => `${item.id}`)(10, values, token);
 
     expect(result.values).toEqual(values.slice(1));
   });
 
   test("skips the items from the previous page when id's aren't unique", () => {
-    let values = [{
+    const values = [{
       group: 2,
       value: "foo"
     }, {
@@ -94,7 +94,7 @@ describe("createPage()", () => {
       value: "foo"
     }];
     const getHashString = (item: any) => `${item.group}_${item.value}`;
-    const token = new ContinuationToken("2", 2, hash([getHashString(values[0]), getHashString(values[1])]))
+    const token = new ContinuationToken("2", 2, hash([getHashString(values[0]), getHashString(values[1])]));
     const result = createPage("group", getHashString)(10, values, token);
 
     expect(result.values).toEqual(values.slice(2));
@@ -102,7 +102,7 @@ describe("createPage()", () => {
 
   test("returns all items when the previous token's id has been removed", () => {
     const values = [{id: 2}, {id: 1}];
-    const token = new ContinuationToken("3", 1, hash(["3"]))
+    const token = new ContinuationToken("3", 1, hash(["3"]));
     const result = createPage<any>("id", item => `${item.id}`)(10, values, token);
 
     expect(result.values).toEqual(values);
@@ -120,7 +120,7 @@ describe("createPage()", () => {
       value: "foo"
     }];
     const getHashString = (item: any) => `${item.group}_${item.value}`;
-    const token = new ContinuationToken("2", 1, hash([getHashString(values[1])]))
+    const token = new ContinuationToken("2", 1, hash([getHashString(values[1])]));
     const result = createPage("group", getHashString)(10, values, token);
 
     expect(result.values).toEqual(values);
@@ -138,7 +138,7 @@ describe("createPage()", () => {
       value: "foo"
     }];
     const getHashString = (item: any) => `${item.group}_${item.value}`;
-    const token = new ContinuationToken("2", 2, hash([getHashString(values[0]), getHashString(values[1])]))
+    const token = new ContinuationToken("2", 2, hash([getHashString(values[0]), getHashString(values[1])]));
     values = values.slice(1);
     const result = createPage("group", getHashString)(10, values, token);
 

@@ -1,6 +1,6 @@
-import {PostRepository} from "../src/repositories/post-repository";
-import {PostController} from "../src/controllers/post-controller";
 import {Boom, isBoom} from "boom";
+import {PostController} from "../src/controllers/post-controller";
+import {PostRepository} from "../src/repositories/post-repository";
 
 test("getPost() calls through to the repository", async () => {
   const mockRepository = new MockRepository();
@@ -23,7 +23,7 @@ test("getPost() returns 404 when not found", async () => {
     await controller.getPost(id);
   } catch (err) {
     expect(isBoom(err)).toBeTruthy();
-    expect((<Boom>err).output.statusCode).toBe(404)
+    expect((<Boom>err).output.statusCode).toBe(404);
   }
 });
 
