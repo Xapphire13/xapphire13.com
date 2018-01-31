@@ -1,22 +1,22 @@
-import "reflect-metadata";
 import "./error-handler";
+import "reflect-metadata";
+import * as jwt from "jsonwebtoken";
 import * as path from "path";
 import * as sqlite from "sqlite";
-import * as jwt from "jsonwebtoken";
-import registerProductionDependencies from "./production-registry";
-import registerDevelopmentDependencies from "./development-registry";
-import express = require("express");
-import bodyParser = require("body-parser");
-import {useExpressServer, useContainer} from "routing-controllers";
+import {useContainer, useExpressServer} from "routing-controllers";
 import {Container} from "typedi";
-import {UserRepository} from "./repositories/user-repository";
 import {Logger} from "./logger";
+import {UserRepository} from "./repositories/user-repository";
+import registerDevelopmentDependencies from "./development-registry";
+import registerProductionDependencies from "./production-registry";
+import bodyParser = require("body-parser");
+import express = require("express");
 
 const APP_PATH = path.resolve(__dirname, "app");
 
-async function main() {
+async function main(): Promise<void> {
   // Database
-  const db = await sqlite.open(path.resolve(__dirname, "../database.sqlite"), { promise: Promise });
+  const db = await sqlite.open(path.resolve(__dirname, "../database.sqlite"), {promise: Promise});
   await db.migrate({
     migrationsPath: path.join(__dirname, "sql")
   });
@@ -30,12 +30,13 @@ async function main() {
     registerDevelopmentDependencies(db);
   }
   useContainer(Container);
-  app.set('port', process.env.PORT || 80);
+  app.set("port", process.env.PORT || 80);
   app.use(bodyParser.json());
 
   // Controllers
   const getToken = (authHeader: string = ""): string | null => {
     const matches = /Bearer (.*)/i.exec(authHeader);
+
     return matches && matches[1];
   };
   useExpressServer(app, {
@@ -65,11 +66,12 @@ async function main() {
     currentUserChecker: async (action) => {
       const token = getToken(action.request.get("Authorization"));
 
-      if(!token) {
+      if (!token) {
         return null;
       }
 
       const {username} = jwt.decode(token) as any;
+
       return Container.get<UserRepository>("UserRepository").getUser(username);
     }
   });
@@ -84,7 +86,7 @@ async function main() {
 
   // Start!
   const server = app.listen(app.get("port"), () => {
-    Container.get<Logger>("Logger").debug("Listening on port " + server.address().port);
+    Container.get<Logger>("Logger").debug(`Listening on port ${server.address().port}`);
   });
 }
 

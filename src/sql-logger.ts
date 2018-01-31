@@ -1,6 +1,6 @@
-import {Logger} from "./logger";
 import {Inject} from "typedi";
-import {LogRepository} from "./repositories/log-repository"
+import {LogRepository} from "./repositories/log-repository";
+import {Logger} from "./logger";
 
 export class SqlLogger implements Logger {
   constructor(@Inject("LogRepository") private repository: LogRepository) {}
@@ -13,8 +13,8 @@ export class SqlLogger implements Logger {
     return this.repository.createLog(1, message);
   }
 
-  public error(message: string): Promise<void>
-  public error(exception: Error): Promise<void>
+  public error(message: string): Promise<void>;
+  public error(exception: Error): Promise<void>;
   public error(messageOrException: string | Error): Promise<any> {
     let message: string | undefined;
     let exception: string | undefined;

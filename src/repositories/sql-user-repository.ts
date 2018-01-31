@@ -1,6 +1,6 @@
 import {Database} from "sqlite";
-import {UserRepository} from "./user-repository";
 import {User} from "../models/user";
+import {UserRepository} from "./user-repository";
 
 export class SqlUserRepository implements UserRepository {
   constructor(private db: Database) {}
@@ -23,7 +23,7 @@ export class SqlUserRepository implements UserRepository {
       passwordHash: record.password_hash,
       tokenSecret: record.token_secret,
       authenticatorSecret: record.authenticator_secret
-    }
+    };
   }
 
   public async isAdmin(userId: number): Promise<boolean> {

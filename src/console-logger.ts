@@ -7,13 +7,15 @@ export class ConsoleLogger implements Logger {
 
   public log(message: string): Promise<void> {
     console.log(message);
+
     return Promise.resolve();
   }
 
-  public error(message: string): Promise<void>
-  public error(exception: Error): Promise<void>
+  public error(message: string): Promise<void>;
+  public error(exception: Error): Promise<void>;
   public error(messageOrException: string | Error): Promise<void> {
     console.error(messageOrException);
+
     return Promise.resolve();
   }
 }

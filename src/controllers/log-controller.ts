@@ -1,8 +1,8 @@
-import {LogRepository} from "../repositories/log-repository";
-import {Log} from "../models/log";
-import {JsonController, Get, Authorized, QueryParam} from "routing-controllers";
-import {createPage, getPagingAdvice, ContinuationToken, Page} from "../pagination";
+import {Authorized, Get, JsonController, QueryParam} from "routing-controllers";
+import {ContinuationToken, Page, createPage, getPagingAdvice} from "../pagination";
 import {Inject} from "typedi";
+import {Log} from "../models/log";
+import {LogRepository} from "../repositories/log-repository";
 
 export const DEFAULT_PAGE_SIZE = 20;
 

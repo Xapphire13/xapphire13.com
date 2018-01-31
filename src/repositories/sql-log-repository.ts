@@ -1,9 +1,9 @@
-import {Log} from "../models/log";
-import {LogRepository} from "./log-repository";
 import {Database} from "sqlite";
 import {Inject} from "typedi";
+import {Log} from "../models/log";
+import {LogRepository} from "./log-repository";
 
-export class SqlLogRepository implements LogRepository  {
+export class SqlLogRepository implements LogRepository {
   constructor(@Inject("database") private db: Database) {}
 
   public createLog(level: number, message: string, exception?: string): Promise<any> {

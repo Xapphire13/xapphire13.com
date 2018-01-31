@@ -1,9 +1,9 @@
 import * as boom from "boom";
-import {Post as PostEntity} from "../models/post";
-import {PagedResponse} from "../paged-response";
-import {PostRepository} from "../repositories/post-repository";
-import {OnUndefined, Authorized, JsonController, Get, Post, Patch, Delete, HttpCode, Body, QueryParam, Param} from "routing-controllers";
+import {Authorized, Body, Delete, Get, HttpCode, JsonController, OnUndefined, Param, Patch, Post, QueryParam} from "routing-controllers";
 import {Inject} from "typedi";
+import {PagedResponse} from "../paged-response";
+import {Post as PostEntity} from "../models/post";
+import {PostRepository} from "../repositories/post-repository";
 
 const DEFAULT_PAGE_SIZE = 5;
 
