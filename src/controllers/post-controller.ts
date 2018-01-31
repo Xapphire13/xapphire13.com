@@ -35,7 +35,7 @@ export class PostController {
   @OnUndefined(200)
   public async deletePost(@Param("id") id: string): Promise<void> {
     if (!await this.repository.getPost(+id)) {
-      throw boom.notFound();
+      return;
     }
 
     await this.repository.deletePost(+id);
