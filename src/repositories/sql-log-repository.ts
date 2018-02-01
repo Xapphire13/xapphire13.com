@@ -20,7 +20,7 @@ export class SqlLogRepository implements LogRepository {
   public getLogs(pageSize: number, fromTimestamp?: string): Promise<Log[]> {
     return this.db.all(`
       SELECT * FROM Log
-      WHERE timestamp < datetime($fromTimestamp)
+      WHERE timestamp <= datetime($fromTimestamp)
       ORDER BY timestamp DESC
       LIMIT $pageSize;
       `, {
