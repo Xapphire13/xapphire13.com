@@ -1,11 +1,11 @@
 import "./styles/admin-page.less";
-import "react-table/react-table.css";
-import * as React from "react";
+import "./styles/table.less";
 import * as ClientApi from "./api/client-api";
+import * as React from "react";
 import ReactTable, {Column} from "react-table";
+import {Log} from "../models/log";
 import {RouteComponentProps} from "react-router-dom";
 import {User} from "./models/user";
-import {Log} from "../models/log";
 
 type Props = {
   user: User;
@@ -15,7 +15,10 @@ type State = {
   logs: Log[];
   loading: boolean;
   continuationToken?: string | null;
+  numberOfPages: number;
 };
+
+const PAGE_SIZE = 10;
 
 export class AdminPage extends React.Component<Props, State> {
   private logColumns: Column[] = [
@@ -42,7 +45,8 @@ export class AdminPage extends React.Component<Props, State> {
 
     this.state = {
       logs: [],
-      loading: false
+      loading: false,
+      numberOfPages: -1
     };
   }
 
@@ -50,7 +54,11 @@ export class AdminPage extends React.Component<Props, State> {
     return <div className="admin-page">
       Welcome {this.props.user.username}
       <ReactTable
-        manual
+        sortable={false}
+        pages={this.state.numberOfPages}
+        showPageJump={false}
+        showPageSizeOptions={false}
+        pageSize={PAGE_SIZE}
         data={this.state.logs}
         loading={this.state.loading}
         columns={this.logColumns}
@@ -58,10 +66,14 @@ export class AdminPage extends React.Component<Props, State> {
           if (this.state.continuationToken !== null) {
             this.setState({loading: true});
             const page = await ClientApi.getLogs(this.state.continuationToken);
+            const logs = this.state.logs.concat(page.values);
+            let numberOfPages = Math.ceil(logs.length / PAGE_SIZE);
+            page.continuationToken && numberOfPages++;
             this.setState({
-              logs: this.state.logs.concat(page.values),
+              logs,
               loading: false,
-              continuationToken: page.continuationToken
+              continuationToken: page.continuationToken,
+              numberOfPages
             });
           }
         }}/>
