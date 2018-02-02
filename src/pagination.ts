@@ -47,7 +47,7 @@ export function getPagingAdvice(pageSize: number, continuationToken: Continuatio
 }
 
 export function createPage<T extends any>(idKey: string, createHashString: (item: T) => string): (pageSize: number, values: T[], previousToken?: ContinuationToken) => Page<T> {
-  const getContinuationToken = (pageSize: number, values: T[]) => values.length < pageSize ? null : createToken(idKey, createHashString)(values).toBase64();
+  const getContinuationToken = (pageSize: number, values: T[], offset: number = 0) => (values.length + offset) < pageSize ? null : createToken(idKey, createHashString)(values).toBase64();
 
   return (pageSize: number, values: T[], previousToken?: ContinuationToken): Page<T> => {
     if (!values.length || !previousToken) {
@@ -66,7 +66,7 @@ export function createPage<T extends any>(idKey: string, createHashString: (item
 
     return {
       values,
-      continuationToken: getContinuationToken(pageSize, values)
+      continuationToken: getContinuationToken(pageSize, values, previousToken.offset)
     };
   };
 }
