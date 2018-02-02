@@ -20,6 +20,7 @@ async function main(): Promise<void> {
   await db.migrate({
     migrationsPath: path.join(__dirname, "sql")
   });
+  await db.exec("PRAGMA foreign_keys = 1;");
 
   const app = express();
 

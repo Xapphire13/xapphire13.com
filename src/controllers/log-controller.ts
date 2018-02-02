@@ -18,11 +18,8 @@ export class LogController {
     const token = continuationToken && new ContinuationToken(continuationToken);
     const pagingAdvice = token && getPagingAdvice(DEFAULT_PAGE_SIZE, token);
     const pageSize = pagingAdvice ? pagingAdvice.limit : DEFAULT_PAGE_SIZE;
-    let logs = await this.repository.getLogs(pageSize, pagingAdvice && pagingAdvice.from);
-    if (token) {
-      logs = logs.slice(token.offset);
-    }
+    const logs = await this.repository.getLogs(pageSize, pagingAdvice && pagingAdvice.from);
 
-    return this.createPage(pageSize, logs);
+    return this.createPage(pageSize, logs, token || undefined);
   }
 }
