@@ -56,10 +56,9 @@ export class SqlPostRepository implements PostRepository {
     if (fromId != undefined) {
       records = await this.db.all(`
         SELECT * FROM Post
-        WHERE id < $fromId
+        WHERE id <= $fromId
         ORDER BY id DESC
         LIMIT ${pageSize};`, {$fromId: fromId});
-
     } else {
       records = await this.db.all(`
         SELECT * FROM Post

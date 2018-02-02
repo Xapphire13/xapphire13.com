@@ -1,7 +1,7 @@
 import * as boom from "boom";
 import {Authorized, Body, Delete, Get, HttpCode, JsonController, OnUndefined, Param, Patch, Post, QueryParam} from "routing-controllers";
+import {ContinuationToken, Page, createPage, getPagingAdvice} from "../pagination";
 import {Inject} from "typedi";
-import {PagedResponse} from "../paged-response";
 import {Post as PostEntity} from "../models/post";
 import {PostRepository} from "../repositories/post-repository";
 
@@ -9,6 +9,8 @@ const DEFAULT_PAGE_SIZE = 5;
 
 @JsonController("/api")
 export class PostController {
+  private createPage = createPage<PostEntity>("id", post => post.id);
+
   constructor(@Inject("PostRepository") private repository: PostRepository) {}
 
   @Post("/posts")
@@ -42,14 +44,13 @@ export class PostController {
   }
 
   @Get("/posts")
-  public async getPosts(@QueryParam("continue") continuationToken?: string): Promise<PagedResponse<PostEntity>> {
-    const values = await this.repository.getPosts(DEFAULT_PAGE_SIZE, continuationToken ? +continuationToken : undefined);
-    continuationToken = values.length ? values[values.length - 1].id : undefined;
+  public async getPosts(@QueryParam("continue") continuationToken?: string): Promise<Page<PostEntity>> {
+    const token = continuationToken && new ContinuationToken(continuationToken);
+    const pagingAdvice = token && getPagingAdvice(DEFAULT_PAGE_SIZE, token);
+    const pageSize = pagingAdvice ? pagingAdvice.limit : DEFAULT_PAGE_SIZE;
+    const posts = await this.repository.getPosts(pageSize, pagingAdvice ? +pagingAdvice.from : undefined);
 
-    return {
-      values,
-      continuationToken: continuationToken || null
-    };
+    return this.createPage(pageSize, posts, token || undefined);
   }
 
   @Get("/posts/:id")
