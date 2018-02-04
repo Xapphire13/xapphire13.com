@@ -1,7 +1,7 @@
-import {PagedResponse} from "../../paged-response";
+import {Page} from "../../pagination";
 import {Post} from "../../models/post";
 
-export async function getPosts(continuationToken: string | null = null): Promise<PagedResponse<Post>> {
+export async function getPosts(continuationToken: string | null = null): Promise<Page<Post>> {
   const response = await fetch(`/api/posts${continuationToken ? `?continue=${continuationToken}` : ""}`);
 
   if (!response.ok) {
