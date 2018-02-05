@@ -5,6 +5,7 @@ import "codemirror/mode/jsx/jsx";
 import "codemirror/theme/material.css";
 import * as React from "react";
 import * as ReactMarkdown from "react-markdown";
+import {Link} from "react-router-dom";
 import {UnControlled as CodeMirror} from "react-codemirror2";
 
 type Props = {
@@ -15,6 +16,11 @@ type Props = {
 type CodeProps = {
   language: string;
   value: string;
+};
+
+type LinkProps = {
+  children: React.ReactNode;
+  href: string;
 };
 
 export default (props: Props) => <ReactMarkdown
@@ -28,7 +34,9 @@ export default (props: Props) => <ReactMarkdown
         mode: language && (LANGUAGE_MAP[language.toLowerCase()] || language.toLowerCase()),
         theme: "material"
       }}/>,
-    test: () => <div>Wooo</div>
+    link: ({children, href}: LinkProps) => href.startsWith("/") ?
+      <Link to={href} children={children} /> :
+      <a href={href} target="_blank">{children}</a>
   }}/>;
 
 const LANGUAGE_MAP: {[key: string]: string} = {
