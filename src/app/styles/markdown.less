@@ -1,13 +1,42 @@
 .markdown {
   .react-codemirror2 + .react-codemirror2 {
-    margin-top: 0.5em;
+    margin-top: 1em;
   }
 
   .CodeMirror {
     height: auto;
+    margin: 0.6em 0;
+  }
+
+  h1, h2, h3, h4, h5, h6, p {
+    margin: 0;
+  }
+
+  * + h1,
+  * + h2,
+  * + h3,
+  * + h4,
+  * + h5,
+  * + h6,
+  p + p {
+    margin-top: 0.5em;
   }
 
   a {
     color: var(--primary-accent);
+  }
+
+  blockquote {
+    border-left: 4px solid lightgray;
+    padding: 0 1em;
+    color: gray;
+  }
+
+  p > code {
+    background-color: #EEE;
+    color: gray;
+    padding: 0.3em;
+    border-radius: 3px;
+    border: 1px solid lightgray;
   }
 }
