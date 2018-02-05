@@ -1,9 +1,9 @@
 import "./styles/post-preview.less";
 import * as React from "react";
-import * as ReactMarkdown from "react-markdown";
 import * as moment from "moment";
 import {BookOpen, Clock, Edit, Menu as MenuIcon, Trash2} from "react-feather";
 import {Menu, MenuItem, MenuTrigger} from "./menu";
+import CustomMarkdown from "./custom-markdown";
 import {Link} from "react-router-dom";
 import readingTime = require("reading-time");
 
@@ -61,7 +61,10 @@ export class PostPreview extends React.Component<Props, State> {
         <span className="post-details-length"><BookOpen className="icon" />{lengthInMin >= 1 ? `${lengthInMin} min` : "short"} read</span>
       </div>
       <div className={`post-preview-content ${isClipped ? "post-clipped" : ""}`}>
-        <ReactMarkdown className="post-preview-markdown" source={this.props.markdownText.substr(0, this.props.maxLength)}/>
+        <CustomMarkdown
+          className="post-preview-markdown markdown"
+          source={this.props.markdownText.substr(0, this.props.maxLength)}
+          />
         {isClipped && <Link to={postPath} className="post-preview-read-more">Read more</Link>}
       </div>
       {this.props.tags && !!this.props.tags.length && <div className="post-tags">

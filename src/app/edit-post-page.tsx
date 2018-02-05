@@ -1,13 +1,14 @@
 import "./styles/edit-post-page.less";
 import "codemirror/lib/codemirror.css";
-import "codemirror/mode/markdown/markdown";
+import "codemirror/mode/gfm/gfm";
+import "codemirror/theme/material.css";
 import "react-tagsinput/react-tagsinput.css";
 import * as ClientApi from "./api/client-api";
 import * as React from "react";
-import * as ReactMarkdown from "react-markdown";
 import {Save, Send} from "react-feather";
 import {Button} from "./button";
 import {Controlled as CodeMirror} from "react-codemirror2";
+import CustomMarkdown from "./custom-markdown";
 import {MessageBar} from "./message-bar";
 import {RouteComponentProps} from "react-router";
 import TagsInput = require("react-tagsinput");
@@ -76,11 +77,12 @@ export class EditPostPage extends React.Component<Props, State> {
         value={this.state.markdownText}
         onBeforeChange={(_editor, _data, value) => this.setState({markdownText: value})}
         options={{
-          mode: "markdown",
-          lineNumbers: true
+          mode: "gfm",
+          lineNumbers: true,
+          theme: "material"
         }}
       />
-      <ReactMarkdown source={this.state.markdownText} />
+      <CustomMarkdown className="markdown" source={this.state.markdownText} />
     </div>;
   }
 
