@@ -1,9 +1,9 @@
 import "./styles/post-view.less";
 import * as ClientApi from "./api/client-api";
 import * as React from "react";
-import * as ReactMarkdown from "react-markdown";
 import * as moment from "moment";
 import {BookOpen, Clock, Edit} from "react-feather";
+import CustomMarkdown from "./custom-markdown";
 import DisqusThread from "react-disqus-comments";
 import {NotFound} from "./not-found";
 import {Post} from "../models/post";
@@ -70,7 +70,7 @@ export class PostView extends React.Component<Props, State> {
         <span className="post-details-length"><BookOpen className="icon" />{lengthInMin >= 1 ? `${lengthInMin} min` : "short"} read</span>
       </div>
       <div className={`post-content`}>
-        <ReactMarkdown className="post-preview-markdown" source={this.state.post.markdownText}/>
+        <CustomMarkdown className="markdown" source={this.state.post.markdownText}/>
       </div>
       {this.state.post.tags && !!this.state.post.tags.length && <div className="post-tags">
         {this.state.post.tags.map(tag => <span key={tag} className="post-tag">{tag}</span>)}
