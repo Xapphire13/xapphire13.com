@@ -1,18 +1,17 @@
 import "./styles/app.less";
-import "react-github-button/assets/style.less";
 import * as React from "react";
 import {Route, RouteComponentProps, Switch} from "react-router-dom";
 import {AdminPage} from "./admin-page";
 import {AppHeader} from "./app-header";
 import {AuthManager} from "./auth-manager";
 import {EditPostPage} from "./edit-post-page";
+import {Github} from "react-feather";
 import {HomePage} from "./home-page";
 import {LoginPage} from "./login-page";
 import {NotFound} from "./not-found";
 import {PostView} from "./post-view";
 import {ProtectedRoute} from "./route-helpers";
 import {User} from "./models/user";
-import GitHubButton = require("react-github-button");
 
 export class App extends React.Component<RouteComponentProps<any>> {
   private authManager = new AuthManager();
@@ -34,7 +33,9 @@ export class App extends React.Component<RouteComponentProps<any>> {
         </div>
       </div>
       <footer className="app-footer">
-        <GitHubButton type="forks" size="large" namespace="xapphire13" repo="xapphire13.com" />
+        <a href="https://github.com/xapphire13/xapphire13.com" target="_blank">
+          <Github style={{position: "relative", top: "5px", marginRight: "0.3em"}} />GitHub
+        </a>
       </footer>
     </div>;
   }
