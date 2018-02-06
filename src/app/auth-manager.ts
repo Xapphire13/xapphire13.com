@@ -1,33 +1,57 @@
+import {CrossStorageClient} from "cross-storage";
 import {User} from "./models/user";
 
 export class AuthManager {
-  private username: string | null;
-  private token: string | null;
-  private storage: Storage;
+  private username: Promise<string | null>;
+  private token: Promise<string | null>;
+  private storageClient: CrossStorageClient;
 
   constructor() {
-    this.storage = window.localStorage;
-    this.username = this.storage.getItem("username") || null;
-    this.token = this.storage.getItem("token") || null;
+    this.storageClient = new CrossStorageClient(
+      `http://${document.location.hostname}/app/storage.html`,
+      {promise: Promise});
+
+    this.username = new Promise(setUsername => {
+      this.token = new Promise(setToken => {
+        this.storageClient.onConnect().then(async () => {
+          setUsername(this.storageClient.get("username"));
+          setToken(this.storageClient.get("token"));
+        });
+      });
+    });
   }
 
-  public get user(): User | null {
-    return this.username ? {username: this.username} : null;
+  public get user(): Promise<User | null> {
+    return (async () => {
+      const username = await this.username;
+
+      return username ? {username} : null;
+    })();
   }
 
-  public get isAuthorized(): boolean {
-    return !!this.username && !!this.token;
+  public get authToken(): Promise<string | null> {
+    return (async () => {
+      const token = await this.token;
+
+      return token || null;
+    })();
   }
 
-  public onSignedIn(username: string, token: string): void {
-    this.storage.setItem("username", this.username = username);
-    this.storage.setItem("token", this.token = token);
+  public get isAuthorized(): Promise<boolean> {
+    return (async () => !!await this.username && !!await this.token)();
   }
 
-  public signOut(): void {
-    this.username = null;
-    this.token = null;
-    this.storage.removeItem("username");
-    this.storage.removeItem("token");
+  public async onSignedIn(username: string, token: string): Promise<void> {
+    this.username = Promise.resolve(username);
+    this.token = Promise.resolve(token);
+    await this.storageClient.set("username", username);
+    await this.storageClient.set("token", token);
+  }
+
+  public async signOut(): Promise<void> {
+    this.username = Promise.resolve(null);
+    this.token = Promise.resolve(null);
+    await this.storageClient.del("username");
+    await this.storageClient.del("token");
   }
 }

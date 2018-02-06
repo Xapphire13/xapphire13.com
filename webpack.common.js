@@ -5,9 +5,12 @@ const SRC_PATH = path.resolve(__dirname, "src/app");
 const DIST_PATH = path.resolve(__dirname, "dist/app");
 
 module.exports = {
-  entry: path.join(SRC_PATH, "bootstrap.ts"),
+  entry: {
+    app: path.join(SRC_PATH, "bootstrap.ts"),
+    storage: path.join(SRC_PATH, "storage-container.ts")
+  },
   output: {
-    filename: "app.js",
+    filename: "[name].js",
     path: DIST_PATH,
     publicPath: "/app/"
   },
@@ -26,5 +29,15 @@ module.exports = {
   resolve: {
     extensions: [".tsx", ".ts", ".js"]
   },
-  plugins: [new HtmlWebpackPlugin({title: "Xapphire13"})]
+  plugins: [
+    new HtmlWebpackPlugin({
+      title: "Xapphire13",
+      chunks: ["app"]
+    }),
+    new HtmlWebpackPlugin({
+      title: "Xapphire13",
+      filename: "storage.html",
+      chunks: ["storage"]
+    }),
+  ]
 };
