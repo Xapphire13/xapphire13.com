@@ -1,3 +1,5 @@
+import {AuthManager} from "../auth-manager";
+import {Container} from "typedi";
 import {Page} from "../../pagination";
 import {Post} from "../../models/post";
 
@@ -22,11 +24,12 @@ export async function getPost(id: string): Promise<Post> {
 }
 
 export async function createPost(title: string, markdownText: string, tags?: string[]): Promise<Post> {
+  const authManager = Container.get(AuthManager);
   const response = await fetch("/api/posts", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${window.localStorage.getItem("token")}`
+      Authorization: `Bearer ${await authManager.authToken}`
     },
     body: JSON.stringify({
       title,
@@ -43,11 +46,12 @@ export async function createPost(title: string, markdownText: string, tags?: str
 }
 
 export async function savePost(id: string, title: string, markdownText: string, tags?: string[]): Promise<void> {
+  const authManager = Container.get(AuthManager);
   const response = await fetch(`/api/posts/${id}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${window.localStorage.getItem("token")}`
+      Authorization: `Bearer ${await authManager.authToken}`
     },
     body: JSON.stringify({
       title,
@@ -62,11 +66,12 @@ export async function savePost(id: string, title: string, markdownText: string, 
 }
 
 export async function deletePost(id: string): Promise<void> {
+  const authManager = Container.get(AuthManager);
   const response = await fetch(`/api/posts/${id}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${window.localStorage.getItem("token")}`
+      Authorization: `Bearer ${await authManager.authToken}`
     }
   });
 

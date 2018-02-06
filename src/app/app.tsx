@@ -1,6 +1,6 @@
 import "./styles/app.less";
 import * as React from "react";
-import {Route, RouteComponentProps, Switch} from "react-router-dom";
+import {Route, Switch} from "react-router-dom";
 import {AdminPage} from "./admin-page";
 import {AppHeader} from "./app-header";
 import {AuthManager} from "./auth-manager";
@@ -13,21 +13,54 @@ import {PostView} from "./post-view";
 import {ProtectedRoute} from "./route-helpers";
 import {User} from "./models/user";
 
-export class App extends React.Component<RouteComponentProps<any>> {
-  private authManager = new AuthManager();
+type Props = {
+  authManager: AuthManager
+};
+
+type State = {
+  user: User | null;
+  isAuthorized: boolean;
+  loading: boolean;
+};
+
+export class App extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+
+    this.state = {
+      user: null,
+      isAuthorized: false,
+      loading: true
+    };
+
+    Promise.all([
+      this.props.authManager.user,
+      this.props.authManager.isAuthorized
+    ]).then(([user, isAuthorized]) => {
+      this.setState({
+        user,
+        isAuthorized,
+        loading: false
+      });
+    });
+  }
 
   public render(): JSX.Element {
+    if (this.state.loading) {
+      return <div />;
+    }
+
     return <div id="app">
       <AppHeader />
       <div className="app-content-wrapper">
         <div className="app-content">
           <Switch>
-            <Route exact path="/" render={(props) => <HomePage user={this.authManager.user} {...props} />} />
-            <ProtectedRoute path="/posts/new" component={EditPostPage} isAuthorized={this.authManager.isAuthorized} />
+            <Route exact path="/" render={(props) => <HomePage user={this.state.user} {...props} />} />
+            <ProtectedRoute path="/posts/new" component={EditPostPage} isAuthorized={this.state.isAuthorized} />
             <Route exact path="/posts/:id" component={PostView} />
-            <ProtectedRoute path="/posts/:id/edit" component={EditPostPage} isAuthorized={this.authManager.isAuthorized} />
-            <ProtectedRoute path="/admin" render={(props) => <AdminPage user={this.authManager.user!} {...props} />} isAuthorized={this.authManager.isAuthorized} />
-            <Route path="/login" render={(props) => <LoginPage {...props} onAuthenticated={this.onAuthenticated} isAuthorized={this.authManager.isAuthorized} />} />
+            <ProtectedRoute path="/posts/:id/edit" component={EditPostPage} isAuthorized={this.state.isAuthorized} />
+            <ProtectedRoute path="/admin" render={(props) => <AdminPage user={this.state.user!} {...props} />} isAuthorized={this.state.isAuthorized} />
+            <Route path="/login" render={(props) => <LoginPage {...props} onAuthenticated={this.onAuthenticated} isAuthorized={this.state.isAuthorized} />} />
             <Route component={NotFound} />
           </Switch>
         </div>
@@ -40,5 +73,5 @@ export class App extends React.Component<RouteComponentProps<any>> {
     </div>;
   }
 
-  private onAuthenticated = (user: User, token: string): void => this.authManager.onSignedIn(user.username, token);
+  private onAuthenticated = (user: User, token: string): Promise<void> => this.props.authManager.onSignedIn(user.username, token);
 }
