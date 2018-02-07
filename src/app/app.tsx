@@ -10,6 +10,7 @@ import {HomePage} from "./home-page";
 import {LoginPage} from "./login-page";
 import {NotFound} from "./not-found";
 import {PostView} from "./post-view";
+import {ProjectsPage} from "./projects-page";
 import {ProtectedRoute} from "./route-helpers";
 import {User} from "./models/user";
 
@@ -61,6 +62,7 @@ export class App extends React.Component<Props, State> {
             <ProtectedRoute path="/posts/:id/edit" component={EditPostPage} isAuthorized={this.state.isAuthorized} />
             <ProtectedRoute path="/admin" render={(props) => <AdminPage user={this.state.user!} {...props} />} isAuthorized={this.state.isAuthorized} />
             <Route path="/login" render={(props) => <LoginPage {...props} onAuthenticated={this.onAuthenticated} isAuthorized={this.state.isAuthorized} />} />
+            <Route path="/projects" component={ProjectsPage} />
             <Route component={NotFound} />
           </Switch>
         </div>
