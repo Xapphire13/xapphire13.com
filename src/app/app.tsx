@@ -68,7 +68,7 @@ export class App extends React.Component<Props, State> {
         </div>
       </div>
       <footer className="app-footer">
-        <a href="https://github.com/xapphire13/xapphire13.com" target="_blank">
+        <a href="https://github.com/xapphire13/xapphire13.com" target="_blank" className="github-link">
           <Github style={{position: "relative", top: "5px", marginRight: "0.3em"}} />GitHub
         </a>
       </footer>

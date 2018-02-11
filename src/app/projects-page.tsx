@@ -1,33 +1,55 @@
 import "./styles/projects-page.less";
+import * as ClientApi from "./api/client-api";
 import * as React from "react";
-import GitHub = require("@octokit/rest");
+import {ScaleLoader} from "halogenium";
 
 type State = {
-  originalRepos: any[];
+  ownedRepos?: ClientApi.GithubRepo[];
+  contributions?: ClientApi.GithubRepo[];
+  showLoading: boolean;
 };
 
 export class ProjectsPage extends React.Component<any, State> {
-  private octokit = new GitHub();
-
   constructor(props: any) {
     super(props);
 
     this.state = {
-      originalRepos: []
+      showLoading: true
     };
   }
 
   public async componentDidMount(): Promise<void> {
-    const {data: repos} = await this.octokit.repos.getForUser({username: "Xapphire13"});
-    const originalRepos = (repos as any[]).filter(repo => !repo.fork);
-    this.setState({originalRepos});
+    ClientApi.getProjects().then(ownedRepos => this.setState({ownedRepos}));
+    ClientApi.getContributions().then(contributions => this.setState({contributions}));
+
+    // We don't want the loading indicator to flash on then off super quick
+    // so we shall show the loading indicators for at least 500ms
+    setTimeout(() => this.setState({showLoading: false}), 500);
   }
 
   public render(): JSX.Element {
     return <div className="projects-page">
-      {this.state.originalRepos.map((repo, index) => <div key={index}>
-        <a href={repo.html_url} target="_blank">{repo.name}</a>
-      </div>)}
+      <div>
+        <h2>Repositories</h2>
+        {(this.state.ownedRepos && !this.state.showLoading) ?
+          this.state.ownedRepos.map((repo, index) => <p key={index}>
+            <a href={repo.html_url} target="_blank">{repo.name}</a>{repo.description && ` - ${repo.description}`}
+          </p>) :
+          <div className="halogenium-container">
+            <ScaleLoader className="halogenium-loader" />
+          </div>}
+      </div>
+
+      <div>
+      <h2>Contributions</h2>
+        {(this.state.contributions && !this.state.showLoading) ?
+          this.state.contributions.map((repo, index) => <p key={index}>
+            <a href={repo.html_url} target="_blank"><span style={{fontWeight: "bold"}}>{repo.owner.login}</span>/{repo.name}</a>{repo.description && ` - ${repo.description}`}
+          </p>) :
+          <div className="halogenium-container">
+            <ScaleLoader className="halogenium-loader" />
+          </div>}
+      </div>
     </div>;
   }
 }
