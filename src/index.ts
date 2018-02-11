@@ -4,6 +4,7 @@ import * as jwt from "jsonwebtoken";
 import * as path from "path";
 import * as sqlite from "sqlite";
 import {useContainer, useExpressServer} from "routing-controllers";
+import {Config} from "./config";
 import {Container} from "typedi";
 import {Logger} from "./logger";
 import {UserRepository} from "./repositories/user-repository";
@@ -12,7 +13,9 @@ import registerProductionDependencies from "./production-registry";
 import bodyParser = require("body-parser");
 import express = require("express");
 
+const isDevelopment = process.env.NODE_ENV !== "production";
 const APP_PATH = path.resolve(__dirname, "app");
+const CONFIG_PATH = path.resolve(__dirname, isDevelopment ? "../config.json" : "config.json");
 
 async function main(): Promise<void> {
   // Database
@@ -25,7 +28,10 @@ async function main(): Promise<void> {
   const app = express();
 
   // Config
-  if (process.env.NODE_ENV === "production") {
+  const config = new Config(CONFIG_PATH);
+  await config.initialize();
+  Container.set("Config", config);
+  if (!isDevelopment) {
     registerProductionDependencies(db);
   } else {
     registerDevelopmentDependencies(db);
