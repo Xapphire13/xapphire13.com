@@ -7,6 +7,7 @@ import {PlusCircle} from "react-feather";
 import {Post} from "../models/post";
 import {PostPreview} from "./post-preview";
 import {RouteComponentProps} from "react-router";
+import {ScaleLoader} from "halogenium";
 import {User} from "./models/user";
 import throttle = require("throttleit");
 
@@ -93,7 +94,7 @@ export class HomePage extends React.Component<Props, State> {
     }
 
     if (this.state.loading) {
-      return <p className="post-loading-status">Loading...</p>;
+      return <div className="post-loading-status"><ScaleLoader /></div>;
     }
 
     return null;
