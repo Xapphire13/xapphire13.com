@@ -1,3 +1,4 @@
+export type RepoWithPrCount = {repo: GithubRepo, prCount: number};
 export type GithubRepo = {
   name: string;
   description: string;
@@ -5,6 +6,7 @@ export type GithubRepo = {
   owner: {
     login: string;
   };
+  stargazers_count: number;
 };
 
 export async function getProjects(): Promise<GithubRepo[]> {
@@ -22,7 +24,7 @@ export async function getProjects(): Promise<GithubRepo[]> {
   return await response.json();
 }
 
-export async function getContributions(): Promise<GithubRepo[]> {
+export async function getContributions(): Promise<RepoWithPrCount[]> {
   const response = await fetch("/api/github/contributions", {
     method: "GET",
     headers: {

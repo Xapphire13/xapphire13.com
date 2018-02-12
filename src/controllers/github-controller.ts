@@ -8,12 +8,13 @@ import GitHub = require("@octokit/rest");
 const CACHE_LIFETIME = moment.duration(1, "h");
 
 type CachedValue<T = any> = [T, moment.Moment];
+type RepoWithPrCount = {repo: any, prCount: number};
 
 @JsonController("/api/github")
 export class GitHubController {
   private github = new GitHub();
   private ownedRepos: CachedValue<any[]> = [[], moment(0)];
-  private contributionRepos: CachedValue<any[]> = [[], moment(0)];
+  private contributionRepos: CachedValue<RepoWithPrCount[]> = [[], moment(0)];
 
   constructor(@Inject("Config") private config: Config) {
     if (config.githubToken) {
@@ -41,23 +42,30 @@ export class GitHubController {
   }
 
   @Get("/contributions")
-  public async getContributions(): Promise<any[]> {
+  public async getContributions(): Promise<RepoWithPrCount[]> {
     if (moment().diff(this.contributionRepos[1]) > CACHE_LIFETIME.asMilliseconds()) {
-      const contributionRepos: any[] = [];
+      const contributionRepos: RepoWithPrCount[] = [];
 
       if (this.config.githubToken) {
         const pullRequests = await this.loadAll(() => this.github.search.issues({q: "is:pr author:Xapphire13 archived:false is:merged"}), data => data.items);
+        const repositories: {[url: string]: number} = {};
+        pullRequests.forEach(pr => {
+          repositories[pr.repository_url] = ~~repositories[pr.repository_url] + 1;
+        });
 
-        for (const pr of pullRequests) {
-          const repo = await fetch(pr.repository_url, {
+        for (const repoUrl of Object.keys(repositories)) {
+          const repo = await fetch(repoUrl, {
             headers: {
               Authorization: `token ${this.config.githubToken}`,
               "Content-Type": "application/json"
             }
           }).then(res => res.json());
 
-          if (repo.owner.login.toLowerCase() !== "xapphire13" && !contributionRepos.some(r => r.name === repo.name)) {
-            contributionRepos.push(repo);
+          if (repo.owner.login.toLowerCase() !== "xapphire13") {
+            contributionRepos.push({
+              repo,
+              prCount: repositories[repoUrl]
+            });
           }
         }
       }
