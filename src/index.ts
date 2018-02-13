@@ -15,7 +15,6 @@ import express = require("express");
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 const APP_PATH = path.resolve(__dirname, "app");
-const CONFIG_PATH = path.resolve(__dirname, isDevelopment ? "../config.json" : "config.json");
 
 async function main(): Promise<void> {
   // Database
@@ -28,7 +27,7 @@ async function main(): Promise<void> {
   const app = express();
 
   // Config
-  const config = new Config(CONFIG_PATH);
+  const config = new Config(path.resolve(__dirname, "../config.json"));
   await config.initialize();
   Container.set("Config", config);
   if (!isDevelopment) {
