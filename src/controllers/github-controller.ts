@@ -1,9 +1,10 @@
 import * as moment from "moment";
 import {Get, JsonController} from "routing-controllers";
 import {Config} from "../config";
-import {Inject} from "typedi";
+import {decorators} from "tsyringe";
 import fetch from "node-fetch";
 import GitHub = require("@octokit/rest");
+const {inject, injectable} = decorators;
 
 const CACHE_LIFETIME = moment.duration(1, "h");
 
@@ -11,12 +12,13 @@ type CachedValue<T = any> = [T, moment.Moment];
 type RepoWithPrCount = {repo: any, prCount: number};
 
 @JsonController("/api/github")
+@injectable()
 export class GitHubController {
   private github = new GitHub();
   private ownedRepos: CachedValue<any[]> = [[], moment(0)];
   private contributionRepos: CachedValue<RepoWithPrCount[]> = [[], moment(0)];
 
-  constructor(@Inject("Config") private config: Config) {
+  constructor(@inject("Config") private config: Config) {
     if (config.githubToken) {
       this.github.authenticate({
         type: "token",

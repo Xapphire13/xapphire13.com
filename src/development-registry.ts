@@ -1,14 +1,17 @@
 import {ConsoleLogger} from "./console-logger";
-import {Container} from "typedi";
 import {Database} from "sqlite";
 import {SqlLogRepository} from "./repositories/sql-log-repository";
 import {SqlPostRepository} from "./repositories/sql-post-repository";
 import {SqlUserRepository} from "./repositories/sql-user-repository";
+import {container} from "tsyringe";
 
 export default function registerDependencies(db: Database): void {
-  Container.set("Database", db);
-  Container.set("PostRepository", new SqlPostRepository(db));
-  Container.set("UserRepository", new SqlUserRepository(db));
-  Container.set("LogRepository", new SqlLogRepository(db));
-  Container.set("Logger", Container.get(ConsoleLogger));
+  container.register({
+    token: "database",
+    useValue: db
+  });
+  container.register({token: "PostRepository", useClass: SqlPostRepository});
+  container.register({token: "UserRepository", useClass: SqlUserRepository});
+  container.register({token: "LogRepository", useClass: SqlLogRepository});
+  container.register({token: "Logger", useValue: container.resolve(ConsoleLogger)});
 }

@@ -1,9 +1,12 @@
 import {Database} from "sqlite";
 import {User} from "../models/user";
 import {UserRepository} from "./user-repository";
+import {decorators} from "tsyringe";
+const {inject, injectable} = decorators;
 
+@injectable()
 export class SqlUserRepository implements UserRepository {
-  constructor(private db: Database) {}
+  constructor(@inject("database") private db: Database) {}
 
   public async getUser(username: string): Promise<User> {
     const record = await this.db.get(`

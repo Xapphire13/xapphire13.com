@@ -1,17 +1,19 @@
 import * as boom from "boom";
 import {Authorized, Body, Delete, Get, HttpCode, JsonController, OnUndefined, Param, Patch, Post, QueryParam} from "routing-controllers";
 import {ContinuationToken, Page, createPage, getPagingAdvice} from "../pagination";
-import {Inject} from "typedi";
 import {Post as PostEntity} from "../models/post";
 import {PostRepository} from "../repositories/post-repository";
+import {decorators} from "tsyringe";
+const {inject, injectable} = decorators;
 
 const DEFAULT_PAGE_SIZE = 5;
 
+@injectable()
 @JsonController("/api")
 export class PostController {
   private createPage = createPage<PostEntity>("id", post => post.id);
 
-  constructor(@Inject("PostRepository") private repository: PostRepository) {}
+  constructor(@inject("PostRepository") private repository: PostRepository) {}
 
   @Post("/posts")
   @Authorized()
