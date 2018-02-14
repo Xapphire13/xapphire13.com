@@ -48,6 +48,7 @@
     ]
   },
   "dependencies": {
+    "@octokit/rest": "^14.0.9",
     "bcrypt": "^1.0.3",
     "body-parser": "^1.18.2",
     "boom": "^7.1.1",
@@ -64,7 +65,6 @@
     "typedi": "^0.6.0"
   },
   "devDependencies": {
-    "@octokit/rest": "^14.0.9",
     "@types/bcrypt": "^1.0.0",
     "@types/body-parser": "^1.16.8",
     "@types/boom": "^7.1.0",
