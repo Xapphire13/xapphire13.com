@@ -9,8 +9,8 @@ import {decorators} from "tsyringe";
 import otplib = require("otplib");
 const {inject, injectable} = decorators;
 
-@JsonController("/api")
 @injectable()
+@JsonController("/api")
 export class AuthController {
   constructor(@inject("UserRepository") private repository: UserRepository) {}
 

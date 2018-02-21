@@ -29,10 +29,7 @@ async function main(): Promise<void> {
   // Config
   const config = new Config(path.resolve(__dirname, "../config.json"));
   await config.initialize();
-  container.register({
-    token: "Config",
-    useValue: config
-  });
+  container.registerInstance("Config", config);
   if (!isDevelopment) {
     registerProductionDependencies(db);
   } else {

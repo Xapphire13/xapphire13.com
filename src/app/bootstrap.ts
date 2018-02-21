@@ -8,7 +8,7 @@ import ready = require("document-ready");
 
 ready(() => {
   const authManager = new AuthManager();
-  container.register({token: AuthManager, useValue: authManager});
+  container.registerInstance(AuthManager, authManager);
 
   const appRoot = document.createElement("div");
   appRoot.id = "app-root";

@@ -11,8 +11,8 @@ const CACHE_LIFETIME = moment.duration(1, "h");
 type CachedValue<T = any> = [T, moment.Moment];
 type RepoWithPrCount = {repo: any, prCount: number};
 
-@JsonController("/api/github")
 @injectable()
+@JsonController("/api/github")
 export class GitHubController {
   private github = new GitHub();
   private ownedRepos: CachedValue<any[]> = [[], moment(0)];

@@ -7,8 +7,8 @@ const {inject, injectable} = decorators;
 
 export const DEFAULT_PAGE_SIZE = 20;
 
-@JsonController("/api")
 @injectable()
+@JsonController("/api")
 export class LogController {
   private createPage = createPage<Log>("timestamp", log => `${log.timestamp}_${log.level}_${log.message}_${log.exception}`);
 
