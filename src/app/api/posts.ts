@@ -1,7 +1,7 @@
 import {AuthManager} from "../auth-manager";
-import {Container} from "typedi";
 import {Page} from "../../pagination";
 import {Post} from "../../models/post";
+import {container} from "tsyringe";
 
 export async function getPosts(continuationToken: string | null = null): Promise<Page<Post>> {
   const response = await fetch(`/api/posts${continuationToken ? `?continue=${continuationToken}` : ""}`);
@@ -24,7 +24,7 @@ export async function getPost(id: string): Promise<Post> {
 }
 
 export async function createPost(title: string, markdownText: string, tags?: string[]): Promise<Post> {
-  const authManager = Container.get(AuthManager);
+  const authManager = container.resolve(AuthManager);
   const response = await fetch("/api/posts", {
     method: "POST",
     headers: {
@@ -46,7 +46,7 @@ export async function createPost(title: string, markdownText: string, tags?: str
 }
 
 export async function savePost(id: string, title: string, markdownText: string, tags?: string[]): Promise<void> {
-  const authManager = Container.get(AuthManager);
+  const authManager = container.resolve(AuthManager);
   const response = await fetch(`/api/posts/${id}`, {
     method: "PATCH",
     headers: {
@@ -66,7 +66,7 @@ export async function savePost(id: string, title: string, markdownText: string, 
 }
 
 export async function deletePost(id: string): Promise<void> {
-  const authManager = Container.get(AuthManager);
+  const authManager = container.resolve(AuthManager);
   const response = await fetch(`/api/posts/${id}`, {
     method: "DELETE",
     headers: {

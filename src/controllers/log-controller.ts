@@ -1,16 +1,18 @@
 import {Authorized, Get, JsonController, QueryParam} from "routing-controllers";
 import {ContinuationToken, Page, createPage, getPagingAdvice} from "../pagination";
-import {Inject} from "typedi";
 import {Log} from "../models/log";
 import {LogRepository} from "../repositories/log-repository";
+import {decorators} from "tsyringe";
+const {inject, injectable} = decorators;
 
 export const DEFAULT_PAGE_SIZE = 20;
 
+@injectable()
 @JsonController("/api")
 export class LogController {
   private createPage = createPage<Log>("timestamp", log => `${log.timestamp}_${log.level}_${log.message}_${log.exception}`);
 
-  constructor(@Inject("LogRepository") private repository: LogRepository) {}
+  constructor(@inject("LogRepository") private repository: LogRepository) {}
 
   @Get("/logs")
   @Authorized()
