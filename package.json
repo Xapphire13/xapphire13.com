@@ -4,7 +4,8 @@
   "description": "Xapphire13.com",
   "main": "./dist/index.js",
   "scripts": {
-    "test": "tslint -p src && tslint -p src/app && tslint -p tests && jest",
+    "lint": "tslint -p src && tslint -p src/app && tslint -p tests",
+    "test": "npm run lint && jest",
     "bundle": "node ./scripts/bundle.js",
     "clean": "rmdir /S /Q .\\dist",
     "build": "npm run clean && tsc -p ./src && xcopy /Y /E /I \"./src/sql\" \"./dist/sql\" && webpack --config webpack.dev.js",
