@@ -3,12 +3,12 @@ import * as ReactDOM from "react-dom";
 import {App} from "./app";
 import {AuthManager} from "./auth-manager";
 import {BrowserRouter} from "react-router-dom";
-import {Container} from "typedi";
+import {container} from "tsyringe";
 import ready = require("document-ready");
 
 ready(() => {
   const authManager = new AuthManager();
-  Container.set(AuthManager, authManager);
+  container.registerInstance(AuthManager, authManager);
 
   const appRoot = document.createElement("div");
   appRoot.id = "app-root";

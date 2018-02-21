@@ -5,9 +5,9 @@ import * as path from "path";
 import * as sqlite from "sqlite";
 import {useContainer, useExpressServer} from "routing-controllers";
 import {Config} from "./config";
-import {Container} from "typedi";
 import {Logger} from "./logger";
 import {UserRepository} from "./repositories/user-repository";
+import {container} from "tsyringe";
 import registerDevelopmentDependencies from "./development-registry";
 import registerProductionDependencies from "./production-registry";
 import bodyParser = require("body-parser");
@@ -29,13 +29,15 @@ async function main(): Promise<void> {
   // Config
   const config = new Config(path.resolve(__dirname, "../config.json"));
   await config.initialize();
-  Container.set("Config", config);
+  container.registerInstance("Config", config);
   if (!isDevelopment) {
     registerProductionDependencies(db);
   } else {
     registerDevelopmentDependencies(db);
   }
-  useContainer(Container);
+  useContainer({
+    get: (token: any) => container.resolve(token)
+  });
   app.set("port", process.env.PORT || 80);
   app.use(bodyParser.json());
 
@@ -65,7 +67,7 @@ async function main(): Promise<void> {
         return decodedToken;
       })();
 
-      const user = await Container.get<UserRepository>("UserRepository").getUser(username);
+      const user = await container.resolve<UserRepository>("UserRepository").getUser(username);
 
       return await new Promise<boolean>(res => jwt.verify(token, user.tokenSecret, (err: any) => res(!err)));
     },
@@ -78,7 +80,7 @@ async function main(): Promise<void> {
 
       const {username} = jwt.decode(token) as any;
 
-      return Container.get<UserRepository>("UserRepository").getUser(username);
+      return container.resolve<UserRepository>("UserRepository").getUser(username);
     }
   });
 
@@ -92,7 +94,7 @@ async function main(): Promise<void> {
 
   // Start!
   const server = app.listen(app.get("port"), () => {
-    Container.get<Logger>("Logger").debug(`Listening on port ${server.address().port}`);
+    container.resolve<Logger>("Logger").debug(`Listening on port ${server.address().port}`);
   });
 }
 

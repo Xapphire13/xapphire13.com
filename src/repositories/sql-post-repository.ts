@@ -2,11 +2,14 @@ import {Database} from "sqlite";
 import {Post} from "../models/post";
 import {PostRepository} from "./post-repository";
 import Semaphore from "semaphore-async-await";
+import {decorators} from "tsyringe";
+const {inject, injectable} = decorators;
 
+@injectable()
 export class SqlPostRepository implements PostRepository {
   private lock = new Semaphore(1);
 
-  constructor(private db: Database) {}
+  constructor(@inject("database") private db: Database) {}
 
   public async createPost(post: Post): Promise<Post> {
     post.created = new Date().toJSON();

@@ -1,9 +1,11 @@
-import {Inject} from "typedi";
 import {LogRepository} from "./repositories/log-repository";
 import {Logger} from "./logger";
+import {decorators} from "tsyringe";
+const {inject, injectable} = decorators;
 
+@injectable()
 export class SqlLogger implements Logger {
-  constructor(@Inject("LogRepository") private repository: LogRepository) {}
+  constructor(@inject("LogRepository") private repository: LogRepository) {}
 
   public debug(): Promise<void> {
     return Promise.resolve();

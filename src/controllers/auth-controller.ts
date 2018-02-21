@@ -3,14 +3,16 @@ import * as boom from "boom";
 import * as crypto from "crypto";
 import * as jwt from "jsonwebtoken";
 import {Body, CurrentUser, Get, JsonController, Post} from "routing-controllers";
-import {Inject} from "typedi";
 import {User} from "../models/user";
 import {UserRepository} from "../repositories/user-repository";
+import {decorators} from "tsyringe";
 import otplib = require("otplib");
+const {inject, injectable} = decorators;
 
+@injectable()
 @JsonController("/api")
 export class AuthController {
-  constructor(@Inject("UserRepository") private repository: UserRepository) {}
+  constructor(@inject("UserRepository") private repository: UserRepository) {}
 
   @Get("/permissions")
   public async getPermissions(@CurrentUser({required: true}) user: User): Promise<{username: string, admin: boolean}> {

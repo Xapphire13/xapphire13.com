@@ -1,10 +1,12 @@
 import {Database} from "sqlite";
-import {Inject} from "typedi";
 import {Log} from "../models/log";
 import {LogRepository} from "./log-repository";
+import {decorators} from "tsyringe";
+const {inject, injectable} = decorators;
 
+@injectable()
 export class SqlLogRepository implements LogRepository {
-  constructor(@Inject("database") private db: Database) {}
+  constructor(@inject("database") private db: Database) {}
 
   public createLog(level: number, message: string, exception?: string): Promise<any> {
     return this.db.run(`
