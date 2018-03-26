@@ -7,6 +7,7 @@ const SRC_PATH = path.resolve(__dirname, "src/app");
 const DIST_PATH = path.resolve(__dirname, "dist/app");
 
 module.exports = merge(common, {
+  mode: "development",
   module: {
     rules: [
       {
