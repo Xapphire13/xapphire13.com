@@ -9,6 +9,7 @@ import {Github} from "react-feather";
 import {HomePage} from "./home-page";
 import {LoginPage} from "./login-page";
 import {NotFound} from "./not-found";
+import {PlaygroundPage} from "./playground-page";
 import {PostView} from "./post-view";
 import {ProjectsPage} from "./projects-page";
 import {ProtectedRoute} from "./route-helpers";
@@ -63,6 +64,7 @@ export class App extends React.Component<Props, State> {
             <ProtectedRoute path="/admin" render={(props) => <AdminPage user={this.state.user!} {...props} />} isAuthorized={this.state.isAuthorized} />
             <Route path="/login" render={(props) => <LoginPage {...props} onAuthenticated={this.onAuthenticated} isAuthorized={this.state.isAuthorized} />} />
             <Route path="/projects" component={ProjectsPage} />
+            <Route path="/playground" component={PlaygroundPage} />
             <Route component={NotFound} />
           </Switch>
         </div>
