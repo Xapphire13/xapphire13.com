@@ -1,4 +1,4 @@
-const fs = require("fs");
+const fs = require("fs-extra");
 const globby = require("globby");
 const process = require("process");
 const path = require("path");
