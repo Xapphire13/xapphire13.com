@@ -3,6 +3,7 @@ import "reflect-metadata";
 import * as jwt from "jsonwebtoken";
 import * as path from "path";
 import * as sqlite from "sqlite";
+import {APP_PATH, PLAYGROUND_PATH} from "./constants";
 import {useContainer, useExpressServer} from "routing-controllers";
 import {Config} from "./config";
 import {Logger} from "./logger";
@@ -14,7 +15,6 @@ import bodyParser = require("body-parser");
 import express = require("express");
 
 const isDevelopment = process.env.NODE_ENV !== "production";
-const APP_PATH = path.resolve(__dirname, "app");
 
 async function main(): Promise<void> {
   // Database
@@ -86,6 +86,7 @@ async function main(): Promise<void> {
 
   // non-controller routes
   app.use("/app", express.static(APP_PATH));
+  app.use("/experiment", express.static(PLAYGROUND_PATH));
   app.use((_req, res) => {
     if (!res.headersSent) {
       res.sendFile(path.join(APP_PATH, "index.html"));
