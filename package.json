@@ -118,12 +118,13 @@
     "style-loader": "^0.20.2",
     "throttleit": "^1.0.0",
     "ts-jest": "^22.0.4",
-    "ts-loader": "^3.5.0",
+    "ts-loader": "^4.1.0",
     "tslint": "^5.9.1",
     "tslint-eslint-rules": "^5.0.0",
     "typescript": "^2.7.2",
     "uglifyjs-webpack-plugin": "^1.2.0",
     "webpack": "^4.0.1",
+    "webpack-cli": "^2.0.13",
     "webpack-merge": "^4.1.1",
     "yazl": "^2.4.3"
   }
