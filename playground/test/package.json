@@ -4,7 +4,8 @@
   "description": "Test for playground",
   "main": "./dist/bundle.js",
   "scripts": {
-    "build": "webpack"
+    "build": "webpack",
+    "launch": "proto-launch"
   },
   "author": "Xapphire13",
   "license": "MIT",
@@ -13,6 +14,7 @@
   },
   "devDependencies": {
     "@types/pixi.js": "^4.7.2",
+    "proto-launch": "0.0.0",
     "ts-loader": "^4.1.0",
     "typescript": "^2.7.2",
     "webpack": "^4.2.0",
