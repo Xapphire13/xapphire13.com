@@ -71,7 +71,7 @@
     "@types/bcrypt": "^1.0.0",
     "@types/body-parser": "^1.16.8",
     "@types/boom": "^7.1.1",
-    "@types/codemirror": "0.0.55",
+    "@types/codemirror": "0.0.56",
     "@types/common-tags": "^1.4.0",
     "@types/cross-storage": "^0.8.29",
     "@types/delay": "^2.0.1",
