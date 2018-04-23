@@ -60,7 +60,7 @@
     "jsonwebtoken": "^8.1.1",
     "moment": "^2.20.1",
     "node-fetch": "^2.0.0",
-    "otplib": "^8.0.0",
+    "otplib": "^9.0.0",
     "reflect-metadata": "^0.1.12",
     "routing-controllers": "^0.7.6",
     "semaphore-async-await": "^1.5.1",
