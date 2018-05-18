@@ -4,14 +4,14 @@ import {Config} from "../config";
 import {decorators} from "tsyringe";
 import fetch from "node-fetch";
 import GitHub = require("@octokit/rest");
-const {inject, injectable} = decorators;
+const {inject, singleton} = decorators;
 
 const CACHE_LIFETIME = moment.duration(1, "h");
 
 type CachedValue<T = any> = [T, moment.Moment];
 type RepoWithPrCount = {repo: any, prCount: number};
 
-@injectable()
+@singleton()
 @JsonController("/api/github")
 export class GitHubController {
   private github = new GitHub();

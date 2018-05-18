@@ -65,7 +65,7 @@
     "routing-controllers": "^0.7.6",
     "semaphore-async-await": "^1.5.1",
     "sqlite": "^2.9.2",
-    "tsyringe": "^2.0.1"
+    "tsyringe": "^2.1.1"
   },
   "devDependencies": {
     "@types/bcrypt": "^2.0.0",
