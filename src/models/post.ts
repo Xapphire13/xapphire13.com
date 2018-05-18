@@ -5,4 +5,5 @@ export interface Post {
   lastModified: string;
   markdownText: string;
   tags: string[];
+  isPublished: boolean;
 }

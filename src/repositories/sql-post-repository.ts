@@ -137,7 +137,8 @@ export class SqlPostRepository implements PostRepository {
       lastModified: record.last_modified,
       markdownText: record.markdown_text,
       title: record.title,
-      tags
+      tags,
+      isPublished: !!record.is_published
     };
   }
 }
