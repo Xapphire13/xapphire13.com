@@ -1,10 +1,10 @@
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const common = require("./webpack.common.js");
+const merge = require('webpack-merge');
 const path = require("path");
 const webpack = require("webpack");
-const merge = require('webpack-merge');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const common = require("./webpack.common.js");
 
 const SRC_PATH = path.resolve(__dirname, "src/app");
 const DIST_PATH = path.resolve(__dirname, "dist/app");
@@ -15,22 +15,25 @@ module.exports = merge(common, {
     rules: [
       {
         test: /\.less$/,
-        use: ExtractTextPlugin.extract({
-          fallback: "style-loader",
-          use: ["css-loader", "less-loader"]
-        })
+        use: [
+          MiniCssExtractPlugin.loader,
+          "css-loader",
+          "less-loader"
+        ]
       },
       {
         test: /\.css$/,
-        use: ExtractTextPlugin.extract({
-          fallback: "style-loader",
-          use: ["css-loader"]
-        })
+        use: [
+          MiniCssExtractPlugin.loader,
+          "css-loader"
+        ]
       }
     ]
   },
   plugins: [
-    new ExtractTextPlugin("styles.css"),
+    new MiniCssExtractPlugin({
+      filename: "[name].css"
+    }),
     new UglifyJSPlugin({
       sourceMap: true
     }),

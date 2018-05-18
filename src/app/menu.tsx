@@ -15,7 +15,7 @@ type MenuState = {
 
 export class Menu extends React.Component<MenuProps, MenuState> {
   private childRefs: HTMLDivElement[] = [];
-  private ref: HTMLDivElement | null;
+  private ref: HTMLDivElement | undefined;
 
   constructor(props: MenuProps) {
     super(props);
@@ -46,7 +46,7 @@ export class Menu extends React.Component<MenuProps, MenuState> {
     const trigger = this.props.children.find((child: any) => child.type === MenuTrigger) as React.ReactElement<any>;
     const items = this.props.children.filter((child: any) => child.type === MenuItem) as React.ReactElement<any>[];
 
-    return <div className={this.props.className} style={{position: "relative", display: "inline-block"}} ref={ref => this.ref = ref}>
+    return <div className={this.props.className} style={{position: "relative", display: "inline-block"}} ref={ref => ref && (this.ref = ref)}>
       {trigger}
       <div className="menu" tabIndex={0} ref={ref => this.props.isOpen && ref && ref.focus()} onBlur={() => this.props.close && this.props.close()}
         style={{
