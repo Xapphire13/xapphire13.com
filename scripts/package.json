@@ -1,0 +1,14 @@
+{
+  "private": true,
+  "devDependencies": {
+    "@types/fs-extra": "^5.0.2",
+    "@types/globby": "^6.1.0",
+    "@types/node": "^8.0.0",
+    "@types/yazl": "^2.4.0"
+  },
+  "dependencies": {
+    "fs-extra": "^6.0.1",
+    "globby": "^8.0.1",
+    "yazl": "^2.4.3"
+  }
+}
