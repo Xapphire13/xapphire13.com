@@ -43,14 +43,14 @@ export class PlaygroundExperimentPage extends React.Component<Props, State> {
   private setupFrame(): void {
     if (this.iframe) {
       this.frameObserver = new MutationObserver(() => this.resizeFrame());
-      this.frameObserver.observe(this.iframe.contentDocument, {childList: true, subtree: true});
-      const script = this.iframe.contentDocument.createElement("script");
+      this.frameObserver.observe(this.iframe.contentDocument!, {childList: true, subtree: true});
+      const script = this.iframe.contentDocument!.createElement("script");
       script.src = path.join("/experiment", this.state.experimentInfo!.name, this.state.experimentInfo!.main);
-      this.iframe.contentDocument.body.appendChild(script);
+      this.iframe.contentDocument!.body.appendChild(script);
     }
   }
 
   private resizeFrame(): void {
-    if (this.iframe) this.iframe.height = `${this.iframe.contentWindow.document.body.scrollHeight}px`;
+    if (this.iframe) this.iframe.height = `${this.iframe.contentWindow!.document.body.scrollHeight}px`;
   }
 }
