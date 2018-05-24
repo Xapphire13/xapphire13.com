@@ -7,7 +7,8 @@
 		"test": "npm run lint",
 		"prepush": "npm test",
 		"postinstall": "cd scripts && npm install && cd .. && tsc -p scripts && lerna bootstrap",
-		"lint": "node ./scripts/lint.js"
+		"lint": "node ./scripts/lint.js",
+		"bundle": "node ./scripts/bundle.js"
 	},
 	"devDependencies": {
 		"@types/node": "^8.0.0",
