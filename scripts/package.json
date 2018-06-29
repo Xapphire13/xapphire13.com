@@ -1,7 +1,6 @@
 {
   "private": true,
   "devDependencies": {
-    "@types/chalk": "^2.2.0",
     "@types/fs-extra": "^5.0.2",
     "@types/globby": "^6.1.0",
     "@types/node": "^8.0.0",

@@ -44,5 +44,25 @@
     "@types/node-fetch": "^1.6.7",
     "@types/otplib": "^7.0.0",
     "xapphire13-entities": "file:../entities"
+  },
+  "jest": {
+    "displayName": "server",
+    "testMatch": ["<rootDir>/tests/**/*.test.ts?(x)"],
+    "transform": {
+			"^.+\\.tsx?$": "ts-jest"
+		},
+    "globals": {
+      "ts-jest": {
+        "tsConfigFile": "./tests/tsconfig.json"
+      }
+    },
+		"moduleFileExtensions": [
+			"ts",
+			"tsx",
+			"js",
+			"jsx",
+			"json",
+			"node"
+		]
   }
 }
