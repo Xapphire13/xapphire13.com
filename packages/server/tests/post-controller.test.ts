@@ -1,4 +1,4 @@
-import {Boom, isBoom} from "boom";
+import Boom from "boom";
 import {PostController} from "../src/controllers/post-controller";
 import {PostRepository} from "../src/repositories/post-repository";
 
@@ -64,7 +64,7 @@ test("getPost() returns throws notFound when not found", async () => {
   try {
     await controller.getPost("foo");
   } catch (err) {
-    expect(isBoom(err)).toBeTruthy();
+    expect(Boom.isBoom(err)).toBeTruthy();
     expect((<Boom>err).output.statusCode).toBe(404);
   }
 });
@@ -89,7 +89,7 @@ test("patchPost() throws notFound when not found", async () => {
   try {
     await controller.patchPost("foo", {} as any);
   } catch (err) {
-    expect(isBoom(err)).toBeTruthy();
+    expect(Boom.isBoom(err)).toBeTruthy();
     expect((<Boom>err).output.statusCode).toBe(404);
   }
 });

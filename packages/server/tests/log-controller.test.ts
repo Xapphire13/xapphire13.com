@@ -1,7 +1,7 @@
-import * as moment from "moment";
 import {DEFAULT_PAGE_SIZE, LogController} from "../src/controllers/log-controller";
-import {Log} from "../src/models/log";
+import {Log} from "xapphire13-entities";
 import {LogRepository} from "../src/repositories/log-repository";
+import moment from "moment";
 
 test("Returns logs from the repository", async () => {
   const mockLogRepository = new MockLogRepository();

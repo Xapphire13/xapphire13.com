@@ -46,5 +46,24 @@
     "webpack-cli": "^2.0.13",
     "webpack-merge": "^4.1.1",
     "xapphire13-entities": "file:../entities"
+  },
+  "jest": {
+    "testMatch": ["<rootDir>/tests/**/*.test.ts?(x)"],
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "globals": {
+      "ts-jest": {
+        "tsConfigFile": "./tests/tsconfig.json"
+      }
+    },
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
   }
 }
