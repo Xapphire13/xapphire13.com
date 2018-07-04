@@ -11,7 +11,9 @@ const SERVER_PATH = path.join(ROOT_PATH, "packages/server");
 const ENTITIES_PATH = path.join(ROOT_PATH, "packages/entities");
 
 async function deploy(): Promise<void> {
-  await new Promise((res, rej) => rimraf(WWWROOT_PATH, (err) => !err ? res() : rej(err)));
+  await Promise.all(
+    (await globby(["*", "!config.json", "!database.sqlite"], {cwd: WWWROOT_PATH})).map(toDelete =>
+      new Promise((res, rej) => rimraf(toDelete, (err) => !err ? res() : rej(err)))));
 
   const distFiles = await globby([
     path.join(CLIENT_PATH, "dist/**"),
@@ -38,5 +40,6 @@ async function deploy(): Promise<void> {
     console.log(chalk.green("Success!"));
   } catch (ex) {
     console.error(chalk.red(`Failure: ${ex}`));
+    throw ex;
   }
 })();
