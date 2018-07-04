@@ -86,8 +86,8 @@ export class GitHubController {
     const results = [];
     let response = await method();
     results.push(...accessor(response.data));
-    while (this.github.hasNextPage(response)) {
-      response = await this.github.getNextPage(response);
+    while (this.github.hasNextPage(response as any)) {
+      response = await this.github.getNextPage(response as any);
       results.push(...accessor(response.data));
     }
 

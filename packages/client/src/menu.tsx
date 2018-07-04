@@ -14,6 +14,8 @@ type MenuState = {
 };
 
 export class Menu extends React.Component<MenuProps, MenuState> {
+  public state: Readonly<MenuState>;
+
   private childRefs: HTMLDivElement[] = [];
   private ref: HTMLDivElement | undefined;
 

@@ -12,6 +12,8 @@ type State = {
 };
 
 export class PlaygroundExperimentPage extends React.Component<Props, State> {
+  public state: Readonly<State>;
+
   private iframe: HTMLIFrameElement | null;
   private frameObserver: MutationObserver | null;
 

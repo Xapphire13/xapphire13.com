@@ -3,12 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "tsc && npm run copy-sql",
-    "build:prod": "npm run build",
+    "build": "tsc && yarn run copy-sql",
+    "build:prod": "yarn run build",
     "start": "node ./dist/index.js",
     "start:debug": "node --inspect-brk ./dist/index.js",
-    "start:watch": "node ./scripts/watch.js",
-    "bundle": "node ./scripts/bundle.js",
     "copy-sql": "xcopy /Y /E /I \"./src/sql\" \"./dist/sql\""
   },
   "dependencies": {
