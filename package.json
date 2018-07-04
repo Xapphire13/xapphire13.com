@@ -8,7 +8,7 @@
 		"test:debug": "node --inspect-brk ./node_modules/jest/bin/jest --verbose -i",
 		"prepush": "yarn test",
 		"postinstall": "cd scripts && yarn && cd .. && tsc -p scripts && lerna bootstrap",
-		"bundle": "node ./scripts/bundle.js"
+		"deploy": "node ./scripts/deploy.js"
 	},
 	"devDependencies": {
 		"@types/node": "^8.0.0",
