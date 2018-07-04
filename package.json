@@ -6,6 +6,8 @@
 	"scripts": {
 		"test": "jest",
 		"test:debug": "node --inspect-brk ./node_modules/jest/bin/jest --verbose -i",
+		"build": "lerna run build",
+		"build:prod": "lerna run build:prod",
 		"prepush": "yarn test",
 		"postinstall": "cd scripts && yarn && cd .. && tsc -p scripts && lerna bootstrap",
 		"deploy": "node ./scripts/deploy.js"

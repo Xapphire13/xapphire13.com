@@ -26,6 +26,8 @@ type State = {
 };
 
 export class App extends React.Component<Props, State> {
+  public state: Readonly<State>;
+
   constructor(props: Props) {
     super(props);
 

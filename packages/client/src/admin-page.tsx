@@ -21,6 +21,8 @@ type State = {
 const PAGE_SIZE = 10;
 
 export class AdminPage extends React.Component<Props, State> {
+  public state: Readonly<State>;
+
   private logColumns: Column[] = [
     {
       Header: "Timestamp",

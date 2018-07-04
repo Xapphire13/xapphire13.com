@@ -22,6 +22,8 @@ type State = {
 };
 
 export class PostView extends React.Component<Props, State> {
+  public state: Readonly<State>;
+
   constructor(props: Props) {
     super(props);
 

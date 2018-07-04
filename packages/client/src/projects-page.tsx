@@ -11,6 +11,8 @@ type State = {
 };
 
 export class ProjectsPage extends React.Component<any, State> {
+  public state: Readonly<State>;
+
   constructor(props: any) {
     super(props);
 

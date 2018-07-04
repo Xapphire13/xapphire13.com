@@ -24,6 +24,8 @@ type State = {
 };
 
 export class HomePage extends React.Component<Props, State> {
+  public state: Readonly<State>;
+
   private scrollSubscription: Disposable = {dispose: () => {}};
   private ref: HTMLDivElement | null;
 
