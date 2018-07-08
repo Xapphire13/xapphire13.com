@@ -1,9 +1,0 @@
-{
-  "extends": "../tsconfig",
-  "files": [
-    "../../entities/index.d.ts"
-  ],
-  "include": [
-    "./**/*"
-  ]
-}

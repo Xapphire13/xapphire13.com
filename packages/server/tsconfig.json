@@ -8,6 +8,6 @@
     "../entities/index.d.ts"
   ],
   "include": [
-    "src/**/*"
+    "**/*"
   ]
 }
