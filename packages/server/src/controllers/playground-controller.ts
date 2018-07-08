@@ -1,10 +1,10 @@
 import {Get, JsonController, Param} from "routing-controllers";
-import {Experiment} from "xapphire13-entities";
 import {PLAYGROUND_PATH} from "../constants";
 import boom from "boom";
 import {decorators} from "tsyringe";
 import fs from "fs-extra";
 import globby from "globby";
+import Experiment = Xapphire13.Entities.Experiment;
 
 const {injectable} = decorators;
 

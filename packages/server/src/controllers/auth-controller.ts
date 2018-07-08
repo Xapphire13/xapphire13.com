@@ -3,10 +3,11 @@ import * as crypto from "crypto";
 import * as jwt from "jsonwebtoken";
 import {Body, CurrentUser, Get, JsonController, Post} from "routing-controllers";
 import Boom from "boom";
-import {User} from "xapphire13-entities";
 import {UserRepository} from "../repositories/user-repository";
 import {decorators} from "tsyringe";
+import User = Xapphire13.Entities.User;
 import otplib = require("otplib");
+
 const {inject, injectable} = decorators;
 
 @injectable()

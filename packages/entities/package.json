@@ -1,10 +1,5 @@
 {
   "name": "xapphire13-entities",
   "version": "1.0.0",
-  "private": true,
-  "main": "index.js",
-  "types": "index.d.ts",
-  "scripts": {
-    "postinstall": "tsc"
-  }
+  "private": true
 }

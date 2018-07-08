@@ -8,7 +8,6 @@ import rimraf from "rimraf";
 
 const CLIENT_PATH = path.join(ROOT_PATH, "packages/client");
 const SERVER_PATH = path.join(ROOT_PATH, "packages/server");
-const ENTITIES_PATH = path.join(ROOT_PATH, "packages/entities");
 
 async function deploy(): Promise<void> {
   await Promise.all(
@@ -26,7 +25,6 @@ async function deploy(): Promise<void> {
       filePath.replace(/.+?\/([^/]+)\/dist\//i, `${WWWROOT_PATH}/$1/`),
       {overwrite: true})));
 
-  await fs.copy(ENTITIES_PATH, path.join(WWWROOT_PATH, "entities"), {overwrite: true, recursive: true});
   await fs.copy(path.join(SERVER_PATH, "package.json"), path.join(WWWROOT_PATH, "server/package.json"), {overwrite: true});
   await fs.copy(path.join(SERVER_PATH, "web.config"), path.join(WWWROOT_PATH, "web.config"), {overwrite: true});
   child_process.execSync("yarn install --prod", {cwd: path.join(WWWROOT_PATH, "server")});

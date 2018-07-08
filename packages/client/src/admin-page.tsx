@@ -3,9 +3,9 @@ import "./styles/table.less";
 import * as ClientApi from "./api/client-api";
 import * as React from "react";
 import ReactTable, {Column} from "react-table";
-import {Log} from "xapphire13-entities";
 import {RouteComponentProps} from "react-router-dom";
 import {User} from "./models/user";
+import Log = Xapphire13.Entities.Log;
 
 type Props = {
   user: User;
