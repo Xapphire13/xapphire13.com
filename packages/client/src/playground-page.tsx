@@ -2,10 +2,10 @@ import "./styles/playground-page.less";
 import * as ClientApi from "./api/client-api";
 import * as React from "react";
 import {Link, Route, RouteComponentProps, Switch} from "react-router-dom";
-import {Experiment} from "xapphire13-entities";
 import {PlaygroundExperimentPage} from "./playground-experiment-page";
 import {ScaleLoader} from "halogenium";
 import delay from "delay";
+import Experiment = Xapphire13.Entities.Experiment;
 
 type Props = RouteComponentProps<any>;
 type State = {

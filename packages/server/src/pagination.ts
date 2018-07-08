@@ -1,5 +1,5 @@
 import * as crc32 from "crc-32";
-import {Page} from "xapphire13-entities";
+import Page = Xapphire13.Entities.Page;
 
 export interface PagingAdvice {
   limit: number;

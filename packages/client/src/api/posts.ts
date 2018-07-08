@@ -1,7 +1,7 @@
 import {AuthManager} from "../auth-manager";
-import {Page} from "xapphire13-entities";
-import {Post} from "xapphire13-entities";
 import {container} from "tsyringe";
+import Page = Xapphire13.Entities.Page;
+import Post = Xapphire13.Entities.Post;
 
 export async function getPosts(continuationToken: string | null = null): Promise<Page<Post>> {
   const response = await fetch(`/api/posts${continuationToken ? `?continue=${continuationToken}` : ""}`);

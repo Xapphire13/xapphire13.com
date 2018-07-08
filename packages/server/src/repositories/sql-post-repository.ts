@@ -1,8 +1,8 @@
 import {Database} from "sqlite";
-import {Post} from "xapphire13-entities";
 import {PostRepository} from "./post-repository";
 import Semaphore from "semaphore-async-await";
 import {decorators} from "tsyringe";
+import Post = Xapphire13.Entities.Post;
 const {inject, injectable} = decorators;
 
 @injectable()

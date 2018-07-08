@@ -1,9 +1,11 @@
 import {Authorized, Get, JsonController, QueryParam} from "routing-controllers";
 import {ContinuationToken, createPage, getPagingAdvice} from "../pagination";
-import {Log, Page} from "xapphire13-entities";
 import {LogRepository} from "../repositories/log-repository";
 import {decorators} from "tsyringe";
 const {inject, injectable} = decorators;
+
+import Log = Xapphire13.Entities.Log;
+import Page = Xapphire13.Entities.Page;
 
 export const DEFAULT_PAGE_SIZE = 20;
 

@@ -1,7 +1,7 @@
 import {Database} from "sqlite";
-import {Log} from "xapphire13-entities";
 import {LogRepository} from "./log-repository";
 import {decorators} from "tsyringe";
+import Log = Xapphire13.Entities.Log;
 const {inject, injectable} = decorators;
 
 @injectable()

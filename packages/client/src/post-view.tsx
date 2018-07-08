@@ -5,9 +5,9 @@ import {BookOpen, Clock, Edit} from "react-feather";
 import CustomMarkdown from "./custom-markdown";
 import DisqusThread from "react-disqus-comments";
 import {NotFound} from "./not-found";
-import {Post} from "xapphire13-entities";
 import {RouteComponentProps} from "react-router-dom";
 import moment from "moment";
+import Post = Xapphire13.Entities.Post;
 import readingTime = require("reading-time");
 
 type Params = {

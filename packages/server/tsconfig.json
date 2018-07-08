@@ -4,6 +4,9 @@
   "compilerOptions": {
     "outDir": "./dist"
   },
+  "files": [
+    "../entities/index.d.ts"
+  ],
   "include": [
     "src/**/*"
   ]

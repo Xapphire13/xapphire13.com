@@ -1,4 +1,4 @@
-import {Experiment} from "xapphire13-entities";
+import Experiment = Xapphire13.Entities.Experiment;
 
 export async function getExperiments(): Promise<Experiment[]> {
   const response = await fetch("/api/playground/experiments");

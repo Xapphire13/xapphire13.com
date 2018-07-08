@@ -2,8 +2,8 @@ import "./styles/playground-experiment-page.less";
 import * as ClientApi from "./api/client-api";
 import * as React from "react";
 import * as path from "path";
-import {Experiment} from "xapphire13-entities";
 import {RouteComponentProps} from "react-router-dom";
+import Experiment = Xapphire13.Entities.Experiment;
 
 type Props = RouteComponentProps<any>;
 

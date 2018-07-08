@@ -4,11 +4,11 @@ import * as React from "react";
 import * as Utils from "./utils";
 import {Disposable} from "./disposable";
 import {PlusCircle} from "react-feather";
-import {Post} from "xapphire13-entities";
 import {PostPreview} from "./post-preview";
 import {RouteComponentProps} from "react-router";
 import {ScaleLoader} from "halogenium";
 import {User} from "./models/user";
+import Post = Xapphire13.Entities.Post;
 import throttle = require("throttleit");
 
 const MAX_PREVIEW_LENGTH = 4000;

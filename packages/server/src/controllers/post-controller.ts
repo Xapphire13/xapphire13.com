@@ -1,11 +1,12 @@
 import {Authorized, Body, Delete, Get, HttpCode, JsonController, OnUndefined, Param, Patch, Post, QueryParam} from "routing-controllers";
 import {ContinuationToken, createPage, getPagingAdvice} from "../pagination";
-import {Page, Post as PostEntity} from "xapphire13-entities";
 import Boom from "boom";
 import {PostRepository} from "../repositories/post-repository";
 import {decorators} from "tsyringe";
-const {inject, injectable} = decorators;
+import Page = Xapphire13.Entities.Page;
+import PostEntity = Xapphire13.Entities.Post;
 
+const {inject, injectable} = decorators;
 const DEFAULT_PAGE_SIZE = 5;
 
 @injectable()
