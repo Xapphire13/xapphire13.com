@@ -50,11 +50,6 @@
     "transform": {
       "^.+\\.tsx?$": "ts-jest"
     },
-    "globals": {
-      "ts-jest": {
-        "tsConfigFile": "./tests/tsconfig.json"
-      }
-    },
     "moduleFileExtensions": [
       "ts",
       "tsx",
