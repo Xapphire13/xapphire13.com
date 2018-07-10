@@ -2,6 +2,7 @@ import "./styles/post-preview.less";
 import * as React from "react";
 import {BookOpen, Clock, Edit, Menu as MenuIcon, Share2, Trash2} from "react-feather";
 import {Menu, MenuItem, MenuTrigger} from "./menu";
+import ClipboardJS from "clipboard";
 import CustomMarkdown from "./custom-markdown";
 import {Link} from "react-router-dom";
 import {UserContext} from "./user-context";
@@ -51,7 +52,7 @@ export class PostPreview extends React.Component<Props, State> {
             </MenuTrigger>
             <MenuItem visible={isAuthorized} label="Edit" icon={(props) => <Edit {...props}/>} onClick={() => this.props.edit()}/>
             <MenuItem visible={isAuthorized} label="Delete" icon={(props) => <Trash2 {...props}/>} onClick={() => { this.props.delete(); this.setState({menuOpen: false}); }}/>
-            <MenuItem label="Share" icon={(props) => <Share2 {...props}/>} onClick={() => alert("TODO")} />
+            <MenuItem label="Share" icon={(props) => <Share2 {...props}/>} onClick={() => this.copyShareLink(postPath)} />
           </Menu>
         </div>
         <div className="post-details">
@@ -77,5 +78,15 @@ export class PostPreview extends React.Component<Props, State> {
         </div>}
       </div>
     }</UserContext.Consumer>;
+  }
+
+  private copyShareLink(postPath: string): void {
+    const btn = document.createElement("button");
+    const clipboard = new ClipboardJS(btn, {
+      text: () => `${document.location.origin}${postPath}`
+    });
+    btn.click();
+    clipboard.destroy();
+    btn.remove();
   }
 }
