@@ -7,15 +7,13 @@ import {PlusCircle} from "react-feather";
 import {PostPreview} from "./post-preview";
 import {RouteComponentProps} from "react-router";
 import {ScaleLoader} from "halogenium";
-import {User} from "./models/user";
+import {UserContext} from "./user-context";
 import Post = Xapphire13.Entities.Post;
 import throttle = require("throttleit");
 
 const MAX_PREVIEW_LENGTH = 4000;
 
-type Props = {
-  user: User | null;
-} & RouteComponentProps<any>;
+type Props = RouteComponentProps<any>;
 
 type State = {
   loading: boolean;
@@ -61,25 +59,27 @@ export class HomePage extends React.Component<Props, State> {
   }
 
   public render(): JSX.Element {
-    return <div className="home-page" ref={ref => this.ref = ref}>
-      {this.props.user && <this.newPost />}
-      {this.state.loadedPosts.map((post, i) => <PostPreview
-        key={post.id}
-        id={post.id}
-        title={post.title}
-        created={new Date(post.created)}
-        lastModified={new Date(post.lastModified)}
-        markdownText={post.markdownText}
-        tags={post.tags}
-        maxLength={MAX_PREVIEW_LENGTH}
-        edit={() => this.props.history.push(`/posts/${post.id}/edit`)}
-        delete={async () => {
-          await ClientApi.deletePost(post.id);
-          delete this.state.loadedPosts[i];
-          this.setState({});
-        }} />)}
-      {this.loadingMessage()}
-    </div>;
+    return <UserContext.Consumer>{({isAuthorized}) =>
+      <div className="home-page" ref={ref => this.ref = ref}>
+        {isAuthorized && <this.newPost />}
+        {this.state.loadedPosts.map((post, i) => <PostPreview
+          key={post.id}
+          id={post.id}
+          title={post.title}
+          created={new Date(post.created)}
+          lastModified={new Date(post.lastModified)}
+          markdownText={post.markdownText}
+          tags={post.tags}
+          maxLength={MAX_PREVIEW_LENGTH}
+          edit={() => this.props.history.push(`/posts/${post.id}/edit`)}
+          delete={async () => {
+            await ClientApi.deletePost(post.id);
+            delete this.state.loadedPosts[i];
+            this.setState({});
+          }} />)}
+        {this.loadingMessage()}
+      </div>
+    }</UserContext.Consumer>;
   }
 
   private newPost = (): JSX.Element => <div className="new-post" title="New post" onClick={() => this.props.history.push("/posts/new")}>
