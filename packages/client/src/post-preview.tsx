@@ -7,6 +7,7 @@ import CustomMarkdown from "./custom-markdown";
 import {Link} from "react-router-dom";
 import {UserContext} from "./user-context";
 import moment from "moment";
+import {toast} from "react-toastify";
 import readingTime = require("reading-time");
 
 type Props = {
@@ -88,5 +89,8 @@ export class PostPreview extends React.Component<Props, State> {
     btn.click();
     clipboard.destroy();
     btn.remove();
+    toast.info("Link copied to clipboard!", {
+      autoClose: 2000
+    });
   }
 }

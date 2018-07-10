@@ -9,6 +9,7 @@
 		"build": "lerna run build",
 		"build:prod": "lerna run build:prod",
 		"start": "lerna run --parallel start",
+		"start:watch": "lerna run --parallel start:watch",
 		"prepush": "yarn test",
 		"postinstall": "cd scripts && yarn && cd .. && tsc -p scripts && lerna bootstrap",
 		"deploy": "node ./scripts/deploy.js"
