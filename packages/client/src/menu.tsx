@@ -42,11 +42,13 @@ export class Menu extends React.Component<MenuProps, MenuState> {
 
   public render(): JSX.Element {
     if (!Array.isArray(this.props.children)) {
-      throw new Error("Needs to be array");
+      throw new Error("Children needs to be an array");
     }
 
     const trigger = this.props.children.find((child: any) => child.type === MenuTrigger) as React.ReactElement<any>;
-    const items = this.props.children.filter((child: any) => child.type === MenuItem) as React.ReactElement<any>[];
+    const items = (this.props.children as React.ReactElement<any>[])
+      .filter(child => child.type === MenuItem)
+      .filter(child => child.props.visible !== false);
 
     return <div className={this.props.className} style={{position: "relative", display: "inline-block"}} ref={ref => ref && (this.ref = ref)}>
       {trigger}
@@ -94,6 +96,7 @@ type MenuItemProps = {
   icon?: (props: {className: string}) => React.ReactElement<any>;
   separator?: boolean;
   disabled?: boolean;
+  visible?: boolean;
   setRef?: (ref: HTMLDivElement) => void;
   onClick?: () => void;
 };

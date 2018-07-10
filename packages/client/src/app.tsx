@@ -14,6 +14,7 @@ import {PostView} from "./post-view";
 import {ProjectsPage} from "./projects-page";
 import {ProtectedRoute} from "./route-helpers";
 import {User} from "./models/user";
+import {UserContext} from "./user-context";
 
 type Props = {
   authManager: AuthManager
@@ -55,27 +56,29 @@ export class App extends React.Component<Props, State> {
     }
 
     return <div id="app">
-      <AppHeader />
-      <div className="app-content-wrapper">
-        <div className="app-content">
-          <Switch>
-            <Route exact path="/" render={(props) => <HomePage user={this.state.user} {...props} />} />
-            <ProtectedRoute path="/posts/new" component={EditPostPage} isAuthorized={this.state.isAuthorized} />
-            <Route exact path="/posts/:id" component={PostView} />
-            <ProtectedRoute path="/posts/:id/edit" component={EditPostPage} isAuthorized={this.state.isAuthorized} />
-            <ProtectedRoute path="/admin" render={(props) => <AdminPage user={this.state.user!} {...props} />} isAuthorized={this.state.isAuthorized} />
-            <Route path="/login" render={(props) => <LoginPage {...props} onAuthenticated={this.onAuthenticated} isAuthorized={this.state.isAuthorized} />} />
-            <Route path="/projects" component={ProjectsPage} />
-            <Route path="/playground" component={PlaygroundPage} />
-            <Route component={NotFound} />
-          </Switch>
+      <UserContext.Provider value={this.state}>
+        <AppHeader />
+        <div className="app-content-wrapper">
+          <div className="app-content">
+            <Switch>
+              <Route exact path="/" render={(props) => <HomePage {...props} />} />
+              <ProtectedRoute path="/posts/new" component={EditPostPage} isAuthorized={this.state.isAuthorized} />
+              <Route exact path="/posts/:id" component={PostView} />
+              <ProtectedRoute path="/posts/:id/edit" component={EditPostPage} isAuthorized={this.state.isAuthorized} />
+              <ProtectedRoute path="/admin" render={(props) => <AdminPage user={this.state.user!} {...props} />} isAuthorized={this.state.isAuthorized} />
+              <Route path="/login" render={(props) => <LoginPage {...props} onAuthenticated={this.onAuthenticated} isAuthorized={this.state.isAuthorized} />} />
+              <Route path="/projects" component={ProjectsPage} />
+              <Route path="/playground" component={PlaygroundPage} />
+              <Route component={NotFound} />
+            </Switch>
+          </div>
         </div>
-      </div>
-      <footer className="app-footer">
-        <a href="https://github.com/xapphire13/xapphire13.com" target="_blank" className="github-link">
-          <Github style={{position: "relative", top: "5px", marginRight: "0.3em"}} />GitHub
-        </a>
-      </footer>
+        <footer className="app-footer">
+          <a href="https://github.com/xapphire13/xapphire13.com" target="_blank" className="github-link">
+            <Github style={{position: "relative", top: "5px", marginRight: "0.3em"}} />GitHub
+          </a>
+        </footer>
+      </UserContext.Provider>
     </div>;
   }
 
