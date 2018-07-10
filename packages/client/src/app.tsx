@@ -1,4 +1,5 @@
 import "./styles/app.less";
+import "react-toastify/dist/ReactToastify.css";
 import * as React from "react";
 import {Route, Switch} from "react-router-dom";
 import {AdminPage} from "./admin-page";
@@ -13,6 +14,7 @@ import {PlaygroundPage} from "./playground-page";
 import {PostView} from "./post-view";
 import {ProjectsPage} from "./projects-page";
 import {ProtectedRoute} from "./route-helpers";
+import {ToastContainer} from "react-toastify";
 import {User} from "./models/user";
 import {UserContext} from "./user-context";
 
@@ -55,8 +57,9 @@ export class App extends React.Component<Props, State> {
       return <div />;
     }
 
-    return <div id="app">
-      <UserContext.Provider value={this.state}>
+    return <UserContext.Provider value={this.state}>
+      <div id="app">
+        <ToastContainer />
         <AppHeader />
         <div className="app-content-wrapper">
           <div className="app-content">
@@ -78,8 +81,8 @@ export class App extends React.Component<Props, State> {
             <Github style={{position: "relative", top: "5px", marginRight: "0.3em"}} />GitHub
           </a>
         </footer>
-      </UserContext.Provider>
-    </div>;
+      </div>
+    </UserContext.Provider>;
   }
 
   private onAuthenticated = (user: User, token: string): Promise<void> => this.props.authManager.onSignedIn(user.username, token);

@@ -5,7 +5,8 @@
   "scripts": {
     "build": "webpack --config webpack.dev.js",
     "build:prod": "webpack --config webpack.prod.js",
-    "start": "start http://127.0.0.1"
+    "start": "start http://127.0.0.1",
+    "start:watch": "yarn run start && webpack --config webpack.dev.js --watch"
   },
   "devDependencies": {
     "@types/clipboard": "^2.0.0",
@@ -39,6 +40,7 @@
     "react-router-dom": "^4.2.2",
     "react-table": "^6.7.6",
     "react-tagsinput": "^3.19.0",
+    "react-toastify": "^4.1.0",
     "reading-time": "^1.1.0",
     "style-loader": "^0.21.0",
     "throttleit": "^1.0.0",

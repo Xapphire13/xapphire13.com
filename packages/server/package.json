@@ -6,6 +6,7 @@
     "build": "tsc && yarn run copy-sql",
     "build:prod": "yarn run build",
     "start": "node ./dist/index.js",
+    "start:watch": "yarn run start",
     "start:debug": "node --inspect-brk ./dist/index.js",
     "copy-sql": "xcopy /Y /E /I \"./src/sql\" \"./dist/sql\""
   },
