@@ -5,20 +5,22 @@
   color: white;
   font-weight: bold;
   cursor: pointer;
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: center;
+  text-transform: uppercase;
 
   &:hover {
     background-color: var(--primary-accent-light);
   }
 
-  .button-text {
-    margin-right: 0.5em;
-  }
-
   .button-icon {
-    display: inline-block;
-    height: 1em;
-    width: 1em;
+    display: block;
+    height: 1.5em;
+    width: 1.5em;
     position: relative;
     top: 3px;
+    margin-right: 0.4em;
+    margin-top: -6px;
   }
 }
