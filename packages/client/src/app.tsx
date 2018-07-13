@@ -1,7 +1,8 @@
 import "./styles/app.less";
 import "react-toastify/dist/ReactToastify.css";
 import * as React from "react";
-import {Route, Switch} from "react-router-dom";
+import {Route, RouteComponentProps, Switch, withRouter} from "react-router-dom";
+import {ToastContainer, toast} from "react-toastify";
 import {AdminPage} from "./admin-page";
 import {AppHeader} from "./app-header";
 import {AuthManager} from "./auth-manager";
@@ -14,13 +15,12 @@ import {PlaygroundPage} from "./playground-page";
 import {PostView} from "./post-view";
 import {ProjectsPage} from "./projects-page";
 import {ProtectedRoute} from "./route-helpers";
-import {ToastContainer} from "react-toastify";
 import {User} from "./models/user";
 import {UserContext} from "./user-context";
 
 type Props = {
   authManager: AuthManager
-};
+} & RouteComponentProps<any>;
 
 type State = {
   user: User | null;
@@ -28,7 +28,8 @@ type State = {
   loading: boolean;
 };
 
-export class App extends React.Component<Props, State> {
+// tslint:disable-next-line variable-name
+export const App = withRouter(class App extends React.Component<Props, State> {
   public state: Readonly<State>;
 
   constructor(props: Props) {
@@ -40,6 +41,10 @@ export class App extends React.Component<Props, State> {
       loading: true
     };
 
+    this.props.history.listen(() => this.onNavigate());
+  }
+
+  public componentDidMount(): void {
     Promise.all([
       this.props.authManager.user,
       this.props.authManager.isAuthorized
@@ -85,5 +90,15 @@ export class App extends React.Component<Props, State> {
     </UserContext.Provider>;
   }
 
-  private onAuthenticated = (user: User, token: string): Promise<void> => this.props.authManager.onSignedIn(user.username, token);
-}
+  private onAuthenticated = async (user: User, token: string): Promise<void> => {
+    this.setState({
+      isAuthorized: true,
+      user
+    });
+    await this.props.authManager.onSignedIn(user.username, token);
+  }
+
+  private onNavigate(): void {
+    toast.dismiss();
+  }
+});

@@ -9,8 +9,8 @@ import {Save, Send} from "react-feather";
 import {Button} from "./button";
 import {Controlled as CodeMirror} from "react-codemirror2";
 import CustomMarkdown from "./custom-markdown";
-import {MessageBar} from "./message-bar";
 import {RouteComponentProps} from "react-router";
+import {onError} from "./utils";
 import TagsInput = require("react-tagsinput");
 
 type Props = RouteComponentProps<{
@@ -22,11 +22,11 @@ type State = {
   tags: string[];
   markdownText: string;
   titleMissing: boolean;
-  errorText: string;
 };
 
 export class EditPostPage extends React.Component<Props, State> {
   public state: Readonly<State>;
+  private toastId: number;
 
   constructor(props: Props) {
     super(props);
@@ -35,8 +35,7 @@ export class EditPostPage extends React.Component<Props, State> {
       title: "",
       tags: [],
       markdownText: "",
-      titleMissing: false,
-      errorText: ""
+      titleMissing: false
     };
   }
 
@@ -53,7 +52,7 @@ export class EditPostPage extends React.Component<Props, State> {
           tags: post.tags
         });
       } catch {
-        this.setState({errorText: "Error loading post!"});
+        this.toastId = onError("Error loading post!", this.toastId);
       }
     }
   }
@@ -63,7 +62,6 @@ export class EditPostPage extends React.Component<Props, State> {
     const commitText = isEdit ? "Save" : "Post";
 
     return <div className="edit-post-page">
-      {this.state.errorText && <MessageBar type="error" message={this.state.errorText} />}
       <div style={{display: "flex", flexDirection: "row"}}>
         <input
           type="text"
@@ -93,7 +91,7 @@ export class EditPostPage extends React.Component<Props, State> {
     this.setState({titleMissing});
 
     if (titleMissing) {
-      this.setState({errorText: "Title can't be empty"});
+      this.toastId = onError("Title can't be empty", this.toastId);
 
       return;
     }
@@ -106,16 +104,14 @@ export class EditPostPage extends React.Component<Props, State> {
         await ClientApi.savePost(id, title, markdownText, tags);
         this.props.history.replace(`/posts/${id}`);
       } catch (err) {
-        console.error(err);
-        this.setState({errorText: "Error saving post"});
+        this.toastId = onError("Error saving post", err, this.toastId);
       }
     } else {
       try {
         const post = await ClientApi.createPost(title, markdownText, tags);
         this.props.history.replace(`/posts/${post.id}`);
       } catch (err) {
-        console.error(err);
-        this.setState({errorText: "Error creating post"});
+        this.toastId = onError("Error creating post", err, this.toastId);
       }
     }
   }

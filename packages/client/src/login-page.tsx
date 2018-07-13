@@ -3,9 +3,9 @@ import * as ClientApi from "./api/client-api";
 import * as React from "react";
 import {Redirect, RouteComponentProps} from "react-router-dom";
 import {Button} from "./button";
-import {MessageBar} from "./message-bar";
 import {QRCode} from "react-qr-svg";
 import {User} from "./models/user";
+import {onError} from "./utils";
 
 type Props = {
   isAuthorized: boolean,
@@ -18,11 +18,11 @@ type State = {
   username: string;
   password: string;
   code: string;
-  error: boolean;
 };
 
 export class LoginPage extends React.Component<Props, State> {
   public state: Readonly<State>;
+  private toastId: number;
 
   constructor(props: Props) {
     super(props);
@@ -30,8 +30,7 @@ export class LoginPage extends React.Component<Props, State> {
     this.state = {
       username: "",
       password: "",
-      code: "",
-      error: false
+      code: ""
     };
   }
 
@@ -42,13 +41,11 @@ export class LoginPage extends React.Component<Props, State> {
 
     if (!this.state.authenticatorUrl && !this.state.challenge) {
       return <div className="login-page">
-        {this.state.error && <MessageBar type="error" message="Incorrect username or password" />}
         <this.passwordLogin />
       </div>;
     }
 
     return <div className="login-page">
-      {this.state.error && <MessageBar type="error" message="Incorrect code" />}
       <this.authChallenge />
     </div>;
   }
@@ -108,10 +105,9 @@ export class LoginPage extends React.Component<Props, State> {
 
     try {
       const {authenticatorUrl, challenge} = await ClientApi.getTempToken(this.state.username, this.state.password);
-      this.setState({authenticatorUrl, challenge, error: false});
+      this.setState({authenticatorUrl, challenge});
     } catch (err) {
-      console.error(err);
-      this.setState({error: true});
+      this.toastId = onError("Incorrect username or password", err, this.toastId);
     }
   }
 
@@ -122,15 +118,13 @@ export class LoginPage extends React.Component<Props, State> {
 
     try {
       const token = await ClientApi.getAuthToken(this.state.code, this.state.challenge!);
-      this.setState({error: false});
       this.props.onAuthenticated({
         username: this.state.username
       }, token);
       const {from = "/"} = this.props.location.state as {from: string} || {};
       this.props.history.replace(from);
     } catch (err) {
-      console.error(err);
-      this.setState({error: true});
+      this.toastId = onError("Incorrect auth code", err, this.toastId);
     }
   }
 }
