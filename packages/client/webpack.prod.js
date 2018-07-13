@@ -34,9 +34,9 @@ module.exports = merge(common, {
     new MiniCssExtractPlugin({
       filename: "[name].css"
     }),
-    new UglifyJSPlugin({
-      sourceMap: true
-    }),
+    // new UglifyJSPlugin({
+    //   sourceMap: true
+    // }),
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify("production")
     })
