@@ -3,7 +3,7 @@ import "reflect-metadata";
 import * as jwt from "jsonwebtoken";
 import * as path from "path";
 import * as sqlite from "sqlite";
-import {APP_PATH, PLAYGROUND_PATH} from "./constants";
+import {APP_PATH, IS_DEVELOPMENT, PLAYGROUND_PATH} from "./constants";
 import {useContainer, useExpressServer} from "routing-controllers";
 import {Config} from "./config";
 import {Logger} from "./logger";
@@ -14,14 +14,13 @@ import registerProductionDependencies from "./production-registry";
 import bodyParser = require("body-parser");
 import express = require("express");
 
-const IS_DEVELOPMENT = process.env.NODE_ENV !== "production";
 const CONFIG_PATH = path.resolve(__dirname, "../config.json");
 
 async function main(): Promise<void> {
   // Database
   const db = await sqlite.open(path.resolve(__dirname, "../database.sqlite"), {promise: Promise});
   await db.migrate({
-    migrationsPath: path.join(__dirname, "sql")
+    migrationsPath: path.resolve(__dirname, "../sql")
   });
   await db.exec("PRAGMA foreign_keys = 1;");
 
@@ -39,7 +38,7 @@ async function main(): Promise<void> {
   useContainer({
     get: (token: any) => container.resolve(token)
   });
-  app.set("port", process.env.PORT || 80);
+  app.set("port", process.env.PORT || 8080);
   app.use(bodyParser.json());
 
   // Controllers

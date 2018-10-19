@@ -8,7 +8,7 @@ export class AuthManager {
 
   constructor() {
     this.storageClient = new CrossStorageClient(
-      `http://${document.location.hostname}/app/storage.html`,
+      new URL("/app/storage.html", document.URL).toString(),
       {promise: Promise});
 
     this.username = new Promise(setUsername => {
