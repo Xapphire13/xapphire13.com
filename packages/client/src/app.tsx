@@ -7,7 +7,7 @@ import {AdminPage} from "./admin-page";
 import {AppHeader} from "./app-header";
 import {AuthManager} from "./auth-manager";
 import {EditPostPage} from "./edit-post-page";
-import {Github} from "react-feather";
+import {GitHub} from "react-feather";
 import {HomePage} from "./home-page";
 import {LoginPage} from "./login-page";
 import {NotFound} from "./not-found";
@@ -83,7 +83,7 @@ export const App = withRouter(class App extends React.Component<Props, State> {
         </div>
         <footer className="app-footer">
           <a href="https://github.com/xapphire13/xapphire13.com" target="_blank" className="github-link">
-            <Github style={{position: "relative", top: "5px", marginRight: "0.3em"}} />GitHub
+            <GitHub style={{position: "relative", top: "5px", marginRight: "0.3em"}} />GitHub
           </a>
         </footer>
       </div>

@@ -14,6 +14,10 @@ export class Config {
   }
 
   public async initialize(): Promise<void> {
-    this.configFile = await fs.readJSON(this.configFilePath, {encoding: "utf8"});
+    try {
+      this.configFile = await fs.readJSON(this.configFilePath, {encoding: "utf8"});
+    } catch {
+      this.configFile = {};
+    }
   }
 }
