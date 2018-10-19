@@ -13,7 +13,6 @@
     "@types/codemirror": "0.0.65",
     "@types/cross-storage": "^0.8.29",
     "@types/delay": "^3.1.0",
-    "@types/document-ready": "^2.0.0",
     "@types/halogen": "^0.2.6",
     "@types/react": "^16.4.18",
     "@types/react-dom": "^16.0.9",
