@@ -3,7 +3,7 @@ import ready = require("document-ready");
 
 const ORIGIN = process.env.NODE_ENV === "production" ?
   /:\/\/(www\.)?xapphire13.com$/ :
-  /127\.0\.0\.1$/;
+  /127\.0\.0\.1:8080$/;
 
 ready(() => {
   CrossStorageHub.init([
