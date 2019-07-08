@@ -5,13 +5,14 @@ import "codemirror/theme/material.css";
 import "react-tagsinput/react-tagsinput.css";
 import * as ClientApi from "./api/client-api";
 import * as React from "react";
-import {Save, Send} from "react-feather";
-import {Button} from "./button";
-import {Controlled as CodeMirror} from "react-codemirror2";
+import { Save, Send } from "react-feather";
+import { Button } from "./button";
+import { Controlled as CodeMirror } from "react-codemirror2";
 import CustomMarkdown from "./custom-markdown";
-import {RouteComponentProps} from "react-router";
-import {onError} from "./utils";
+import { RouteComponentProps } from "react-router";
+import { onError } from "./utils";
 import TagsInput = require("react-tagsinput");
+import { ToastId } from "react-toastify";
 
 type Props = RouteComponentProps<{
   id: string;
@@ -26,7 +27,7 @@ type State = {
 
 export class EditPostPage extends React.Component<Props, State> {
   public state: Readonly<State>;
-  private toastId: number;
+  private toastId: ToastId;
 
   constructor(props: Props) {
     super(props);
@@ -40,7 +41,7 @@ export class EditPostPage extends React.Component<Props, State> {
   }
 
   public async componentDidMount(): Promise<void> {
-    const {id} = this.props.match.params;
+    const { id } = this.props.match.params;
 
     if (id) {
       try {
@@ -62,20 +63,20 @@ export class EditPostPage extends React.Component<Props, State> {
     const commitText = isEdit ? "Save" : "Post";
 
     return <div className="edit-post-page">
-      <div style={{display: "flex", flexDirection: "row"}}>
+      <div style={{ display: "flex", flexDirection: "row" }}>
         <input
           type="text"
           id="title"
           className={this.state.titleMissing ? "error" : ""}
           placeholder="Title..."
           value={this.state.title}
-          onChange={ev => this.setState({title: ev.target.value})}/>
-          <Button text={commitText} icon={(props) => isEdit ? <Save {...props} /> : <Send {...props} />} onClick={this.onCommit} />
+          onChange={ev => this.setState({ title: ev.target.value })} />
+        <Button text={commitText} icon={(props) => isEdit ? <Save {...props} /> : <Send {...props} />} onClick={this.onCommit} />
       </div>
-      <TagsInput value={this.state.tags} onChange={tags => this.setState({tags})}/>
+      <TagsInput value={this.state.tags} onChange={tags => this.setState({ tags })} />
       <CodeMirror
         value={this.state.markdownText}
-        onBeforeChange={(_editor, _data, value) => this.setState({markdownText: value})}
+        onBeforeChange={(_editor, _data, value) => this.setState({ markdownText: value })}
         options={{
           mode: "gfm",
           lineNumbers: true,
@@ -88,7 +89,7 @@ export class EditPostPage extends React.Component<Props, State> {
 
   private onCommit = async (): Promise<void> => {
     const titleMissing = !this.state.title;
-    this.setState({titleMissing});
+    this.setState({ titleMissing });
 
     if (titleMissing) {
       this.toastId = onError("Title can't be empty", this.toastId);
@@ -96,9 +97,9 @@ export class EditPostPage extends React.Component<Props, State> {
       return;
     }
 
-    const {title, markdownText, tags} = this.state;
+    const { title, markdownText, tags } = this.state;
 
-    const {id} = this.props.match.params;
+    const { id } = this.props.match.params;
     if (id) {
       try {
         await ClientApi.savePost(id, title, markdownText, tags);

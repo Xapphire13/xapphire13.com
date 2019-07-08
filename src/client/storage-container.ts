@@ -1,5 +1,5 @@
-import {CrossStorageHub} from "cross-storage";
-import ready = require("document-ready");
+import { CrossStorageHub } from "cross-storage";
+import ready from "document-ready";
 
 const ORIGIN = process.env.NODE_ENV === "production" ?
   /:\/\/(www\.)?xapphire13.com$/ :
@@ -7,6 +7,6 @@ const ORIGIN = process.env.NODE_ENV === "production" ?
 
 ready(() => {
   CrossStorageHub.init([
-    {origin: ORIGIN, allow: ["get", "set", "del", "getKeys", "clear"]}
+    { origin: ORIGIN, allow: ["get", "set", "del", "getKeys", "clear"] }
   ]);
 });

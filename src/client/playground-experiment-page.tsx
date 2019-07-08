@@ -2,8 +2,8 @@ import "./styles/playground-experiment-page.less";
 import * as ClientApi from "./api/client-api";
 import * as React from "react";
 import * as path from "path";
-import {RouteComponentProps} from "react-router-dom";
-import Experiment = Xapphire13.Entities.Experiment;
+import { RouteComponentProps } from "react-router-dom";
+import Experiment from ":entities/experiment";
 
 type Props = RouteComponentProps<any>;
 
@@ -37,15 +37,15 @@ export class PlaygroundExperimentPage extends React.Component<Props, State> {
   public render(): JSX.Element {
     return <div className="playground-experiment-page">
       {this.state.experimentInfo && <iframe
-        ref={element => { if (!this.iframe) {this.iframe = element; this.setupFrame(); }}}
-        src="about:blank"/>}
+        ref={element => { if (!this.iframe) { this.iframe = element; this.setupFrame(); } }}
+        src="about:blank" />}
     </div>;
   }
 
   private setupFrame(): void {
     if (this.iframe) {
       this.frameObserver = new MutationObserver(() => this.resizeFrame());
-      this.frameObserver.observe(this.iframe.contentDocument!, {childList: true, subtree: true});
+      this.frameObserver.observe(this.iframe.contentDocument!, { childList: true, subtree: true });
       const script = this.iframe.contentDocument!.createElement("script");
       script.src = path.join("/experiment", this.state.experimentInfo!.name, this.state.experimentInfo!.main);
       this.iframe.contentDocument!.body.appendChild(script);

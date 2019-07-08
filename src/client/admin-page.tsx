@@ -2,10 +2,10 @@ import "./styles/admin-page.less";
 import "./styles/table.less";
 import * as ClientApi from "./api/client-api";
 import * as React from "react";
-import ReactTable, {Column} from "react-table";
-import {RouteComponentProps} from "react-router-dom";
-import {User} from "./models/user";
-import Log = Xapphire13.Entities.Log;
+import ReactTable, { Column } from "react-table";
+import { RouteComponentProps } from "react-router-dom";
+import { User } from "./models/user";
+import Log from ":entities/log";
 
 type Props = {
   user: User;
@@ -66,7 +66,7 @@ export class AdminPage extends React.Component<Props, State> {
         columns={this.logColumns}
         onFetchData={async () => {
           if (this.state.continuationToken !== null) {
-            this.setState({loading: true});
+            this.setState({ loading: true });
             const page = await ClientApi.getLogs(this.state.continuationToken);
             const logs = this.state.logs.concat(page.values);
             let numberOfPages = Math.ceil(logs.length / PAGE_SIZE);
@@ -78,7 +78,7 @@ export class AdminPage extends React.Component<Props, State> {
               numberOfPages
             });
           }
-        }}/>
+        }} />
     </div>;
   }
 }

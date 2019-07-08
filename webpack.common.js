@@ -1,8 +1,8 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
-const SRC_PATH = path.resolve(__dirname, "src");
-const DIST_PATH = path.resolve(__dirname, "dist");
+const SRC_PATH = path.resolve(__dirname, "src/client");
+const DIST_PATH = path.resolve(__dirname, "dist/app");
 
 module.exports = {
   entry: {
@@ -18,10 +18,13 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
+        test: /src\/client\/.+\.tsx?$/,
         exclude: /node_modules/,
         use: {
-          loader: "ts-loader"
+          loader: "ts-loader",
+          options: {
+            configFile: "tsconfig.client.json"
+          }
         }
       }
     ]

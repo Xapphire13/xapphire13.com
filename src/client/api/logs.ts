@@ -1,7 +1,7 @@
-import {AuthManager} from "../auth-manager";
-import {container} from "tsyringe";
-import Log = Xapphire13.Entities.Log;
-import Page = Xapphire13.Entities.Page;
+import { AuthManager } from "../auth-manager";
+import { container } from "tsyringe";
+import Log from ":entities/log";
+import Page from ":entities/page";
 
 export async function getLogs(continuationToken: string | null = null): Promise<Page<Log>> {
   const authManager = container.resolve(AuthManager);
