@@ -8,8 +8,8 @@
     "copy-sql": "xcopy /Y /E /I \"./src/sql\" \"./dist/sql\"",
     "deploy": "node ./scripts/deploy.js",
     "prepush": "yarn test",
-    "test:debug": "node --inspect-brk ./node_modules/jest/bin/jest --verbose -i",
-    "test": "jest"
+    "test:debug": "node --inspect-brk ./node_modules/jest/bin/jest --config test/jest.config.js --verbose -i",
+    "test": "jest --config test/jest.config.js"
   },
   "devDependencies": {
     "@types/bcrypt": "^3.0.0",
@@ -95,28 +95,5 @@
     "semaphore-async-await": "^1.5.1",
     "sqlite": "^3.0.0",
     "tsyringe": "^3.3.0"
-  },
-  "jest": {
-    "globals": {
-      "Xapphire13": null
-    },
-    "projects": [
-      "<rootDir>/packages/*",
-      {
-        "displayName": "tslint",
-        "runner": "jest-runner-tslint",
-        "moduleFileExtensions": [
-          "ts",
-          "tsx"
-        ],
-        "testMatch": [
-          "**/*.ts"
-        ]
-      }
-    ],
-    "testPathIgnorePatterns": [
-      "/node_modules/",
-      "/dist/"
-    ]
   }
 }
