@@ -1,4 +1,5 @@
 {
+  "compileOnSave": true,
   "compilerOptions": {
     "target": "es6",
     "module": "commonjs",
@@ -14,6 +15,10 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
-  }
+    "emitDecoratorMetadata": true,
+    "outDir": "./dist",
+    "esModuleInterop": true
+  },
+  "include": [],
+  "exclude": []
 }
