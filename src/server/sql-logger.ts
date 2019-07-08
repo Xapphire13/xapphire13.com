@@ -1,11 +1,10 @@
-import {LogRepository} from "./repositories/log-repository";
-import {Logger} from "./logger";
-import {decorators} from "tsyringe";
-const {inject, injectable} = decorators;
+import { LogRepository } from "./repositories/log-repository";
+import { Logger } from "./logger";
+import { inject, injectable } from "tsyringe";
 
 @injectable()
 export class SqlLogger implements Logger {
-  constructor(@inject("LogRepository") private repository: LogRepository) {}
+  constructor(@inject("LogRepository") private repository: LogRepository) { }
 
   public debug(): Promise<void> {
     return Promise.resolve();
@@ -21,7 +20,7 @@ export class SqlLogger implements Logger {
     let message: string | undefined;
     let exception: string | undefined;
 
-    if (typeof(messageOrException) === "string") {
+    if (typeof (messageOrException) === "string") {
       message = messageOrException;
     } else {
       message = messageOrException.message;

@@ -1,4 +1,4 @@
-import User = Xapphire13.Entities.User;
+import User from "../entities/user";
 
 export interface UserRepository {
   getUser(username: string): Promise<User>;

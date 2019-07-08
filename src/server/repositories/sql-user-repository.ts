@@ -1,19 +1,18 @@
-import {Database} from "sqlite";
-import {UserRepository} from "./user-repository";
-import {decorators} from "tsyringe";
-import User = Xapphire13.Entities.User;
-const {inject, injectable} = decorators;
+import { Database } from "sqlite";
+import { UserRepository } from "./user-repository";
+import { inject, injectable } from "tsyringe";
+import User from "../entities/user";
 
 @injectable()
 export class SqlUserRepository implements UserRepository {
-  constructor(@inject("database") private db: Database) {}
+  constructor(@inject("database") private db: Database) { }
 
   public async getUser(username: string): Promise<User> {
     const record = await this.db.get(`
       SELECT *
       FROM User
       WHERE username = $username COLLATE NOCASE;
-      `, {$username: username});
+      `, { $username: username });
 
     if (!record) {
       throw new Error("User doesn't exist");
@@ -35,7 +34,7 @@ export class SqlUserRepository implements UserRepository {
       FROM Admins
       INNER JOIN User on Admins.user_id = User.id
       WHERE user_id = $userId;
-      `, {$userId: userId});
+      `, { $userId: userId });
   }
 
   public storeTokenSecret(userId: number, secret: string): Promise<any> {
@@ -44,7 +43,7 @@ export class SqlUserRepository implements UserRepository {
       SET token_secret = ($secret)
       WHERE id = $userId;
       `, {
-        $secret : secret,
+        $secret: secret,
         $userId: userId
       });
   }

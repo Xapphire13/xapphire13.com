@@ -1,12 +1,11 @@
-import {Authorized, Body, Delete, Get, HttpCode, JsonController, OnUndefined, Param, Patch, Post, QueryParam} from "routing-controllers";
-import {ContinuationToken, createPage, getPagingAdvice} from "../pagination";
+import { Authorized, Body, Delete, Get, HttpCode, JsonController, OnUndefined, Param, Patch, Post, QueryParam } from "routing-controllers";
+import { ContinuationToken, createPage, getPagingAdvice } from "../pagination";
 import Boom from "boom";
-import {PostRepository} from "../repositories/post-repository";
-import {decorators} from "tsyringe";
-import Page = Xapphire13.Entities.Page;
-import PostEntity = Xapphire13.Entities.Post;
+import { PostRepository } from "../repositories/post-repository";
+import { inject, injectable } from "tsyringe";
+import Page from "../entities/page";
+import PostEntity from "../entities/post";
 
-const {inject, injectable} = decorators;
 const DEFAULT_PAGE_SIZE = 5;
 
 @injectable()
@@ -14,7 +13,7 @@ const DEFAULT_PAGE_SIZE = 5;
 export class PostController {
   private createPage = createPage<PostEntity>("id", post => post.id);
 
-  constructor(@inject("PostRepository") private repository: PostRepository) {}
+  constructor(@inject("PostRepository") private repository: PostRepository) { }
 
   @Post("/posts")
   @Authorized()

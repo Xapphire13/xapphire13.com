@@ -1,22 +1,20 @@
 import * as bcrypt from "bcrypt";
 import * as crypto from "crypto";
 import * as jwt from "jsonwebtoken";
-import {Body, CurrentUser, Get, JsonController, Post} from "routing-controllers";
+import { Body, CurrentUser, Get, JsonController, Post } from "routing-controllers";
 import Boom from "boom";
-import {UserRepository} from "../repositories/user-repository";
-import {decorators} from "tsyringe";
-import User = Xapphire13.Entities.User;
+import { UserRepository } from "../repositories/user-repository";
+import { inject, injectable } from "tsyringe";
+import User from "../entities/user";
 import otplib = require("otplib");
-
-const {inject, injectable} = decorators;
 
 @injectable()
 @JsonController("/api")
 export class AuthController {
-  constructor(@inject("UserRepository") private repository: UserRepository) {}
+  constructor(@inject("UserRepository") private repository: UserRepository) { }
 
   @Get("/permissions")
-  public async getPermissions(@CurrentUser({required: true}) user: User): Promise<{username: string, admin: boolean}> {
+  public async getPermissions(@CurrentUser({ required: true }) user: User): Promise<{ username: string, admin: boolean }> {
     const isAdmin = await this.repository.isAdmin(user.id);
 
     return {
@@ -26,9 +24,9 @@ export class AuthController {
   }
 
   @Post("/auth")
-  public async post(@Body({required: true}) payload: {username?: string, password?: string, challenge?: string, challengeResponse?: string}): Promise<{authenticatorUrl?: string, challenge?: string, token?: string}> {
+  public async post(@Body({ required: true }) payload: { username?: string, password?: string, challenge?: string, challengeResponse?: string }): Promise<{ authenticatorUrl?: string, challenge?: string, token?: string }> {
     if (payload.username && payload.password) {
-      const {username, password} = payload;
+      const { username, password } = payload;
 
       const user = await this.repository.getUser(username);
       const challenge = await this.getAuthChallenge(user, Buffer.from(password, "base64").toString("utf8"));
@@ -49,7 +47,7 @@ export class AuthController {
         authenticatorUrl: sendAuthenticatorUrl ? `otpauth://totp/Xapphire13?secret=${user.authenticatorSecret}` : undefined
       };
     } else if (payload.challenge && payload.challengeResponse) {
-      const {challenge, challengeResponse} = payload;
+      const { challenge, challengeResponse } = payload;
 
       const decodedToken = (() => {
         const decodedToken = jwt.decode(challenge);
@@ -58,7 +56,7 @@ export class AuthController {
           throw Boom.unauthorized("Invalid token");
         }
 
-        return decodedToken as {username: string, type: string};
+        return decodedToken as { username: string, type: string };
       })();
 
       const user = await this.repository.getUser(decodedToken.username);
@@ -85,8 +83,8 @@ export class AuthController {
       type: "auth",
       username: user.username
     }, user.tokenSecret, {
-      expiresIn: "30d"
-    }, (err, token) => err ? rej(err) : res(token)));
+        expiresIn: "30d"
+      }, (err, token) => err ? rej(err) : res(token)));
   }
 
   private async getAuthChallenge(user: User, password: string): Promise<string> {
@@ -108,7 +106,7 @@ export class AuthController {
       type: "temporary",
       username: user.username
     }, user.tokenSecret, {
-      expiresIn: "10m"
-    }, (err, token) => err ? rej(err) : res(token)));
+        expiresIn: "10m"
+      }, (err, token) => err ? rej(err) : res(token)));
   }
 }

@@ -1,15 +1,14 @@
-import {Database} from "sqlite";
-import {PostRepository} from "./post-repository";
+import { Database } from "sqlite";
+import { PostRepository } from "./post-repository";
 import Semaphore from "semaphore-async-await";
-import {decorators} from "tsyringe";
-import Post = Xapphire13.Entities.Post;
-const {inject, injectable} = decorators;
+import { inject, injectable } from "tsyringe";
+import Post from "../entities/post";
 
 @injectable()
 export class SqlPostRepository implements PostRepository {
   private lock = new Semaphore(1);
 
-  constructor(@inject("database") private db: Database) {}
+  constructor(@inject("database") private db: Database) { }
 
   public async createPost(post: Post): Promise<Post> {
     post.created = new Date().toJSON();
@@ -31,7 +30,7 @@ export class SqlPostRepository implements PostRepository {
         $markdownText: post.markdownText
       });
 
-    const {id} = await this.db.get(`
+    const { id } = await this.db.get(`
       SELECT id FROM Post
       WHERE id = last_insert_rowid();
       `);
@@ -47,7 +46,7 @@ export class SqlPostRepository implements PostRepository {
   public async getPost(id: number): Promise<Post> {
     const recordPromise = this.db.get(`
       SELECT * FROM Post
-      WHERE id = $id;`, {$id: id});
+      WHERE id = $id;`, { $id: id });
     const tagsPromise = this.getTagsForPost(id);
 
     return this.convertRecordToPost(await recordPromise, await tagsPromise);
@@ -61,7 +60,7 @@ export class SqlPostRepository implements PostRepository {
         SELECT * FROM Post
         WHERE id <= $fromId
         ORDER BY id DESC
-        LIMIT ${pageSize};`, {$fromId: fromId});
+        LIMIT ${pageSize};`, { $fromId: fromId });
     } else {
       records = await this.db.all(`
         SELECT * FROM Post
@@ -77,7 +76,7 @@ export class SqlPostRepository implements PostRepository {
     await this.db.run(`
       DELETE FROM Post
       WHERE id = $id
-      `, {$id: id});
+      `, { $id: id });
     this.lock.release();
   }
 
@@ -110,7 +109,7 @@ export class SqlPostRepository implements PostRepository {
       await this.db.run(`
         INSERT OR IGNORE INTO Tag (name)
         VALUES ($tag);
-        `, {$tag: tag});
+        `, { $tag: tag });
 
       await this.db.run(`
         INSERT OR IGNORE INTO PostTags
@@ -127,7 +126,7 @@ export class SqlPostRepository implements PostRepository {
       INNER JOIN (SELECT * FROM PostTags WHERE post_id = $id) AS Tags
       ON Tag.id = Tags.tag_id
       ORDER BY name ASC;
-      `, {$id: id})).map(record => record.name);
+      `, { $id: id })).map(record => record.name);
   }
 
   private convertRecordToPost(record: any, tags: string[]): Post {

@@ -1,12 +1,11 @@
-import {Database} from "sqlite";
-import {LogRepository} from "./log-repository";
-import {decorators} from "tsyringe";
-import Log = Xapphire13.Entities.Log;
-const {inject, injectable} = decorators;
+import { Database } from "sqlite";
+import { LogRepository } from "./log-repository";
+import { inject, injectable } from "tsyringe";
+import Log from "../entities/log";
 
 @injectable()
 export class SqlLogRepository implements LogRepository {
-  constructor(@inject("database") private db: Database) {}
+  constructor(@inject("database") private db: Database) { }
 
   public createLog(level: number, message: string, exception?: string): Promise<any> {
     return this.db.run(`
