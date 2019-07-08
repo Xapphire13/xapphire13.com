@@ -5,8 +5,8 @@
   "license": "MIT",
   "scripts": {
     "build:client": "webpack --config webpack.dev.js",
-    "build:server": "tsc -p tsconfig.server.json",
-    "copy-sql": "xcopy /Y /E /I \"./src/sql\" \"./dist/sql\"",
+    "build:server": "tsc -p ./src/server",
+    "copy-sql": "xcopy /Y /E /I \"./src/server/sql\" \"./dist/sql\"",
     "deploy": "node ./scripts/deploy.js",
     "prepush": "yarn test",
     "test:debug": "node --inspect-brk ./node_modules/jest/bin/jest --config test/jest.config.js --verbose -i",

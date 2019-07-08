@@ -1,26 +1,26 @@
-import "./error-handler";
 import "reflect-metadata";
+import "./error-handler";
 import * as jwt from "jsonwebtoken";
 import * as path from "path";
 import * as sqlite from "sqlite";
-import {APP_PATH, IS_DEVELOPMENT, PLAYGROUND_PATH} from "./constants";
-import {useContainer, useExpressServer} from "routing-controllers";
-import {Config} from "./config";
-import {Logger} from "./logger";
-import {UserRepository} from "./repositories/user-repository";
-import {container} from "tsyringe";
+import { APP_PATH, IS_DEVELOPMENT, PLAYGROUND_PATH } from "./constants";
+import { useContainer, useExpressServer } from "routing-controllers";
+import { Config } from "./config";
+import { Logger } from "./logger";
+import { UserRepository } from "./repositories/user-repository";
+import { container } from "tsyringe";
 import registerDevelopmentDependencies from "./development-registry";
 import registerProductionDependencies from "./production-registry";
 import bodyParser = require("body-parser");
 import express = require("express");
 
-const CONFIG_PATH = path.resolve(__dirname, "../config.json");
+const CONFIG_PATH = path.resolve(__dirname, "./config.json");
 
 async function main(): Promise<void> {
   // Database
-  const db = await sqlite.open(path.resolve(__dirname, "../database.sqlite"), {promise: Promise});
+  const db = await sqlite.open(path.resolve(__dirname, "../database.sqlite"), { promise: Promise });
   await db.migrate({
-    migrationsPath: path.resolve(__dirname, "../sql")
+    migrationsPath: path.resolve(__dirname, "./sql")
   });
   await db.exec("PRAGMA foreign_keys = 1;");
 
@@ -57,7 +57,7 @@ async function main(): Promise<void> {
         return false;
       }
 
-      const {username} = (() => {
+      const { username } = (() => {
         const decodedToken = jwt.decode(token) as any;
 
         if (!decodedToken || decodedToken.type !== "auth") {
@@ -78,7 +78,7 @@ async function main(): Promise<void> {
         return null;
       }
 
-      const {username} = jwt.decode(token) as any;
+      const { username } = jwt.decode(token) as any;
 
       return container.resolve<UserRepository>("UserRepository").getUser(username);
     }
