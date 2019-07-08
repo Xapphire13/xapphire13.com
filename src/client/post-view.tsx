@@ -1,13 +1,13 @@
 import "./styles/post-view.less";
 import * as ClientApi from "./api/client-api";
 import * as React from "react";
-import {BookOpen, Clock, Edit} from "react-feather";
+import { BookOpen, Clock, Edit } from "react-feather";
 import CustomMarkdown from "./custom-markdown";
 import DisqusThread from "react-disqus-comments";
-import {NotFound} from "./not-found";
-import {RouteComponentProps} from "react-router-dom";
+import { NotFound } from "./not-found";
+import { RouteComponentProps } from "react-router-dom";
 import moment from "moment";
-import Post = Xapphire13.Entities.Post;
+import Post from ":entities/post";
 import readingTime = require("reading-time");
 
 type Params = {
@@ -38,9 +38,9 @@ export class PostView extends React.Component<Props, State> {
 
     try {
       const post = await ClientApi.getPost(this.props.match.params.id);
-      this.setState({post});
+      this.setState({ post });
     } catch {
-      this.setState({error: true});
+      this.setState({ error: true });
     }
   }
 
@@ -72,7 +72,7 @@ export class PostView extends React.Component<Props, State> {
         <span className="post-details-length"><BookOpen className="icon" />{lengthInMin >= 1 ? `${lengthInMin} min` : "short"} read</span>
       </div>
       <div className={`post-content`}>
-        <CustomMarkdown className="markdown" source={this.state.post.markdownText}/>
+        <CustomMarkdown className="markdown" source={this.state.post.markdownText} />
       </div>
       {this.state.post.tags && !!this.state.post.tags.length && <div className="post-tags">
         {this.state.post.tags.map(tag => <span key={tag} className="post-tag">{tag}</span>)}
@@ -82,7 +82,7 @@ export class PostView extends React.Component<Props, State> {
         shortname="xapphire13"
         identifier={process.env.NODE_ENV === "production" ? this.state.post.id : "test"}
         title={this.state.post.title}
-        url={this.getThreadUrl(this.state.post)}/>
+        url={this.getThreadUrl(this.state.post)} />
     </div>;
   }
 

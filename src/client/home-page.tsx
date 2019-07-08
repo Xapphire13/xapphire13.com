@@ -2,13 +2,13 @@ import "./styles/home-page.less";
 import * as ClientApi from "./api/client-api";
 import * as React from "react";
 import * as Utils from "./utils";
-import {Disposable} from "./disposable";
-import {PlusCircle} from "react-feather";
-import {PostPreview} from "./post-preview";
-import {RouteComponentProps} from "react-router";
-import {ScaleLoader} from "halogenium";
-import {UserContext} from "./user-context";
-import Post = Xapphire13.Entities.Post;
+import { Disposable } from "./disposable";
+import { PlusCircle } from "react-feather";
+import { PostPreview } from "./post-preview";
+import { RouteComponentProps } from "react-router";
+import { ScaleLoader } from "halogenium";
+import { UserContext } from "./user-context";
+import Post from ":entities/post";
 import throttle = require("throttleit");
 
 const MAX_PREVIEW_LENGTH = 4000;
@@ -24,7 +24,7 @@ type State = {
 export class HomePage extends React.Component<Props, State> {
   public state: Readonly<State>;
 
-  private scrollSubscription: Disposable = {dispose: () => {}};
+  private scrollSubscription: Disposable = { dispose: () => { } };
   private ref: HTMLDivElement | null;
 
   constructor(props: Props) {
@@ -59,7 +59,7 @@ export class HomePage extends React.Component<Props, State> {
   }
 
   public render(): JSX.Element {
-    return <UserContext.Consumer>{({isAuthorized}) =>
+    return <UserContext.Consumer>{({ isAuthorized }) =>
       <div className="home-page" ref={ref => this.ref = ref}>
         {isAuthorized && <this.newPost />}
         {this.state.loadedPosts.map((post, i) => <PostPreview
@@ -83,7 +83,7 @@ export class HomePage extends React.Component<Props, State> {
   }
 
   private newPost = (): JSX.Element => <div className="new-post" title="New post" onClick={() => this.props.history.push("/posts/new")}>
-    <PlusCircle className="new-post-icon"/>
+    <PlusCircle className="new-post-icon" />
   </div>
 
   private loadingMessage = (): JSX.Element | null => {
@@ -118,12 +118,12 @@ export class HomePage extends React.Component<Props, State> {
           return false;
         }
 
-        const {loadedPosts} = this.state;
+        const { loadedPosts } = this.state;
         this.setState({
           loading: true
         });
 
-        const {continuationToken, values} = await ClientApi.getPosts(contToken);
+        const { continuationToken, values } = await ClientApi.getPosts(contToken);
 
         loadedPosts.push(...values);
 

@@ -4,6 +4,7 @@
   "author": "Xapphire13",
   "license": "MIT",
   "scripts": {
+    "build:client": "webpack --config webpack.dev.js",
     "build:server": "tsc -p tsconfig.server.json",
     "copy-sql": "xcopy /Y /E /I \"./src/sql\" \"./dist/sql\"",
     "deploy": "node ./scripts/deploy.js",
@@ -19,6 +20,7 @@
     "@types/codemirror": "0.0.76",
     "@types/cross-storage": "^0.8.29",
     "@types/delay": "^3.1.0",
+    "@types/document-ready": "^2.0.0",
     "@types/express": "^4.11.1",
     "@types/globby": "^9.1.0",
     "@types/halogen": "^0.2.6",

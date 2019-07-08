@@ -1,11 +1,11 @@
 import "./styles/playground-page.less";
 import * as ClientApi from "./api/client-api";
 import * as React from "react";
-import {Link, Route, RouteComponentProps, Switch} from "react-router-dom";
-import {PlaygroundExperimentPage} from "./playground-experiment-page";
-import {ScaleLoader} from "halogenium";
+import { Link, Route, RouteComponentProps, Switch } from "react-router-dom";
+import { PlaygroundExperimentPage } from "./playground-experiment-page";
+import { ScaleLoader } from "halogenium";
 import delay from "delay";
-import Experiment = Xapphire13.Entities.Experiment;
+import Experiment from ":entities/experiment";
 
 type Props = RouteComponentProps<any>;
 type State = {
@@ -31,28 +31,28 @@ export class PlaygroundPage extends React.Component<Props, State> {
       (async () => {
         const experiments = await ClientApi.getExperiments();
 
-        this.setState({experiments});
+        this.setState({ experiments });
       })()
     ]);
 
-    this.setState({loading: false});
+    this.setState({ loading: false });
   }
 
   public render(): JSX.Element {
     return <Switch>
       <Route exact path={`${this.props.match.path}/:experiment`} component={PlaygroundExperimentPage} />
       <Route render={() => <div className="playground-page">
-          {!this.state.loading ? this.state.experiments.map((experiment, index) =>
-            <div key={index}>
-              <Link to={`/playground/${experiment.name}`}>{experiment.name}</Link> - {experiment.description}
-            </div>
-          ) :
-            <div className="halogenium-container">
-              <ScaleLoader className="halogenium-loader" />
-            </div>
-          }
-        </div>
-      }/>
+        {!this.state.loading ? this.state.experiments.map((experiment, index) =>
+          <div key={index}>
+            <Link to={`/playground/${experiment.name}`}>{experiment.name}</Link> - {experiment.description}
+          </div>
+        ) :
+          <div className="halogenium-container">
+            <ScaleLoader className="halogenium-loader" />
+          </div>
+        }
+      </div>
+      } />
     </Switch>;
   }
 }

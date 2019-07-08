@@ -1,11 +1,12 @@
 import "./styles/login-page.less";
 import * as ClientApi from "./api/client-api";
 import * as React from "react";
-import {Redirect, RouteComponentProps} from "react-router-dom";
-import {Button} from "./button";
-import {QRCode} from "react-qr-svg";
-import {User} from "./models/user";
-import {onError} from "./utils";
+import { Redirect, RouteComponentProps } from "react-router-dom";
+import { Button } from "./button";
+import { QRCode } from "react-qr-svg";
+import { User } from "./models/user";
+import { onError } from "./utils";
+import { ToastId } from "react-toastify";
 
 type Props = {
   isAuthorized: boolean,
@@ -22,7 +23,7 @@ type State = {
 
 export class LoginPage extends React.Component<Props, State> {
   public state: Readonly<State>;
-  private toastId: number;
+  private toastId: ToastId;
 
   constructor(props: Props) {
     super(props);
@@ -57,15 +58,15 @@ export class LoginPage extends React.Component<Props, State> {
       name="username"
       placeholder="Username"
       value={this.state.username}
-      onChange={(ev) => this.setState({username: ev.target.value})} />
+      onChange={(ev) => this.setState({ username: ev.target.value })} />
     <input
       type="password"
       name="password"
       placeholder="Password"
       onKeyPress={this.onEnter(this.submitPassword)}
       value={this.state.password}
-      onChange={(ev) => this.setState({password: ev.target.value})} />
-    <Button text="Login" onClick={this.submitPassword}/>
+      onChange={(ev) => this.setState({ password: ev.target.value })} />
+    <Button text="Login" onClick={this.submitPassword} />
   </div>
 
   private authChallenge = (): JSX.Element => <div>
@@ -78,14 +79,14 @@ export class LoginPage extends React.Component<Props, State> {
           name="auth-code"
           placeholder="Enter authenticator code"
           value={this.state.code}
-          onChange={(ev) => this.setState({code: ev.target.value})}
+          onChange={(ev) => this.setState({ code: ev.target.value })}
           onKeyPress={this.onEnter(this.submitAuthCode)} />
-        <Button text="Submit" onClick={this.submitAuthCode}/>
+        <Button text="Submit" onClick={this.submitAuthCode} />
       </div>
     </div>
   </div>
 
-  private qrCode = (props: {url: string}): JSX.Element => <div className="auth-challenge-qr">
+  private qrCode = (props: { url: string }): JSX.Element => <div className="auth-challenge-qr">
     <p>First, scan this QR code into your authenticator app</p>
     <QRCode className="authenticator-qr" value={props.url} />
   </div>
@@ -104,8 +105,8 @@ export class LoginPage extends React.Component<Props, State> {
     }
 
     try {
-      const {authenticatorUrl, challenge} = await ClientApi.getTempToken(this.state.username, this.state.password);
-      this.setState({authenticatorUrl, challenge});
+      const { authenticatorUrl, challenge } = await ClientApi.getTempToken(this.state.username, this.state.password);
+      this.setState({ authenticatorUrl, challenge });
     } catch (err) {
       this.toastId = onError("Incorrect username or password", err, this.toastId);
     }
@@ -121,7 +122,7 @@ export class LoginPage extends React.Component<Props, State> {
       this.props.onAuthenticated({
         username: this.state.username
       }, token);
-      const {from = "/"} = this.props.location.state as {from: string} || {};
+      const { from = "/" } = this.props.location.state as { from: string } || {};
       this.props.history.replace(from);
     } catch (err) {
       this.toastId = onError("Incorrect auth code", err, this.toastId);
