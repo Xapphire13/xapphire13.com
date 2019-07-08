@@ -21,10 +21,7 @@ module.exports = {
         test: /src\/client\/.+\.tsx?$/,
         exclude: /node_modules/,
         use: {
-          loader: "ts-loader",
-          options: {
-            configFile: "tsconfig.client.json"
-          }
+          loader: "ts-loader"
         }
       }
     ]

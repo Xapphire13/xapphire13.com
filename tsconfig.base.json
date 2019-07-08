@@ -6,7 +6,6 @@
     "experimentalDecorators": true,
     "jsx": "react",
     "module": "commonjs",
-    "noEmit": true,
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
