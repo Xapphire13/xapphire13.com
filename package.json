@@ -16,15 +16,15 @@
 	},
 	"devDependencies": {
 		"@types/node": "^8.0.0",
-		"husky": "^1.0.0",
-		"jest": "^22.4.0",
+		"husky": "^3.0.0",
+		"jest": "^24.8.0",
 		"jest-runner-tslint": "^1.0.5",
 		"lerna": "^3.0.0",
-		"ts-jest": "^23.0.0",
-		"ts-loader": "^4.1.0",
+		"ts-jest": "^24.0.2",
+		"ts-loader": "^6.0.4",
 		"tslint": "^5.10.0",
 		"tslint-eslint-rules": "^5.3.1",
-		"typescript": "^2.8.3"
+		"typescript": "^3.5.2"
 	},
 	"jest": {
 		"globals": {
