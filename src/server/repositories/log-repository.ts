@@ -1,4 +1,4 @@
-import Log = Xapphire13.Entities.Log;
+import Log from "../entities/log";
 
 export interface LogRepository {
   createLog(level: number, message: string, exception?: string): Promise<void>;

@@ -1,4 +1,4 @@
-import {ContinuationToken, createPage, getPagingAdvice, hash} from "../src/pagination";
+import { ContinuationToken, createPage, getPagingAdvice, hash } from "../pagination";
 
 describe("ContinuationToken", () => {
   test("can be constructed from an id, offset and a hash", () => {
@@ -47,35 +47,35 @@ describe("createPage()", () => {
   });
 
   test("returns all given values when it's the first page", () => {
-    const values = [{id: 2}, {id: 1}];
+    const values = [{ id: 2 }, { id: 1 }];
     const result = createPage<any>("id", item => `${item.id}`)(10, values);
 
     expect(result.values).toEqual(values);
   });
 
   test("returns null continuationToken when first page contains all items", () => {
-    const values = [{id: 2}, {id: 1}];
+    const values = [{ id: 2 }, { id: 1 }];
     const result = createPage<any>("id", item => `${item.id}`)(10, values);
 
     expect(result.continuationToken).toBeNull();
   });
 
   test("returns continuationToken when first page isn't all items", () => {
-    const values = [{id: 2}, {id: 1}];
+    const values = [{ id: 2 }, { id: 1 }];
     const result = createPage<any>("id", item => `${item.id}`)(1, values);
 
     expect(result.continuationToken).not.toBeNull();
   });
 
   test("returns continuationToken when first page is exactly pageSize", () => {
-    const values = [{id: 2}, {id: 1}];
+    const values = [{ id: 2 }, { id: 1 }];
     const result = createPage<any>("id", item => `${item.id}`)(values.length, values);
 
     expect(result.continuationToken).not.toBeNull();
   });
 
   test("skips the items from the previous page", () => {
-    const values = [{id: 3}, {id: 2}, {id: 1}];
+    const values = [{ id: 3 }, { id: 2 }, { id: 1 }];
     const token = new ContinuationToken("3", 1, hash(["3"]));
     const result = createPage<any>("id", item => `${item.id}`)(10, values, token);
 
@@ -101,7 +101,7 @@ describe("createPage()", () => {
   });
 
   test("returns all items when the previous token's id has been removed", () => {
-    const values = [{id: 2}, {id: 1}];
+    const values = [{ id: 2 }, { id: 1 }];
     const token = new ContinuationToken("3", 1, hash(["3"]));
     const result = createPage<any>("id", item => `${item.id}`)(10, values, token);
 

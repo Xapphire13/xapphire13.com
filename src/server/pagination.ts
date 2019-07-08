@@ -1,5 +1,5 @@
 import * as crc32 from "crc-32";
-import Page = Xapphire13.Entities.Page;
+import Page from "./entities/page";
 
 export interface PagingAdvice {
   limit: number;
@@ -34,7 +34,7 @@ export class ContinuationToken {
 }
 
 export function getPagingAdvice(pageSize: number, continuationToken: ContinuationToken): PagingAdvice {
-  const {id = "", offset = 0} = continuationToken ? continuationToken : {};
+  const { id = "", offset = 0 } = continuationToken ? continuationToken : {};
 
   return {
     from: id,

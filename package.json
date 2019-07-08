@@ -4,15 +4,12 @@
   "author": "Xapphire13",
   "license": "MIT",
   "scripts": {
-    "test": "jest",
-    "test:debug": "node --inspect-brk ./node_modules/jest/bin/jest --verbose -i",
-    "build": "lerna run build",
-    "build:prod": "lerna run build:prod",
-    "start": "lerna run --parallel start",
-    "start:watch": "lerna run --parallel start:watch",
-    "prepush": "yarn test",
+    "build:server": "tsc -p tsconfig.server.json",
+    "copy-sql": "xcopy /Y /E /I \"./src/sql\" \"./dist/sql\"",
     "deploy": "node ./scripts/deploy.js",
-    "copy-sql": "xcopy /Y /E /I \"./src/sql\" \"./dist/sql\""
+    "prepush": "yarn test",
+    "test:debug": "node --inspect-brk ./node_modules/jest/bin/jest --verbose -i",
+    "test": "jest"
   },
   "devDependencies": {
     "@types/bcrypt": "^3.0.0",

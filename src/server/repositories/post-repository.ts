@@ -1,4 +1,4 @@
-import Post = Xapphire13.Entities.Post;
+import Post from "../entities/post";
 
 export interface PostRepository {
   createPost(post: Post): Promise<Post>;

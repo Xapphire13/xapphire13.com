@@ -1,11 +1,10 @@
-import {Authorized, Get, JsonController, QueryParam} from "routing-controllers";
-import {ContinuationToken, createPage, getPagingAdvice} from "../pagination";
-import {LogRepository} from "../repositories/log-repository";
-import {decorators} from "tsyringe";
-const {inject, injectable} = decorators;
+import { Authorized, Get, JsonController, QueryParam } from "routing-controllers";
+import { ContinuationToken, createPage, getPagingAdvice } from "../pagination";
+import { LogRepository } from "../repositories/log-repository";
+import { inject, injectable } from "tsyringe";
 
-import Log = Xapphire13.Entities.Log;
-import Page = Xapphire13.Entities.Page;
+import Log from "../entities/log";
+import Page from "../entities/page";
 
 export const DEFAULT_PAGE_SIZE = 20;
 
@@ -14,7 +13,7 @@ export const DEFAULT_PAGE_SIZE = 20;
 export class LogController {
   private createPage = createPage<Log>("timestamp", log => `${log.timestamp}_${log.level}_${log.message}_${log.exception}`);
 
-  constructor(@inject("LogRepository") private repository: LogRepository) {}
+  constructor(@inject("LogRepository") private repository: LogRepository) { }
 
   @Get("/logs")
   @Authorized()

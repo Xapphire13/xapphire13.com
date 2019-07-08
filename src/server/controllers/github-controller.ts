@@ -1,15 +1,14 @@
-import {Get, JsonController} from "routing-controllers";
-import {Config} from "../config";
+import { Get, JsonController } from "routing-controllers";
+import { Config } from "../config";
 import GitHub from "@octokit/rest";
-import {decorators} from "tsyringe";
+import { inject, singleton } from "tsyringe";
 import fetch from "node-fetch";
 import moment from "moment";
 
-const {inject, singleton} = decorators;
 const CACHE_LIFETIME = moment.duration(1, "h");
 
 type CachedValue<T = any> = [T, moment.Moment];
-type RepoWithPrCount = {repo: any, prCount: number};
+type RepoWithPrCount = { repo: any, prCount: number };
 
 @singleton()
 @JsonController("/api/github")
@@ -30,8 +29,8 @@ export class GitHubController {
   @Get("/projects")
   public async getProjects(): Promise<any[]> {
     if (moment().diff(this.ownedRepos[1]) > CACHE_LIFETIME.asMilliseconds()) {
-      const ownedRepos = (await this.loadAll(() => this.github.repos.getAll({type: "owner"}), data => data))
-        .filter(repo => !repo.fork && !repo.private);
+      const ownedRepos = (await this.github.repos.list({ type: "owner" })).data
+        .filter((repo: any) => !repo.fork && !repo.private);
       this.ownedRepos = [
         ownedRepos,
         moment()
@@ -49,9 +48,9 @@ export class GitHubController {
       const contributionRepos: RepoWithPrCount[] = [];
 
       if (this.config.githubToken) {
-        const pullRequests = await this.loadAll(() => this.github.search.issues({q: "is:pr author:Xapphire13 archived:false is:merged"}), data => data.items);
-        const repositories: {[url: string]: number} = {};
-        pullRequests.forEach(pr => {
+        const pullRequests = (await this.github.search.issues({ q: "is:pr author:Xapphire13 archived:false is:merged" })).data.items;
+        const repositories: { [url: string]: number } = {};
+        pullRequests.forEach((pr: any) => {
           repositories[pr.repository_url] = ~~repositories[pr.repository_url] + 1;
         });
 
@@ -82,15 +81,16 @@ export class GitHubController {
     return this.contributionRepos[0];
   }
 
-  private async loadAll(method: () => Promise<GitHub.AnyResponse>, accessor: (data: any) => any[]): Promise<any[]> {
-    const results = [];
-    let response = await method();
-    results.push(...accessor(response.data));
-    while (this.github.hasNextPage(response as any)) {
-      response = await this.github.getNextPage(response as any);
-      results.push(...accessor(response.data));
-    }
+  // TODO use updated paginated response
+  // private async loadAll(method: () => Promise<GitHub.AnyResponse>, accessor: (data: any) => any[]): Promise<any[]> {
+  //   const results = [];
+  //   let response = await method();
+  //   results.push(...accessor(response.data));
+  //   while (this.github.hasNextPage(response as any)) {
+  //     response = await this.github.getNextPage(response as any);
+  //     results.push(...accessor(response.data));
+  //   }
 
-    return results;
-  }
+  //   return results;
+  // }
 }

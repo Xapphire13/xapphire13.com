@@ -1,4 +1,5 @@
-import * as fs from "fs-extra";
+import fs from "fs";
+import util from "util";
 
 type ConfigFile = {
   githubToken?: string;
@@ -7,7 +8,7 @@ type ConfigFile = {
 export class Config {
   private configFile: ConfigFile;
 
-  constructor(private configFilePath: string) {}
+  constructor(private configFilePath: string) { }
 
   public get githubToken(): string | undefined {
     return this.configFile.githubToken;
@@ -15,7 +16,7 @@ export class Config {
 
   public async initialize(): Promise<void> {
     try {
-      this.configFile = await fs.readJSON(this.configFilePath, {encoding: "utf8"});
+      this.configFile = JSON.parse(await util.promisify(fs.readFile)(this.configFilePath, { encoding: "utf8" }));
     } catch {
       this.configFile = {};
     }
