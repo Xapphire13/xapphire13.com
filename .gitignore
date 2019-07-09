@@ -1,6 +1,7 @@
 dist/
 node_modules/
 coverage/
+.vscode/
 *.zip
 *.log
 config.json
