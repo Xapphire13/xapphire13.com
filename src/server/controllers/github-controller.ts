@@ -8,20 +8,19 @@ import moment from "moment";
 const CACHE_LIFETIME = moment.duration(1, "h");
 
 type CachedValue<T = any> = [T, moment.Moment];
-type RepoWithPrCount = { repo: any, prCount: number };
+type RepoWithPrCount = { repo: any; prCount: number };
 
 @singleton()
 @JsonController("/api/github")
 export class GitHubController {
-  private github = new GitHub();
+  private github: GitHub;
   private ownedRepos: CachedValue<any[]> = [[], moment(0)];
   private contributionRepos: CachedValue<RepoWithPrCount[]> = [[], moment(0)];
 
   constructor(@inject("Config") private config: Config) {
     if (config.githubToken) {
-      this.github.authenticate({
-        type: "token",
-        token: config.githubToken
+      this.github = new GitHub({
+        auth: config.githubToken
       });
     }
   }
@@ -29,12 +28,14 @@ export class GitHubController {
   @Get("/projects")
   public async getProjects(): Promise<any[]> {
     if (moment().diff(this.ownedRepos[1]) > CACHE_LIFETIME.asMilliseconds()) {
-      const ownedRepos = (await this.github.repos.list({ type: "owner" })).data
-        .filter((repo: any) => !repo.fork && !repo.private);
-      this.ownedRepos = [
-        ownedRepos,
-        moment()
-      ];
+      const opts = this.github.repos.list.endpoint.merge({
+        type: "owner"
+      });
+      const ownedRepos = (await this.github.paginate(
+        opts,
+        response => response.data
+      )).filter((repo: any) => !repo.fork && !repo.private);
+      this.ownedRepos = [ownedRepos, moment()];
 
       return ownedRepos;
     }
@@ -44,14 +45,24 @@ export class GitHubController {
 
   @Get("/contributions")
   public async getContributions(): Promise<RepoWithPrCount[]> {
-    if (moment().diff(this.contributionRepos[1]) > CACHE_LIFETIME.asMilliseconds()) {
+    if (
+      moment().diff(this.contributionRepos[1]) > CACHE_LIFETIME.asMilliseconds()
+    ) {
       const contributionRepos: RepoWithPrCount[] = [];
 
       if (this.config.githubToken) {
-        const pullRequests = (await this.github.search.issues({ q: "is:pr author:Xapphire13 archived:false is:merged" })).data.items;
+        const opts = this.github.search.issuesAndPullRequests.endpoint.merge({
+          q: "is:pr author:Xapphire13 archived:false is:merged"
+        });
+
+        const pullRequests = await this.github.paginate(
+          opts,
+          response => response.data
+        );
         const repositories: { [url: string]: number } = {};
         pullRequests.forEach((pr: any) => {
-          repositories[pr.repository_url] = ~~repositories[pr.repository_url] + 1;
+          repositories[pr.repository_url] =
+            ~~repositories[pr.repository_url] + 1;
         });
 
         for (const repoUrl of Object.keys(repositories)) {
@@ -70,27 +81,11 @@ export class GitHubController {
           }
         }
       }
-      this.contributionRepos = [
-        contributionRepos,
-        moment()
-      ];
+      this.contributionRepos = [contributionRepos, moment()];
 
       return contributionRepos;
     }
 
     return this.contributionRepos[0];
   }
-
-  // TODO use updated paginated response
-  // private async loadAll(method: () => Promise<GitHub.AnyResponse>, accessor: (data: any) => any[]): Promise<any[]> {
-  //   const results = [];
-  //   let response = await method();
-  //   results.push(...accessor(response.data));
-  //   while (this.github.hasNextPage(response as any)) {
-  //     response = await this.github.getNextPage(response as any);
-  //     results.push(...accessor(response.data));
-  //   }
-
-  //   return results;
-  // }
 }
