@@ -7,7 +7,7 @@
     "build:client": "webpack --config webpack.dev.js",
     "build:server": "tsc -p ./src/server",
     "copy-sql": "xcopy /Y /E /I \"./src/server/sql\" \"./dist/sql\"",
-    "deploy": "node ./scripts/deploy.js",
+    "deploy": "ts-node ./scripts/deploy.js",
     "prepush": "yarn test",
     "test:debug": "node --inspect-brk ./node_modules/jest/bin/jest --config test/jest.config.js --verbose -i",
     "test": "jest --config test/jest.config.js"
@@ -72,6 +72,7 @@
     "throttleit": "^1.0.0",
     "ts-jest": "^24.0.2",
     "ts-loader": "^6.0.4",
+    "ts-node": "^8.3.0",
     "tslint": "^5.10.0",
     "tslint-eslint-rules": "^5.3.1",
     "typescript": "^3.5.2",
