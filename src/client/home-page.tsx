@@ -38,7 +38,7 @@ export class HomePage extends React.Component<Props, State> {
 
   public async componentDidMount(): Promise<void> {
     const isMore = await this.loadPosts();
-
+    
     if (isMore) {
       this.scrollSubscription = Utils.subscribeToEvent(window, "scroll", this.onScroll);
     }

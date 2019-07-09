@@ -18,7 +18,9 @@ const CONFIG_PATH = path.resolve(__dirname, "./config.json");
 
 async function main(): Promise<void> {
   // Database
-  const db = await sqlite.open(path.resolve(__dirname, "../database.sqlite"), { promise: Promise });
+  const db = await sqlite.open(path.resolve(__dirname, "../database.sqlite"), {
+    promise: Promise
+  });
   await db.migrate({
     migrationsPath: path.resolve(__dirname, "./sql")
   });
@@ -67,11 +69,15 @@ async function main(): Promise<void> {
         return decodedToken;
       })();
 
-      const user = await container.resolve<UserRepository>("UserRepository").getUser(username);
+      const user = await container
+        .resolve<UserRepository>("UserRepository")
+        .getUser(username);
 
-      return await new Promise<boolean>(res => jwt.verify(token, user.tokenSecret, (err: any) => res(!err)));
+      return await new Promise<boolean>(res =>
+        jwt.verify(token, user.tokenSecret, (err: any) => res(!err))
+      );
     },
-    currentUserChecker: async (action) => {
+    currentUserChecker: async action => {
       const token = getToken(action.request.get("Authorization"));
 
       if (!token) {
@@ -80,7 +86,9 @@ async function main(): Promise<void> {
 
       const { username } = jwt.decode(token) as any;
 
-      return container.resolve<UserRepository>("UserRepository").getUser(username);
+      return container
+        .resolve<UserRepository>("UserRepository")
+        .getUser(username);
     }
   });
 
@@ -95,7 +103,9 @@ async function main(): Promise<void> {
 
   // Start!
   const server = app.listen(app.get("port"), () => {
-    container.resolve<Logger>("Logger").debug(`Listening on port ${server.address().port}`);
+    container
+      .resolve<Logger>("Logger")
+      .debug(`Listening on port ${server.address().port}`);
   });
 }
 

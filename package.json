@@ -11,7 +11,7 @@
     "prepush": "yarn test",
     "test:debug": "node --inspect-brk ./node_modules/jest/bin/jest --config test/jest.config.js --verbose -i",
     "test": "jest --config test/jest.config.js",
-    "start": "node ./dist/index.js"
+    "start": "ts-node -P scripts/tsconfig.json scripts/run.ts"
   },
   "devDependencies": {
     "@types/bcrypt": "^3.0.0",
