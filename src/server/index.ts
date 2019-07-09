@@ -3,7 +3,7 @@ import "./error-handler";
 import * as jwt from "jsonwebtoken";
 import * as path from "path";
 import * as sqlite from "sqlite";
-import { APP_PATH, IS_DEVELOPMENT, PLAYGROUND_PATH } from "./constants";
+import { APP_PATH, IS_DEVELOPMENT } from "./constants";
 import { useContainer, useExpressServer } from "routing-controllers";
 import { Config } from "./config";
 import { Logger } from "./logger";
@@ -94,7 +94,6 @@ async function main(): Promise<void> {
 
   // non-controller routes
   app.use("/app", express.static(APP_PATH));
-  app.use("/experiment", express.static(PLAYGROUND_PATH));
   app.use((_req, res) => {
     if (!res.headersSent) {
       res.sendFile(path.join(APP_PATH, "index.html"));
