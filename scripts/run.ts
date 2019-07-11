@@ -1,4 +1,15 @@
 import childProcess from "child_process";
+import yargs from "yargs";
+
+const args = yargs
+  .options({
+    debug: {
+      describe: "Run in debug mode",
+      type: "boolean",
+      default: false
+    } as yargs.Options
+  })
+  .strict().argv;
 
 (async function run() {
   const tsc = childProcess.spawn("./node_modules/.bin/tsc", [
@@ -42,11 +53,14 @@ import childProcess from "child_process";
 
   await Promise.all([serverCompile, webpackCompile]);
 
+  const nodemonArgs = ["--watch", "./dist", "--ignore", "./dist/app"];
+
+  if (args.debug) {
+    nodemonArgs.push("--inspect");
+  }
+
   const nodemon = childProcess.spawn("./node_modules/.bin/nodemon", [
-    "--watch",
-    "./dist",
-    "--ignore",
-    "./dist/app",
+    ...nodemonArgs,
     "./dist/index.js"
   ]);
 
