@@ -73,6 +73,10 @@ async function main(): Promise<void> {
         .resolve<UserRepository>("UserRepository")
         .getUser(username);
 
+      if (!user) {
+        return false;
+      }
+
       return await new Promise<boolean>(res =>
         jwt.verify(token, user.tokenSecret, (err: any) => res(!err))
       );
