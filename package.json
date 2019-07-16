@@ -54,7 +54,7 @@
     "lerna": "^3.0.0",
     "less": "^3.8.1",
     "less-loader": "^5.0.0",
-    "mini-css-extract-plugin": "^0.7.0",
+    "mini-css-extract-plugin": "^0.8.0",
     "nodemon": "^1.18.4",
     "pixi.js": "^5.0.4",
     "react": "^16.5.2",
