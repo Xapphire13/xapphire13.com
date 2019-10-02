@@ -97,7 +97,7 @@
     "node-fetch": "^2.2.0",
     "otplib": "^11.0.1",
     "reflect-metadata": "^0.1.12",
-    "routing-controllers": "^0.7.6",
+    "routing-controllers": "^0.8.0",
     "semaphore-async-await": "^1.5.1",
     "sqlite": "^3.0.0",
     "tsyringe": "^3.3.0"
