@@ -55,7 +55,7 @@
     "less": "^3.8.1",
     "less-loader": "^5.0.0",
     "mini-css-extract-plugin": "^0.7.0",
-    "nodemon": "^1.18.4",
+    "nodemon": "^2.0.0",
     "pixi.js": "^5.0.4",
     "react": "^16.5.2",
     "react-codemirror2": "^6.0.0",
