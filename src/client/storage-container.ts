@@ -2,7 +2,7 @@ import { CrossStorageHub } from "cross-storage";
 import ready from "document-ready";
 
 const ORIGIN = process.env.NODE_ENV === "production" ?
-  /:\/\/(www\.)?xapphire13.com$/ :
+  /:\/\/(www\.)?xapphire13(\.herokuapp)?\.com$/ :
   /127\.0\.0\.1:8080$/;
 
 ready(() => {
