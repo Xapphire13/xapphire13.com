@@ -8,12 +8,12 @@
     "build:server": "tsc -p ./src/server",
     "copy-sql": "xcopy /Y /E /I \"./src/server/sql\" \"./dist/sql\"",
     "deploy": "ts-node ./scripts/deploy.js",
-    "prepush": "yarn test",
+    "prepush": "npm run test",
     "test:debug": "node --inspect-brk ./node_modules/jest/bin/jest --config test/jest.config.js --verbose -i",
     "test": "jest --config test/jest.config.js",
     "start": "ts-node -P scripts/tsconfig.json scripts/run.ts",
     "start:debug": "ts-node -P scripts/tsconfig.json scripts/run.ts --debug",
-    "heroku-postinstall": "yarn run build:client && yarn run build:server"
+    "heroku-postinstall": "npm run build:client && npm run build:server"
   },
   "devDependencies": {
     "@types/bcrypt": "^3.0.0",
