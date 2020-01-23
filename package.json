@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "build:client": "webpack --config webpack.dev.js",
+    "build:client:prod": "webpack --config webpack.prod.js",
     "build:server": "tsc -p ./src/server",
     "copy-sql": "cp -r ./src/server/sql ./dist/sql",
     "deploy": "ts-node ./scripts/deploy.js",
@@ -13,7 +14,7 @@
     "test": "jest --config test/jest.config.js",
     "start": "ts-node -P scripts/tsconfig.json scripts/run.ts",
     "start:debug": "ts-node -P scripts/tsconfig.json scripts/run.ts --debug",
-    "heroku-postbuild": "npm run build:client && npm run build:server && npm run copy-sql"
+    "heroku-postbuild": "npm run build:client:prod && npm run build:server && npm run copy-sql"
   },
   "devDependencies": {
     "@types/bcrypt": "^3.0.0",
