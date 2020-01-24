@@ -5,7 +5,7 @@ import User from "../entities/user";
 
 @injectable()
 export class SqlUserRepository implements UserRepository {
-  constructor(@inject("database") private db: Database) {}
+  constructor(@inject("database") private db: Database) { }
 
   public async getUser(username: string): Promise<User | null> {
     const record = await this.db.get(
@@ -27,11 +27,12 @@ export class SqlUserRepository implements UserRepository {
       name: record.name,
       passwordHash: record.password_hash,
       tokenSecret: record.token_secret,
-      authenticatorSecret: record.authenticator_secret
+      authenticatorSecret: record.authenticator_secret,
+      isAdmin: false
     };
   }
 
-  public async createUser(username: string, name: string): Promise<number> {
+  public async createUser(username: string, name: string): Promise<string> {
     const result = await this.db.run(
       `
       INSERT INTO User (username, name)
@@ -40,7 +41,7 @@ export class SqlUserRepository implements UserRepository {
       { $username: username, $name: name }
     );
 
-    return result.lastID;
+    return String(result.lastID);
   }
 
   public async getUserCount(): Promise<number> {
@@ -54,7 +55,7 @@ export class SqlUserRepository implements UserRepository {
     return record.count;
   }
 
-  public async isAdmin(userId: number): Promise<boolean> {
+  public async isAdmin(userId: string): Promise<boolean> {
     return !!(await this.db.get(
       `
       SELECT *
@@ -66,7 +67,7 @@ export class SqlUserRepository implements UserRepository {
     ));
   }
 
-  public async addAdmin(userId: number): Promise<void> {
+  public async addAdmin(userId: string): Promise<void> {
     await this.db.run(
       `
       INSERT INTO Admins
@@ -76,7 +77,7 @@ export class SqlUserRepository implements UserRepository {
     );
   }
 
-  public storeTokenSecret(userId: number, secret: string): Promise<any> {
+  public storeTokenSecret(userId: string, secret: string): Promise<any> {
     return this.db.run(
       `
       UPDATE User
@@ -90,7 +91,7 @@ export class SqlUserRepository implements UserRepository {
     );
   }
 
-  public storePasswordHash(userId: number, hash: string): Promise<any> {
+  public storePasswordHash(userId: string, hash: string): Promise<any> {
     return this.db.run(
       `
       UPDATE User
@@ -105,7 +106,7 @@ export class SqlUserRepository implements UserRepository {
   }
 
   public storeAuthenticatorSecret(
-    userId: number,
+    userId: string,
     secret: string
   ): Promise<any> {
     return this.db.run(

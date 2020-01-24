@@ -1,8 +1,9 @@
 export default interface User {
-  id: number;
+  id: string;
   username: string;
   name: string;
   passwordHash: string;
   tokenSecret: string;
   authenticatorSecret: string;
+  isAdmin: boolean;
 }
