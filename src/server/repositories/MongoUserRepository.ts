@@ -37,15 +37,15 @@ export default class MongoUserRepository implements UserRepository {
   }
 
   async storeTokenSecret(userId: string, secret: string): Promise<void> {
-    await this.userCollection.updateOne({ _id: userId }, { tokenSecret: secret });
+    await this.userCollection.updateOne({ _id: userId }, { $set: { tokenSecret: secret } });
   }
 
   async storePasswordHash(userId: string, hash: string): Promise<void> {
-    await this.userCollection.updateOne({ _id: userId }, { passwordHash: hash });
+    await this.userCollection.updateOne({ _id: userId }, { $set: { passwordHash: hash } });
   }
 
   async storeAuthenticatorSecret(userId: string, secret: string): Promise<void> {
-    await this.userCollection.updateOne({ _id: userId }, { authenticatorSecret: secret });
+    await this.userCollection.updateOne({ _id: userId }, { $set: { authenticatorSecret: secret } });
   }
 
   async isAdmin(userId: string): Promise<boolean> {
