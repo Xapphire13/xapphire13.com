@@ -13,6 +13,7 @@ import registerDevelopmentDependencies from "./development-registry";
 import registerProductionDependencies from "./production-registry";
 import bodyParser = require("body-parser");
 import express = require("express");
+import { MongoClient } from "mongodb";
 
 const CONFIG_PATH = path.resolve(__dirname, "./config.json");
 
@@ -25,6 +26,11 @@ async function main(): Promise<void> {
     migrationsPath: path.resolve(__dirname, "./sql")
   });
   await db.exec("PRAGMA foreign_keys = 1;");
+  if (process.env.MONGODB_URI == null) {
+    throw new Error("Can't get mongo connection URI");
+  }
+  const mongoDb = new MongoClient(process.env.MONGODB_URI);
+  await mongoDb.connect();
 
   const app = express();
 
@@ -33,7 +39,7 @@ async function main(): Promise<void> {
   await config.initialize();
   container.registerInstance("Config", config);
   if (!IS_DEVELOPMENT) {
-    registerProductionDependencies(db);
+    registerProductionDependencies(db, mongoDb);
   } else {
     registerDevelopmentDependencies(db);
   }
