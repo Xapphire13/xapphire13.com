@@ -9,7 +9,7 @@ import {
   Post
 } from "routing-controllers";
 import Boom from "boom";
-import { UserRepository } from "../repositories/user-repository";
+import { UserRepository } from "../repositories/UserRepository";
 import { inject, injectable } from "tsyringe";
 import User from "../entities/user";
 import otplib = require("otplib");
@@ -17,7 +17,7 @@ import otplib = require("otplib");
 @injectable()
 @JsonController("/api")
 export class AuthController {
-  constructor(@inject("UserRepository") private repository: UserRepository) {}
+  constructor(@inject("UserRepository") private repository: UserRepository) { }
 
   @Get("/permissions")
   public async getPermissions(
@@ -46,19 +46,10 @@ export class AuthController {
     if (payload.username && payload.password) {
       const { username, password } = payload;
 
-      let user = await this.repository.getUser(username);
+      const user = await this.repository.getUser(username);
 
       if (!user) {
-        if ((await this.repository.getUserCount()) === 0) {
-          // Create admin user since there are no users yet
-          const userId = await this.repository.createUser(username, "Admin");
-          await this.repository.addAdmin(userId);
-          user = await this.repository.getUser(username);
-        }
-
-        if (!user) {
-          throw Boom.unauthorized("No such user");
-        }
+        throw Boom.unauthorized("No such user");
       }
 
       const challenge = await this.getAuthChallenge(

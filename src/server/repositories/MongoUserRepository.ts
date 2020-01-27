@@ -1,4 +1,4 @@
-import { UserRepository } from "./user-repository";
+import { UserRepository } from "./UserRepository";
 import User from ":entities/user";
 import { injectable, inject } from "tsyringe";
 import { Db as MongoDatabase, Collection } from "mongodb";
@@ -22,18 +22,6 @@ export default class MongoUserRepository implements UserRepository {
     }
 
     return result;
-  }
-
-  createUser(_username: string, _name: string): Promise<string> {
-    throw new Error("Method not implemented.");
-  }
-
-  getUserCount(): Promise<number> {
-    return this.userCollection.count();
-  }
-
-  addAdmin(_userId: string): Promise<void> {
-    throw new Error("Method not implemented.");
   }
 
   async storeTokenSecret(userId: string, secret: string): Promise<void> {
