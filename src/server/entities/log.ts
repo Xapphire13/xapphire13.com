@@ -1,5 +1,5 @@
 export default interface Log {
-  timestamp: string;
+  timestamp: Date;
   level: number;
   message: string;
   exception?: string;
