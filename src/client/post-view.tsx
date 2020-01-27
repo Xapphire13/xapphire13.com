@@ -80,13 +80,13 @@ export class PostView extends React.Component<Props, State> {
       <DisqusThread
         className="disqus-thread"
         shortname="xapphire13"
-        identifier={this.state.post.id!}
+        identifier={this.state.post._id as unknown as string} // TODO
         title={this.state.post.title}
         url={this.getThreadUrl(this.state.post)} />
     </div>;
   }
 
   private getThreadUrl(post: Post): string {
-    return `http://www.xapphire13.com/posts/${post.id}`;
+    return `http://www.xapphire13.com/posts/${post._id}`;
   }
 }

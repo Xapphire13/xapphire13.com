@@ -63,17 +63,17 @@ export class HomePage extends React.Component<Props, State> {
       <div className="home-page" ref={ref => this.ref = ref}>
         {isAuthorized && <this.newPost />}
         {this.state.loadedPosts.map((post, i) => <PostPreview
-          key={post.id}
-          id={post.id!}
+          key={post._id as unknown as string} // TODO
+          id={post._id as unknown as string} // TODO
           title={post.title}
           created={new Date(post.createdAt)}
           lastModified={new Date(post.lastModified)}
           markdownText={post.markdownText}
           tags={post.tags}
           maxLength={MAX_PREVIEW_LENGTH}
-          edit={() => this.props.history.push(`/posts/${post.id}/edit`)}
+          edit={() => this.props.history.push(`/posts/${post._id}/edit`)}
           delete={async () => {
-            await ClientApi.deletePost(post.id!);
+            await ClientApi.deletePost(post._id as unknown as string); // TODO
             delete this.state.loadedPosts[i];
             this.setState({});
           }} />)}

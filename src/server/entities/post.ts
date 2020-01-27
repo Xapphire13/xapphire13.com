@@ -1,5 +1,7 @@
+import { ObjectId } from "mongodb";
+
 export default interface Post {
-  id?: string;
+  _id: ObjectId;
   title: string;
   createdAt: Date;
   lastModified: Date;
