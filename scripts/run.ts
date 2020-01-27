@@ -61,7 +61,10 @@ const args = yargs
 
   const nodemon = childProcess.spawn("./node_modules/.bin/nodemon", [
     ...nodemonArgs,
-    "./dist/index.js"
+    "--exec",
+    "heroku local",
+    "--signal",
+    "SIGTERM"
   ]);
 
   nodemon.stdout.on("data", data => {
