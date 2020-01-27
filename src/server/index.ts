@@ -15,20 +15,22 @@ import { MongoClient } from "mongodb";
 
 
 async function main(): Promise<void> {
-  if (process.env.MONGODB_URI == null) {
+  // Config
+  const config = new Config();
+
+  if (config.mongoDbConnectionString == null) {
     throw new Error("Can't get mongo connection URI");
   }
-  const mongoDb = new MongoClient(process.env.MONGODB_URI);
+  const mongoDb = new MongoClient(config.mongoDbConnectionString, { useUnifiedTopology: true });
   await mongoDb.connect();
 
-  const app = express();
-
-  // Config
-  container.registerInstance("Config", new Config());
+  container.registerInstance("Config", config);
   registerDependencies(mongoDb);
   useContainer({
     get: (token: any) => container.resolve(token)
   });
+
+  const app = express();
   app.set("port", process.env.PORT || 8080);
   app.use(bodyParser.json());
 
