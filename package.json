@@ -9,7 +9,7 @@
     "build:server": "tsc -p ./src/server",
     "prepush": "npm run test",
     "test:debug": "node --inspect-brk ./node_modules/jest/bin/jest --config test/jest.config.js --verbose -i",
-    "test": "jest --config test/jest.config.js",
+    "test": "jest --config test/jest.config.js --passWithNoTests",
     "start": "ts-node -P scripts/tsconfig.json scripts/run.ts",
     "start:debug": "ts-node -P scripts/tsconfig.json scripts/run.ts --debug",
     "heroku-postbuild": "npm run build:client:prod && npm run build:server"
