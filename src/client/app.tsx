@@ -1,22 +1,22 @@
 import "./styles/app.less";
 import "react-toastify/dist/ReactToastify.css";
 import * as React from "react";
-import {Route, RouteComponentProps, Switch, withRouter} from "react-router-dom";
-import {ToastContainer, toast} from "react-toastify";
-import {AdminPage} from "./admin-page";
-import {AppHeader} from "./app-header";
-import {AuthManager} from "./auth-manager";
-import {EditPostPage} from "./edit-post-page";
-import {GitHub} from "react-feather";
-import {HomePage} from "./home-page";
-import {LoginPage} from "./login-page";
-import {NotFound} from "./not-found";
-import {PlaygroundPage} from "./playground-page";
-import {PostView} from "./post-view";
-import {ProjectsPage} from "./projects-page";
-import {ProtectedRoute} from "./route-helpers";
-import {User} from "./models/user";
-import {UserContext} from "./user-context";
+import { Route, RouteComponentProps, Switch, withRouter } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import { AdminPage } from "./admin-page";
+import { AppHeader } from "./app-header";
+import { AuthManager } from "./auth-manager";
+import { EditPostPage } from "./edit-post-page";
+import { GitHub } from "react-feather";
+import { HomePage } from "./home-page";
+import { LoginPage } from "./login-page";
+import { NotFound } from "./not-found";
+import { PlaygroundPage } from "./playground-page";
+import { PostView } from "./post-view";
+import { ProjectsPage } from "./projects-page";
+import { ProtectedRoute } from "./route-helpers";
+import { User } from "./models/user";
+import { UserContext } from "./user-context";
 
 type Props = {
   authManager: AuthManager
@@ -51,7 +51,7 @@ export const App = withRouter(class App extends React.Component<Props, State> {
     ]).then(([user, isAuthorized]) => {
       this.setState({
         user,
-        isAuthorized,
+        isAuthorized: isAuthorized ?? false,
         loading: false
       });
     });
@@ -83,7 +83,7 @@ export const App = withRouter(class App extends React.Component<Props, State> {
         </div>
         <footer className="app-footer">
           <a href="https://github.com/xapphire13/xapphire13.com" target="_blank" className="github-link">
-            <GitHub style={{position: "relative", top: "5px", marginRight: "0.3em"}} />GitHub
+            <GitHub style={{ position: "relative", top: "5px", marginRight: "0.3em" }} />GitHub
           </a>
         </footer>
       </div>
