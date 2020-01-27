@@ -1,9 +1,9 @@
-import { LogRepository } from "./repositories/log-repository";
+import { LogRepository } from "./repositories/LogRepository";
 import { Logger } from "./logger";
 import { inject, injectable } from "tsyringe";
 
 @injectable()
-export class SqlLogger implements Logger {
+export default class DatabaseLogger implements Logger {
   constructor(@inject("LogRepository") private repository: LogRepository) { }
 
   public debug(): Promise<void> {

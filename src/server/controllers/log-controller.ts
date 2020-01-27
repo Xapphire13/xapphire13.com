@@ -1,6 +1,6 @@
 import { Authorized, Get, JsonController, QueryParam } from "routing-controllers";
 import { ContinuationToken, createPage, getPagingAdvice } from "../pagination";
-import { LogRepository } from "../repositories/log-repository";
+import { LogRepository } from "../repositories/LogRepository";
 import { inject, injectable } from "tsyringe";
 
 import Log from "../entities/log";
@@ -21,7 +21,7 @@ export class LogController {
     const token = continuationToken && new ContinuationToken(continuationToken);
     const pagingAdvice = token && getPagingAdvice(DEFAULT_PAGE_SIZE, token);
     const pageSize = pagingAdvice ? pagingAdvice.limit : DEFAULT_PAGE_SIZE;
-    const logs = await this.repository.getLogs(pageSize, pagingAdvice && pagingAdvice.from);
+    const logs = await this.repository.getLogs(pageSize, pagingAdvice ? new Date(pagingAdvice.from) : undefined);
 
     return this.createPage(pageSize, logs, token || undefined);
   }
