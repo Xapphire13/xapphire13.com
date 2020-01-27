@@ -110,7 +110,7 @@ export class EditPostPage extends React.Component<Props, State> {
     } else {
       try {
         const post = await ClientApi.createPost(title, markdownText, tags);
-        this.props.history.replace(`/posts/${post.id}`);
+        this.props.history.replace(`/posts/${post._id}`);
       } catch (err) {
         this.toastId = onError("Error creating post", err, this.toastId);
       }

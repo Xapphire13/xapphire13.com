@@ -2,7 +2,7 @@ import { PostRepository } from "./PostRepository";
 import Semaphore from "semaphore-async-await";
 import { inject, injectable } from "tsyringe";
 import Post from "../entities/post";
-import { Db as MongoDatabase, Collection } from "mongodb";
+import { Db as MongoDatabase, Collection, ObjectId } from "mongodb";
 
 @injectable()
 export default class MongoPostRepository implements PostRepository {
@@ -14,7 +14,6 @@ export default class MongoPostRepository implements PostRepository {
   }
 
   public async createPost(post: Post): Promise<Post> {
-    await this.lock.acquire();
     const result = await this.postCollection.insertOne({
       createdAt: new Date(),
       lastModified: new Date(),
@@ -23,44 +22,47 @@ export default class MongoPostRepository implements PostRepository {
       markdownText: post.markdownText,
       isPublished: false
     });
-    this.lock.release();
 
-    post.id = result.insertedId.toHexString();
+    post._id = result.insertedId;
 
     return post;
   }
 
-  public getPost(id: string): Promise<Post | null> {
-    return this.postCollection.findOne({ _id: id });
+  public async getPost(id: string): Promise<Post | null> {
+    const post = await this.postCollection.findOne({ _id: new ObjectId(id) });
+
+    if (post) {
+      post._id = post._id.toHexString() as any; // TODO
+    }
+
+    return post;
   }
 
   public async getPosts(pageSize: number, from?: Date): Promise<Post[]> {
-    return this.postCollection.find({
+    return (await this.postCollection.find({
       createdAt: {
         $lte: from || new Date()
       }
-    }).limit(pageSize).sort("createdAt", -1).toArray();
+    }).limit(pageSize).sort("createdAt", -1).toArray()).map(post => {
+      post._id = post._id.toHexString() as any; // TODO
+      return post;
+    });
   }
 
   public async deletePost(id: string): Promise<void> {
     await this.lock.acquire();
-    await this.postCollection.deleteOne({ _id: id });
+    await this.postCollection.deleteOne({ _id: new ObjectId(id) });
     this.lock.release();
   }
 
-  public async editPost(postDelta: Post): Promise<void> {
-    await this.lock.acquire();
+  public async editPost(id: string, postDelta: Partial<Post>): Promise<void> {
+    postDelta.tags = postDelta.tags?.map(tag => tag.toLowerCase());
 
-    postDelta.tags = postDelta.tags ? postDelta.tags.map(tag => tag.toLowerCase()) : [];
-    const { id, ...delta } = postDelta;
-
-    await this.postCollection.updateOne({ _id: id }, {
+    await this.postCollection.updateOne({ _id: new ObjectId(id) }, {
       $set: {
-        ...delta,
+        ...postDelta,
         lastModified: new Date()
       }
     })
-
-    this.lock.release();
   }
 }

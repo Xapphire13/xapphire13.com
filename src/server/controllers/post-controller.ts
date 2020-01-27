@@ -11,7 +11,7 @@ const DEFAULT_PAGE_SIZE = 5;
 @injectable()
 @JsonController("/api")
 export class PostController {
-  private createPage = createPage<PostEntity>("id", post => post.id!);
+  private createPage = createPage<PostEntity>("id", post => post._id.toHexString());
 
   constructor(@inject("PostRepository") private repository: PostRepository) { }
 
@@ -25,13 +25,12 @@ export class PostController {
   @Patch("/posts/:id")
   @Authorized()
   @OnUndefined(204)
-  public async patchPost(@Param("id") id: string, @Body() post: PostEntity): Promise<void> {
+  public async patchPost(@Param("id") id: string, @Body() post: Partial<PostEntity>): Promise<void> {
     if (!await this.repository.getPost(id)) {
       throw Boom.notFound();
     }
 
-    post.id = id;
-    await this.repository.editPost(post);
+    await this.repository.editPost(id, post);
   }
 
   @Delete("/posts/:id")
