@@ -13,7 +13,6 @@ import bodyParser = require("body-parser");
 import express = require("express");
 import { MongoClient } from "mongodb";
 
-
 async function main(): Promise<void> {
   // Config
   const config = new Config();
