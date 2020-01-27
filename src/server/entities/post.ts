@@ -1,8 +1,8 @@
 export default interface Post {
-  id: string;
+  id?: string;
   title: string;
-  created: string;
-  lastModified: string;
+  createdAt: Date;
+  lastModified: Date;
   markdownText: string;
   tags: string[];
   isPublished: boolean;
