@@ -3,14 +3,13 @@ import "./error-handler";
 import * as jwt from "jsonwebtoken";
 import * as path from "path";
 import * as sqlite from "sqlite";
-import { APP_PATH, IS_DEVELOPMENT } from "./constants";
+import { APP_PATH } from "./constants";
 import { useContainer, useExpressServer } from "routing-controllers";
 import { Config } from "./config";
 import { Logger } from "./logger";
-import { UserRepository } from "./repositories/user-repository";
+import { UserRepository } from "./repositories/UserRepository";
 import { container } from "tsyringe";
-import registerDevelopmentDependencies from "./development-registry";
-import registerProductionDependencies from "./production-registry";
+import registerDependencies from "./registerDependencies";
 import bodyParser = require("body-parser");
 import express = require("express");
 import { MongoClient } from "mongodb";
@@ -38,11 +37,7 @@ async function main(): Promise<void> {
   const config = new Config(CONFIG_PATH);
   await config.initialize();
   container.registerInstance("Config", config);
-  if (!IS_DEVELOPMENT) {
-    registerProductionDependencies(db, mongoDb);
-  } else {
-    registerDevelopmentDependencies(db);
-  }
+  registerDependencies(db, mongoDb);
   useContainer({
     get: (token: any) => container.resolve(token)
   });
