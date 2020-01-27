@@ -2,7 +2,6 @@ import "reflect-metadata";
 import "./error-handler";
 import * as jwt from "jsonwebtoken";
 import * as path from "path";
-import * as sqlite from "sqlite";
 import { APP_PATH } from "./constants";
 import { useContainer, useExpressServer } from "routing-controllers";
 import { Config } from "./config";
@@ -17,14 +16,6 @@ import { MongoClient } from "mongodb";
 const CONFIG_PATH = path.resolve(__dirname, "./config.json");
 
 async function main(): Promise<void> {
-  // Database
-  const db = await sqlite.open(path.resolve(__dirname, "../database.sqlite"), {
-    promise: Promise
-  });
-  await db.migrate({
-    migrationsPath: path.resolve(__dirname, "./sql")
-  });
-  await db.exec("PRAGMA foreign_keys = 1;");
   if (process.env.MONGODB_URI == null) {
     throw new Error("Can't get mongo connection URI");
   }
@@ -37,7 +28,7 @@ async function main(): Promise<void> {
   const config = new Config(CONFIG_PATH);
   await config.initialize();
   container.registerInstance("Config", config);
-  registerDependencies(db, mongoDb);
+  registerDependencies(mongoDb);
   useContainer({
     get: (token: any) => container.resolve(token)
   });
