@@ -13,7 +13,6 @@ import bodyParser = require("body-parser");
 import express = require("express");
 import { MongoClient } from "mongodb";
 
-const CONFIG_PATH = path.resolve(__dirname, "./config.json");
 
 async function main(): Promise<void> {
   if (process.env.MONGODB_URI == null) {
@@ -25,9 +24,7 @@ async function main(): Promise<void> {
   const app = express();
 
   // Config
-  const config = new Config(CONFIG_PATH);
-  await config.initialize();
-  container.registerInstance("Config", config);
+  container.registerInstance("Config", new Config());
   registerDependencies(mongoDb);
   useContainer({
     get: (token: any) => container.resolve(token)
@@ -97,10 +94,10 @@ async function main(): Promise<void> {
   });
 
   // Start!
-  const server = app.listen(app.get("port"), () => {
+  app.listen(app.get("port"), () => {
     container
       .resolve<Logger>("Logger")
-      .debug(`Listening on port ${server.address().port}`);
+      .debug(`Listening on port ${app.get("port")}`);
   });
 }
 
