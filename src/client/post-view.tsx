@@ -55,14 +55,14 @@ export class PostView extends React.Component<Props, State> {
       </div>;
     }
 
-    const isEdited = Date.parse(this.state.post.created) !== Date.parse(this.state.post.lastModified);
+    const isEdited = this.state.post.createdAt !== this.state.post.lastModified;
     const lengthInMin = Math.floor(readingTime(this.state.post.markdownText).time / 1000 / 60);
 
     return <div className="post-view">
       <div className="post-title">{this.state.post.title}</div>
       <div className="post-details">
-        <span className="post-details-created" title={this.state.post.created.toLocaleString()}>
-          <Clock className="icon" />{moment(this.state.post.created).fromNow()}
+        <span className="post-details-created" title={this.state.post.createdAt.toLocaleString()}>
+          <Clock className="icon" />{moment(this.state.post.createdAt).fromNow()}
         </span>
         {isEdited && " \u00B7 "}
         {isEdited && <span className="post-details-edited" title={this.state.post.lastModified.toLocaleString()}>
@@ -80,13 +80,13 @@ export class PostView extends React.Component<Props, State> {
       <DisqusThread
         className="disqus-thread"
         shortname="xapphire13"
-        identifier={process.env.NODE_ENV === "production" ? this.state.post.id : "test"}
+        identifier={this.state.post.id!}
         title={this.state.post.title}
         url={this.getThreadUrl(this.state.post)} />
     </div>;
   }
 
   private getThreadUrl(post: Post): string {
-    return `http://www.xapphire13.com/posts/${process.env.NODE_ENV === "production" ? post.id : "test"}`;
+    return `http://www.xapphire13.com/posts/${post.id}`;
   }
 }

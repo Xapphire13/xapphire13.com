@@ -1,7 +1,7 @@
 import { UserRepository } from "./UserRepository";
 import User from ":entities/user";
 import { injectable, inject } from "tsyringe";
-import { Db as MongoDatabase, Collection } from "mongodb";
+import { Db as MongoDatabase, Collection, ObjectId } from "mongodb";
 
 @injectable()
 export default class MongoUserRepository implements UserRepository {
@@ -18,7 +18,7 @@ export default class MongoUserRepository implements UserRepository {
     });
 
     if (result) {
-      result.id = (result as any)._id;
+      result.id = ((result as any)._id as ObjectId).toHexString();
     }
 
     return result;
