@@ -1,6 +1,6 @@
-import * as bcrypt from "bcrypt";
-import * as crypto from "crypto";
-import * as jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+import crypto from "crypto";
+import jwt from "jsonwebtoken";
 import {
   Body,
   CurrentUser,
