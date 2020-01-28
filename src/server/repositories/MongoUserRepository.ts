@@ -1,7 +1,7 @@
 import { UserRepository } from "./UserRepository";
 import User from ":entities/user";
 import { injectable, inject } from "tsyringe";
-import { Db as MongoDatabase, Collection, ObjectId } from "mongodb";
+import { Db as MongoDatabase, Collection } from "mongodb";
 
 @injectable()
 export default class MongoUserRepository implements UserRepository {
@@ -12,32 +12,26 @@ export default class MongoUserRepository implements UserRepository {
     this.userCollection = db.collection("users");
   }
 
-  async getUser(username: string): Promise<User | null> {
-    const result = await this.userCollection.findOne({
+  getUser(username: string): Promise<User | null> {
+    return this.userCollection.findOne({
       username
     });
-
-    if (result) {
-      result.id = ((result as any)._id as ObjectId).toHexString();
-    }
-
-    return result;
   }
 
-  async storeTokenSecret(userId: string, secret: string): Promise<void> {
-    await this.userCollection.updateOne({ _id: userId }, { $set: { tokenSecret: secret } });
+  async storeTokenSecret(username: string, secret: string): Promise<void> {
+    await this.userCollection.updateOne({ username: username }, { $set: { tokenSecret: secret } });
   }
 
-  async storePasswordHash(userId: string, hash: string): Promise<void> {
-    await this.userCollection.updateOne({ _id: userId }, { $set: { passwordHash: hash } });
+  async storePasswordHash(username: string, hash: string): Promise<void> {
+    await this.userCollection.updateOne({ username: username }, { $set: { passwordHash: hash } });
   }
 
-  async storeAuthenticatorSecret(userId: string, secret: string): Promise<void> {
-    await this.userCollection.updateOne({ _id: userId }, { $set: { authenticatorSecret: secret } });
+  async storeAuthenticatorSecret(username: string, secret: string): Promise<void> {
+    await this.userCollection.updateOne({ username: username }, { $set: { authenticatorSecret: secret } });
   }
 
-  async isAdmin(userId: string): Promise<boolean> {
-    const user = await this.userCollection.findOne({ _id: userId });
+  async isAdmin(username: string): Promise<boolean> {
+    const user = await this.userCollection.findOne({ username: username });
 
     return !!user && user.isAdmin;
   }
