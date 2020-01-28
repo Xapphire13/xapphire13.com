@@ -36,7 +36,7 @@ export default class MongoPostRepository implements PostRepository {
   }
 
   public async getPosts(pageSize: number, from?: Date): Promise<Post[]> {
-    return await this.postCollection
+    return this.postCollection
       .find({
         createdAt: {
           $lte: from || new Date()
@@ -54,6 +54,7 @@ export default class MongoPostRepository implements PostRepository {
   }
 
   public async editPost(id: string, postDelta: Partial<Post>): Promise<void> {
+    // eslint-disable-next-line no-param-reassign
     postDelta.tags = postDelta.tags?.map(tag => tag.toLowerCase());
 
     await this.postCollection.updateOne(

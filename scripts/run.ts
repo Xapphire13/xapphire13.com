@@ -109,8 +109,9 @@ async function seedDatabase(connectionUri: string) {
     nodemonArgs.push('--inspect');
   }
 
-  const nodemon = childProcess.spawn('./node_modules/.bin/nodemon', [
-    [...nodemonArgs, "--exec", "heroku local", "--signal", "SIGTERM"],
+  const nodemon = childProcess.spawn(
+    './node_modules/.bin/nodemon',
+    [...nodemonArgs, '--exec', 'heroku local', '--signal', 'SIGTERM'],
     {
       env: {
         ...process.env,

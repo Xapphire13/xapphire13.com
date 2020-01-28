@@ -10,8 +10,9 @@ import Experiment from '../entities/experiment';
 
 @injectable()
 @JsonController('/api/playground')
-export class PlaygroundController {
+export default class PlaygroundController {
   @Get('/experiments')
+  // eslint-disable-next-line class-methods-use-this
   public async getExperiments(): Promise<Experiment[]> {
     const experiments = await globby([`${APP_PATH}/playground-*`]);
 
@@ -27,6 +28,7 @@ export class PlaygroundController {
   }
 
   @Get('/experiments/:id')
+  // eslint-disable-next-line class-methods-use-this
   public async getExperiment(@Param('id') id: string): Promise<Experiment> {
     if (await util.promisify(fs.exists)(`${APP_PATH}/playground-${id}}`)) {
       return { name: id, description: 'TODO', main: 'TODO' };

@@ -15,9 +15,47 @@ import User from '../entities/user';
 
 import otplib = require('otplib');
 
+async function getAuthToken(
+  user: User,
+  authCode: string,
+  tempToken: string
+): Promise<string> {
+  const token = new Promise<string | object>((res, rej) =>
+    jwt.verify(tempToken, user.tokenSecret, (err, valid) =>
+      err ? rej(err) : res(valid)
+    )
+  );
+  const authCodeValid = otplib.authenticator.check(
+    authCode,
+    user.authenticatorSecret
+  );
+  const tokenValid = await token.then(
+    () => true,
+    () => false
+  );
+
+  if (!authCodeValid || !tokenValid) {
+    throw Boom.unauthorized('Invalid code/token');
+  }
+
+  return new Promise<string>((res, rej) =>
+    jwt.sign(
+      {
+        type: 'auth',
+        username: user.username
+      },
+      user.tokenSecret,
+      {
+        expiresIn: '30d'
+      },
+      (err, token) => (err ? rej(err) : res(token))
+    )
+  );
+}
+
 @injectable()
 @JsonController('/api')
-export class AuthController {
+export default class AuthController {
   constructor(@inject('UserRepository') private repository: UserRepository) {}
 
   @Get('/permissions')
@@ -64,6 +102,7 @@ export class AuthController {
       if (!user.authenticatorSecret) {
         let secret = '';
         const validChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+        // eslint-disable-next-line no-restricted-syntax
         for (const value of crypto.randomBytes(16).values()) {
           secret += validChars[Math.floor((value / 256) * validChars.length)];
         }
@@ -100,11 +139,7 @@ export class AuthController {
         throw Boom.unauthorized('No such user');
       }
 
-      const authToken = await this.getAuthToken(
-        user,
-        challengeResponse,
-        challenge
-      );
+      const authToken = await getAuthToken(user, challengeResponse, challenge);
 
       return {
         token: authToken
@@ -114,50 +149,13 @@ export class AuthController {
     throw Boom.badRequest();
   }
 
-  private async getAuthToken(
-    user: User,
-    authCode: string,
-    tempToken: string
-  ): Promise<string> {
-    const token = new Promise<string | object>((res, rej) =>
-      jwt.verify(tempToken, user.tokenSecret, (err, valid) =>
-        err ? rej(err) : res(valid)
-      )
-    );
-    const authCodeValid = otplib.authenticator.check(
-      authCode,
-      user.authenticatorSecret
-    );
-    const tokenValid = await token.then(
-      () => true,
-      () => false
-    );
-
-    if (!authCodeValid || !tokenValid) {
-      throw Boom.unauthorized('Invalid code/token');
-    }
-
-    return new Promise<string>((res, rej) =>
-      jwt.sign(
-        {
-          type: 'auth',
-          username: user.username
-        },
-        user.tokenSecret,
-        {
-          expiresIn: '30d'
-        },
-        (err, token) => (err ? rej(err) : res(token))
-      )
-    );
-  }
-
   private async getAuthChallenge(
     user: User,
     password: string
   ): Promise<string> {
     if (!user.passwordHash) {
       // No password set, set it
+      // eslint-disable-next-line no-param-reassign
       user.passwordHash = await bcrypt.hash(password, 10);
       await this.repository.storePasswordHash(user.username, user.passwordHash);
     } else if (!(await bcrypt.compare(password, user.passwordHash))) {
@@ -168,6 +166,7 @@ export class AuthController {
     // Password is good, generate temporary token
 
     if (!user.tokenSecret) {
+      // eslint-disable-next-line no-param-reassign
       user.tokenSecret = crypto.randomBytes(32).toString('hex');
       await this.repository.storeTokenSecret(user.username, user.tokenSecret);
     }

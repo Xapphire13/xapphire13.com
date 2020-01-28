@@ -1,9 +1,9 @@
 import { container } from 'tsyringe';
 import { MongoClient } from 'mongodb';
-import { CompositeLogger } from './composite-logger';
-import { ConsoleLogger } from './console-logger';
+import CompositeLogger from './composite-logger';
+import ConsoleLogger from './console-logger';
 import MongoLogRepository from './repositories/MongoLogRepository';
-import DatabaseLogger from './sql-logger';
+import DatabaseLogger from './DatabaseLogger';
 import MongoPostRepository from './repositories/MongoPostRepository';
 import MongoUserRepository from './repositories/MongoUserRepository';
 

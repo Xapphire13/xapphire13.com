@@ -10,7 +10,7 @@ import { Logger } from './logger';
 
 @Middleware({ type: 'after' })
 @injectable()
-export class ErrorHandler implements ExpressErrorMiddlewareInterface {
+export default class ErrorHandler implements ExpressErrorMiddlewareInterface {
   constructor(@inject('Logger') private logger: Logger) {}
 
   public error(

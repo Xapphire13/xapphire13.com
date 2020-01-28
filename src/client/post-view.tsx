@@ -1,12 +1,12 @@
 import './styles/post-view.less';
-import * as React from "react";
-import { BookOpen, Clock, Edit } from "react-feather";
-import CustomMarkdown from "./custom-markdown";
-import DisqusThread from "react-disqus-comments";
-import { NotFound } from "./not-found";
-import { RouteComponentProps } from "react-router-dom";
-import moment from "moment";
-import * as ClientApi from "./api/client-api";
+import * as React from 'react';
+import { BookOpen, Clock, Edit } from 'react-feather';
+import DisqusThread from 'react-disqus-comments';
+import { RouteComponentProps } from 'react-router-dom';
+import moment from 'moment';
+import { NotFound } from './not-found';
+import CustomMarkdown from './custom-markdown';
+import * as ClientApi from './api/client-api';
 import Post from ':entities/post';
 
 import readingTime = require('reading-time');
@@ -51,11 +51,7 @@ export class PostView extends React.Component<Props, State> {
     }
 
     if (!this.state.post) {
-      return (
-<div className="post-view">
-        Loading...
-      </div>
-);
+      return <div className="post-view">Loading...</div>;
     }
 
     const isEdited = this.state.post.createdAt !== this.state.post.lastModified;
@@ -64,34 +60,56 @@ export class PostView extends React.Component<Props, State> {
     );
 
     return (
-      (
-<div className="post-view">
-      <div className="post-title">{this.state.post.title}</div>
-      <div className="post-details">
-        <span className="post-details-created" title={this.state.post.createdAt.toLocaleString()}>
-          <Clock className="icon" />{moment(this.state.post.createdAt).fromNow()}
-        </span>
-        {isEdited && " \u00B7 "}
-        {isEdited && <span className="post-details-edited" title={this.state.post.lastModified.toLocaleString()}>
-          <Edit className="icon" />{moment(this.state.post.lastModified).fromNow()}
-        </span>}
-        {" \u00B7 "}
-        <span className="post-details-length"><BookOpen className="icon" />{lengthInMin >= 1 ? `${lengthInMin} min` : "short"} read</span>
+      <div className="post-view">
+        <div className="post-title">{this.state.post.title}</div>
+        <div className="post-details">
+          <span
+            className="post-details-created"
+            title={this.state.post.createdAt.toLocaleString()}
+          >
+            <Clock className="icon" />
+            {moment(this.state.post.createdAt).fromNow()}
+          </span>
+          {isEdited && ' \u00B7 '}
+          {isEdited && (
+            <span
+              className="post-details-edited"
+              title={this.state.post.lastModified.toLocaleString()}
+            >
+              <Edit className="icon" />
+              {moment(this.state.post.lastModified).fromNow()}
+            </span>
+          )}
+          {' \u00B7 '}
+          <span className="post-details-length">
+            <BookOpen className="icon" />
+            {lengthInMin >= 1 ? `${lengthInMin} min` : 'short'} read
+          </span>
+        </div>
+        <div className="post-content">
+          <CustomMarkdown
+            className="markdown"
+            source={this.state.post.markdownText}
+          />
+        </div>
+        {this.state.post.tags && !!this.state.post.tags.length && (
+          <div className="post-tags">
+            {this.state.post.tags.map(tag => (
+              <span key={tag} className="post-tag">
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+        <DisqusThread
+          className="disqus-thread"
+          shortname="xapphire13"
+          identifier={(this.state.post._id as unknown) as string} // TODO
+          title={this.state.post.title}
+          url={this.getThreadUrl(this.state.post)}
+        />
       </div>
-      <div className={`post-content`}>
-        <CustomMarkdown className="markdown" source={this.state.post.markdownText} />
-      </div>
-      {this.state.post.tags && !!this.state.post.tags.length && <div className="post-tags">
-        {this.state.post.tags.map(tag => <span key={tag} className="post-tag">{tag}</span>)}
-      </div>}
-      <DisqusThread
-        className="disqus-thread"
-        shortname="xapphire13"
-        identifier={this.state.post._id as unknown as string} // TODO
-        title={this.state.post.title}
-        url={this.getThreadUrl(this.state.post)} />
-    </div>
-);
+    );
   }
 
   private getThreadUrl(post: Post): string {

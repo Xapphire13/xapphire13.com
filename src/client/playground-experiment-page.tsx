@@ -1,8 +1,8 @@
 import './styles/playground-experiment-page.less';
-import * as React from "react";
-import * as path from "path";
-import { RouteComponentProps } from "react-router-dom";
-import * as ClientApi from "./api/client-api";
+import * as React from 'react';
+import * as path from 'path';
+import { RouteComponentProps } from 'react-router-dom';
+import * as ClientApi from './api/client-api';
 import Experiment from ':entities/experiment';
 
 type Props = RouteComponentProps<any>;
@@ -49,7 +49,8 @@ export class PlaygroundExperimentPage extends React.Component<Props, State> {
             src="about:blank"
           />
         )}
-           </div>;
+      </div>
+    );
   }
 
   private setupFrame(): void {
@@ -60,7 +61,11 @@ export class PlaygroundExperimentPage extends React.Component<Props, State> {
         subtree: true
       });
       const script = this.iframe.contentDocument!.createElement('script');
-      script.src = path.join('/experiment', this.state.experimentInfo!.name, this.state.experimentInfo!.main);
+      script.src = path.join(
+        '/experiment',
+        this.state.experimentInfo!.name,
+        this.state.experimentInfo!.main
+      );
       this.iframe.contentDocument!.body.appendChild(script);
     }
   }

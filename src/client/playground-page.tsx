@@ -1,10 +1,10 @@
 import './styles/playground-page.less';
-import * as React from "react";
-import { Link, Route, RouteComponentProps, Switch } from "react-router-dom";
-import { PlaygroundExperimentPage } from "./playground-experiment-page";
-import { ScaleLoader } from "halogenium";
-import delay from "delay";
-import * as ClientApi from "./api/client-api";
+import * as React from 'react';
+import { Link, Route, RouteComponentProps, Switch } from 'react-router-dom';
+import { ScaleLoader } from 'halogenium';
+import delay from 'delay';
+import { PlaygroundExperimentPage } from './playground-experiment-page';
+import * as ClientApi from './api/client-api';
 import Experiment from ':entities/experiment';
 
 type Props = RouteComponentProps<any>;
@@ -54,7 +54,7 @@ export class PlaygroundPage extends React.Component<Props, State> {
                   <div key={index}>
                     <Link to={`/playground/${experiment.name}`}>
                       {experiment.name}
-                    </Link>{" "}
+                    </Link>{' '}
                     - {experiment.description}
                   </div>
                 ))
@@ -66,6 +66,7 @@ export class PlaygroundPage extends React.Component<Props, State> {
             </div>
           )}
         />
-           </Switch>;
+      </Switch>
+    );
   }
 }

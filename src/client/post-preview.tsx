@@ -8,13 +8,14 @@ import {
   Share2,
   Trash2
 } from 'react-feather';
-import ClipboardJS from "clipboard";
-import CustomMarkdown from "./custom-markdown";
-import {Link} from "react-router-dom";
-import {UserContext} from "./user-context";
-import moment from "moment";
-import {toast} from "react-toastify";
-import {Menu, MenuItem, MenuTrigger} from "./menu";
+import ClipboardJS from 'clipboard';
+import { Link } from 'react-router-dom';
+import moment from 'moment';
+import { toast } from 'react-toastify';
+import { UserContext } from './user-context';
+import CustomMarkdown from './custom-markdown';
+import { Menu, MenuItem, MenuTrigger } from './menu';
+
 import readingTime = require('reading-time');
 
 type Props = {
@@ -57,7 +58,7 @@ export class PostPreview extends React.Component<Props, State> {
       <UserContext.Consumer>
         {({ isAuthorized }) => (
           <div className="post-preview">
-            <div style={{ display: "flex", flexDirection: "row" }}>
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
               <Link className="post-title" to={postPath}>
                 {this.props.title}
               </Link>
@@ -112,22 +113,23 @@ export class PostPreview extends React.Component<Props, State> {
                 >
                   <Edit className="icon" />
                   {moment(this.props.lastModified).fromNow()}
-                       </span>}
+                </span>
+              )}
               {' \u00B7 '}
               <span className="post-details-length">
                 <BookOpen className="icon" />
-                {lengthInMin >= 1 ? `${lengthInMin} min` : "short"} read
+                {lengthInMin >= 1 ? `${lengthInMin} min` : 'short'} read
               </span>
             </div>
             <div
               className={`post-preview-content ${
-                isClipped ? "post-clipped" : ""
+                isClipped ? 'post-clipped' : ''
               }`}
             >
               <CustomMarkdown
                 className="post-preview-markdown markdown"
                 source={this.props.markdownText.substr(0, this.props.maxLength)}
-          />
+              />
               {isClipped && (
                 <Link to={postPath} className="post-preview-read-more">
                   Read more
@@ -141,7 +143,8 @@ export class PostPreview extends React.Component<Props, State> {
                     {tag}
                   </span>
                 ))}
-                                                        </div>}
+              </div>
+            )}
           </div>
         )}
       </UserContext.Consumer>

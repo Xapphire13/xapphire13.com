@@ -24,7 +24,7 @@ module.exports = {
   // collectCoverageFrom: null,
 
   // The directory where Jest should output its coverage files
-  coverageDirectory: "coverage",
+  coverageDirectory: 'coverage',
 
   // An array of regexp pattern strings used to skip coverage collection
   // coveragePathIgnorePatterns: [
@@ -59,8 +59,8 @@ module.exports = {
 
   // A set of global variables that need to be available in all test environments
   globals: {
-    "ts-jest": {
-      tsConfig: "./test/tsconfig.test.json"
+    'ts-jest': {
+      tsConfig: './test/tsconfig.test.json'
     }
   },
 
@@ -92,7 +92,7 @@ module.exports = {
   // notifyMode: "failure-change",
 
   // A preset that is used as a base for Jest's configuration
-  preset: "ts-jest",
+  preset: 'ts-jest',
 
   // Run tests from one or more projects
   // projects: null,
@@ -113,7 +113,7 @@ module.exports = {
   // restoreMocks: false,
 
   // The root directory that Jest should scan for tests and modules within
-  rootDir: "..",
+  rootDir: '..',
 
   // A list of paths to directories that Jest should use to search for files in
   // roots: [
@@ -124,9 +124,7 @@ module.exports = {
   // runner: "jest-runner",
 
   // The paths to modules that run some code to configure or set up the testing environment before each test
-  setupFiles: [
-    "./test/jest-setup.ts"
-  ],
+  setupFiles: ['./test/jest-setup.ts'],
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
   // setupFilesAfterEnv: [],
@@ -135,7 +133,7 @@ module.exports = {
   // snapshotSerializers: [],
 
   // The test environment that will be used for testing
-  testEnvironment: "node",
+  testEnvironment: 'node',
 
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},
@@ -150,10 +148,7 @@ module.exports = {
   // ],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
-  testPathIgnorePatterns: [
-    "/node_modules/",
-    "/dist/"
-  ],
+  testPathIgnorePatterns: ['/node_modules/', '/dist/']
 
   // The regexp pattern or array of patterns that Jest uses to detect test files
   // testRegex: [],

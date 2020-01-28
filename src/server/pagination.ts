@@ -1,4 +1,4 @@
-import * as crc32 from 'crc-32';
+import crc32 from 'crc-32';
 import Page from './entities/page';
 
 export interface PagingAdvice {
@@ -20,16 +20,19 @@ export class ContinuationToken {
   constructor(idOrToken64: string, offset?: number, hash?: number) {
     let id = idOrToken64;
 
-    if (offset == undefined || hash == undefined) {
+    if (offset == null || hash == null) {
       let offsetStr;
       let hashStr: string;
-      [id = '', offsetStr = '0', hashStr = '0'] = new Buffer(
+      // eslint-disable-next-line prefer-const
+      [id = '', offsetStr = '0', hashStr = '0'] = Buffer.from(
         idOrToken64,
         'base64'
       )
         .toString()
         .split('_');
+      // eslint-disable-next-line no-bitwise, no-param-reassign
       offset = ~~offsetStr;
+      // eslint-disable-next-line no-bitwise, no-param-reassign
       hash = ~~hashStr;
     }
 
@@ -39,11 +42,28 @@ export class ContinuationToken {
   }
 
   public toBase64(): string {
-    return new Buffer(`${this.id}_${this.offset}_${this.hash}`).toString(
+    return Buffer.from(`${this.id}_${this.offset}_${this.hash}`).toString(
       'base64'
     );
   }
 }
+
+export function hash(inputs: string[]): number {
+  return crc32.str(inputs.join('_'));
+}
+
+const createToken = <T extends any>(
+  idKey: string,
+  createHashString: (item: T) => string
+) => (values: T[]): ContinuationToken => {
+  const firstItem: T = values[0];
+
+  return new ContinuationToken(
+    firstItem[idKey],
+    values.length,
+    hash(values.map(createHashString))
+  );
+};
 
 export function getPagingAdvice(
   pageSize: number,
@@ -92,6 +112,7 @@ export function createPage<T extends any>(
       previousToken.hash;
 
     if (!idsDiffer && !hashesDiffer) {
+      // eslint-disable-next-line no-param-reassign
       values = values.slice(previousToken.offset);
     }
 
@@ -104,21 +125,4 @@ export function createPage<T extends any>(
       )
     };
   };
-}
-
-const createToken = <T extends any>(
-  idKey: string,
-  createHashString: (item: T) => string
-) => (values: T[]): ContinuationToken => {
-  const firstItem: T = values[0];
-
-  return new ContinuationToken(
-    firstItem[idKey],
-    values.length,
-    hash(values.map(createHashString))
-  );
-};
-
-export function hash(inputs: string[]): number {
-  return crc32.str(inputs.join('_'));
 }

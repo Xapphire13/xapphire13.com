@@ -1,12 +1,12 @@
 import './styles/login-page.less';
-import * as React from "react";
-import * as ClientApi from "./api/client-api";
+import * as React from 'react';
 import { Redirect, RouteComponentProps } from 'react-router-dom';
-import { Button } from './button';
 import { QRCode } from 'react-qr-svg';
+import { ToastId } from 'react-toastify';
+import * as ClientApi from './api/client-api';
+import { Button } from './button';
 import { User } from './models/user';
 import { onError } from './utils';
-import { ToastId } from 'react-toastify';
 
 type Props = {
   isAuthorized: boolean;
@@ -45,15 +45,15 @@ export class LoginPage extends React.Component<Props, State> {
       return (
         <div className="login-page">
           <this.passwordLogin />
-             </div>;
+        </div>
+      );
     }
 
     return (
-      (
-<div className="login-page">
-      <this.authChallenge />
-    </div>
-);
+      <div className="login-page">
+        <this.authChallenge />
+      </div>
+    );
   }
 
   private passwordLogin = (): JSX.Element => (
@@ -75,7 +75,7 @@ export class LoginPage extends React.Component<Props, State> {
         onChange={ev => this.setState({ password: ev.target.value })}
       />
       <Button text="Login" onClick={this.submitPassword} />
-                                             </div>;
+    </div>
   );
 
   private authChallenge = (): JSX.Element => (
@@ -98,13 +98,14 @@ export class LoginPage extends React.Component<Props, State> {
         </div>
       </div>
     </div>
-                                             </div>;
+  );
 
   private qrCode = (props: { url: string }): JSX.Element => (
     <div className="auth-challenge-qr">
       <p>First, scan this QR code into your authenticator app</p>
       <QRCode className="authenticator-qr" value={props.url} />
-                                                            </div>;
+    </div>
+  );
 
   private onEnter(
     func: React.KeyboardEventHandler<any>
@@ -128,7 +129,11 @@ export class LoginPage extends React.Component<Props, State> {
       );
       this.setState({ authenticatorUrl, challenge });
     } catch (err) {
-      this.toastId = onError('Incorrect username or password', err, this.toastId);
+      this.toastId = onError(
+        'Incorrect username or password',
+        err,
+        this.toastId
+      );
     }
   };
 
