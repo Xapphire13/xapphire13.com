@@ -23,7 +23,7 @@ export class AuthController {
   public async getPermissions(
     @CurrentUser({ required: true }) user: User
   ): Promise<{ username: string; admin: boolean }> {
-    const isAdmin = await this.repository.isAdmin(user.id);
+    const isAdmin = await this.repository.isAdmin(user.username);
 
     return {
       username: user.username,
@@ -66,7 +66,7 @@ export class AuthController {
         }
         user.authenticatorSecret = secret;
         await this.repository.storeAuthenticatorSecret(
-          user.id,
+          user.username,
           user.authenticatorSecret
         );
       }
@@ -152,7 +152,7 @@ export class AuthController {
     if (!user.passwordHash) {
       // No password set, set it
       user.passwordHash = await bcrypt.hash(password, 10);
-      await this.repository.storePasswordHash(user.id, user.passwordHash);
+      await this.repository.storePasswordHash(user.username, user.passwordHash);
     } else if (!(await bcrypt.compare(password, user.passwordHash))) {
       // Password set, check it
       throw Boom.unauthorized("Incorrect username/password");
@@ -162,7 +162,7 @@ export class AuthController {
 
     if (!user.tokenSecret) {
       user.tokenSecret = crypto.randomBytes(32).toString("hex");
-      await this.repository.storeTokenSecret(user.id, user.tokenSecret);
+      await this.repository.storeTokenSecret(user.username, user.tokenSecret);
     }
 
     return new Promise<string>((res, rej) =>
