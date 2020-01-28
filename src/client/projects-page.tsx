@@ -1,8 +1,8 @@
 import './styles/projects-page.less';
-import * as React from "react";
-import {GitPullRequest, Star} from "react-feather";
-import {ScaleLoader} from "halogenium";
-import * as ClientApi from "./api/client-api";
+import * as React from 'react';
+import { GitPullRequest, Star } from 'react-feather';
+import { ScaleLoader } from 'halogenium';
+import * as ClientApi from './api/client-api';
 
 type State = {
   ownedRepos?: ClientApi.GithubRepo[];
@@ -57,35 +57,48 @@ export class ProjectsPage extends React.Component<any, State> {
                   {repo.name}
                 </a>
                 {repo.description && ` - ${repo.description}`}
-                {" - "}
+                {' - '}
                 {repo.stargazers_count}
                 <Star className="icon" />
-                                                     </p>) : (
-          <div className="halogenium-container">
-            <ScaleLoader className="halogenium-loader" />
-          </div>
-        )}
+              </p>
+            ))
+          ) : (
+            <div className="halogenium-container">
+              <ScaleLoader className="halogenium-loader" />
+            </div>
+          )}
         </div>
 
         <div>
-        <h2>Contributions{!this.state.showLoading && this.state.contributions && ` (${this.state.contributions.reduce((agg, curr) => agg + curr.prCount, 0)})`}</h2>
+          <h2>
+            Contributions
+            {!this.state.showLoading &&
+              this.state.contributions &&
+              ` (${this.state.contributions.reduce(
+                (agg, curr) => agg + curr.prCount,
+                0
+              )})`}
+          </h2>
           {this.state.contributions && !this.state.showLoading ? (
             this.state.contributions.map(({ repo, prCount }, index) => (
               <p key={index}>
                 <a href={repo.html_url} target="_blank">
-                  <span style={{ fontWeight: "bold" }}>{repo.owner.login}</span>
+                  <span style={{ fontWeight: 'bold' }}>{repo.owner.login}</span>
                   /{repo.name}
                 </a>
                 {repo.description && ` - ${repo.description}`}
-                {" - "}
+                {' - '}
                 {prCount}
                 <GitPullRequest className="icon" />
-                                                                   </p>) : (
-          <div className="halogenium-container">
-            <ScaleLoader className="halogenium-loader" />
-          </div>
-        )}
+              </p>
+            ))
+          ) : (
+            <div className="halogenium-container">
+              <ScaleLoader className="halogenium-loader" />
+            </div>
+          )}
         </div>
-           </div>;
+      </div>
+    );
   }
 }

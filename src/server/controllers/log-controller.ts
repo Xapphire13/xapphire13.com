@@ -15,7 +15,7 @@ export const DEFAULT_PAGE_SIZE = 20;
 
 @injectable()
 @JsonController('/api')
-export class LogController {
+export default class LogController {
   private createPage = createPage<Log>(
     'timestamp',
     log => `${log.timestamp}_${log.level}_${log.message}_${log.exception}`

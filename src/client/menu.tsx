@@ -29,14 +29,14 @@ export class Menu extends React.Component<MenuProps, MenuState> {
   }
 
   public componentWillReceiveProps(nextProps: MenuProps): void {
-    this.setState({ display: !nextProps.isOpen ? "none" : undefined });
+    this.setState({ display: !nextProps.isOpen ? 'none' : undefined });
   }
 
   public componentDidMount(): void {
     const maxWidth = Math.max(
       ...this.childRefs.map(child => child.clientWidth)
     );
-    this.childRefs.forEach(child => (child.style.display = "flex"));
+    this.childRefs.forEach(child => (child.style.display = 'flex'));
     this.setState({
       width: maxWidth,
       display: !this.props.isOpen ? 'none' : undefined
@@ -58,7 +58,7 @@ export class Menu extends React.Component<MenuProps, MenuState> {
     return (
       <div
         className={this.props.className}
-        style={{ position: "relative", display: "inline-block" }}
+        style={{ position: 'relative', display: 'inline-block' }}
         ref={ref => ref && (this.ref = ref)}
       >
         {trigger}
@@ -81,7 +81,8 @@ export class Menu extends React.Component<MenuProps, MenuState> {
             })
           )}
         </div>
-           </div>;
+      </div>
+    );
   }
 
   get xPos(): number {
@@ -110,7 +111,8 @@ export class MenuTrigger extends React.Component<MenuTriggerProps> {
     return (
       <div className="menu-trigger" onClick={this.props.onClick}>
         {this.props.children}
-           </div>;
+      </div>
+    );
   }
 }
 
@@ -137,8 +139,9 @@ export class MenuItem extends React.Component<MenuItemProps> {
         onClick={!this.props.disabled ? this.props.onClick : undefined}
       >
         <div className="menu-item-label">{this.props.label}</div>
-        {this.props.icon && this.props.icon({ className: "menu-item-icon" })}
-           </div>;
+        {this.props.icon && this.props.icon({ className: 'menu-item-icon' })}
+      </div>
+    );
   }
 
   private renderSeparator(): JSX.Element {

@@ -1,6 +1,8 @@
+/* eslint-disable class-methods-use-this */
+/* eslint-disable no-console */
 import { Logger } from './logger';
 
-export class ConsoleLogger implements Logger {
+export default class ConsoleLogger implements Logger {
   public debug(message: string): Promise<void> {
     return this.log(message);
   }

@@ -1,11 +1,14 @@
-export class Config {
-  constructor() {}
-
-  public get githubToken(): string | undefined {
+export default {
+  githubToken(): string | undefined {
     return process.env.GITHUB_TOKEN;
-  }
+  },
 
-  public get mongoDbConnectionString(): string | undefined {
-    return process.env.MONGODB_URI;
+  mongoDbConnectionString(): string {
+    const connectionString = process.env.MONGODB_URI;
+
+    if (connectionString == null) {
+      throw new Error("Can't get mongo connection URI");
+    }
+    return connectionString;
   }
-}
+};

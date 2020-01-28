@@ -22,7 +22,7 @@ const DEFAULT_PAGE_SIZE = 5;
 
 @injectable()
 @JsonController('/api')
-export class PostController {
+export default class PostController {
   private createPage = createPage<PostEntity>('id', post => post._id);
 
   constructor(@inject('PostRepository') private repository: PostRepository) {}

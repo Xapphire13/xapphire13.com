@@ -1,9 +1,9 @@
 import { Get, JsonController } from 'routing-controllers';
 import GitHub from '@octokit/rest';
-import { inject, singleton } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import fetch from 'node-fetch';
 import moment from 'moment';
-import { Config } from '../config';
+import config from '../config';
 
 const CACHE_LIFETIME = moment.duration(1, 'h');
 
@@ -12,17 +12,17 @@ type RepoWithPrCount = { repo: any; prCount: number };
 
 @singleton()
 @JsonController('/api/github')
-export class GitHubController {
+export default class GitHubController {
   private github: GitHub;
 
   private ownedRepos: CachedValue<any[]> = [[], moment(0)];
 
   private contributionRepos: CachedValue<RepoWithPrCount[]> = [[], moment(0)];
 
-  constructor(@inject('Config') private config: Config) {
+  constructor() {
     if (config.githubToken) {
       this.github = new GitHub({
-        auth: config.githubToken
+        auth: config.githubToken()
       });
     }
   }
@@ -51,7 +51,7 @@ export class GitHubController {
     ) {
       const contributionRepos: RepoWithPrCount[] = [];
 
-      if (this.config.githubToken) {
+      if (config.githubToken()) {
         const opts = this.github.search.issuesAndPullRequests.endpoint.merge({
           q: 'is:pr author:Xapphire13 archived:false is:merged'
         });
@@ -63,13 +63,16 @@ export class GitHubController {
         const repositories: { [url: string]: number } = {};
         pullRequests.forEach((pr: any) => {
           repositories[pr.repository_url] =
+            // eslint-disable-next-line no-bitwise
             ~~repositories[pr.repository_url] + 1;
         });
 
+        // eslint-disable-next-line no-restricted-syntax
         for (const repoUrl of Object.keys(repositories)) {
+          // eslint-disable-next-line no-await-in-loop
           const repo = await fetch(repoUrl, {
             headers: {
-              Authorization: `token ${this.config.githubToken}`,
+              Authorization: `token ${config.githubToken()}`,
               'Content-Type': 'application/json'
             }
           }).then(res => res.json());

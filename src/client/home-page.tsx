@@ -1,12 +1,12 @@
 import './styles/home-page.less';
-import * as React from "react";
-import * as ClientApi from "./api/client-api";
-import * as Utils from './utils';
-import { Disposable } from './disposable';
+import * as React from 'react';
 import { PlusCircle } from 'react-feather';
-import { PostPreview } from './post-preview';
 import { RouteComponentProps } from 'react-router';
 import { ScaleLoader } from 'halogenium';
+import * as ClientApi from './api/client-api';
+import * as Utils from './utils';
+import { Disposable } from './disposable';
+import { PostPreview } from './post-preview';
 import { UserContext } from './user-context';
 import Post from ':entities/post';
 
@@ -44,7 +44,7 @@ export class HomePage extends React.Component<Props, State> {
     if (isMore) {
       this.scrollSubscription = Utils.subscribeToEvent(
         window,
-        "scroll",
+        'scroll',
         this.onScroll
       );
     }
@@ -103,10 +103,11 @@ export class HomePage extends React.Component<Props, State> {
     <div
       className="new-post"
       title="New post"
-      onClick={() => this.props.history.push("/posts/new")}
+      onClick={() => this.props.history.push('/posts/new')}
     >
       <PlusCircle className="new-post-icon" />
-                                       </div>;
+    </div>
+  );
 
   private loadingMessage = (): JSX.Element | null => {
     if (this.state.allPostsLoaded) {

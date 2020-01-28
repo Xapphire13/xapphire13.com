@@ -40,6 +40,7 @@ export class AppHeader extends React.Component {
             ))}
           </div>
         </nav>
-           </header>;
+      </header>
+    );
   }
 }

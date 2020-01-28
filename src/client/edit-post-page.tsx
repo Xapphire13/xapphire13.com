@@ -1,18 +1,19 @@
-import "./styles/edit-post-page.less";
-import "codemirror/lib/codemirror.css";
-import "codemirror/mode/gfm/gfm";
-import "codemirror/theme/material.css";
-import "react-tagsinput/react-tagsinput.css";
-import * as ClientApi from "./api/client-api";
-import * as React from "react";
-import { Save, Send } from "react-feather";
-import { Button } from "./button";
-import { Controlled as CodeMirror } from "react-codemirror2";
-import CustomMarkdown from "./custom-markdown";
-import { RouteComponentProps } from "react-router";
-import { onError } from "./utils";
-import { ToastId } from "react-toastify";
-import TagsInput = require("react-tagsinput");
+import './styles/edit-post-page.less';
+import 'codemirror/lib/codemirror.css';
+import 'codemirror/mode/gfm/gfm';
+import 'codemirror/theme/material.css';
+import 'react-tagsinput/react-tagsinput.css';
+import * as React from 'react';
+import { Save, Send } from 'react-feather';
+import { Controlled as CodeMirror } from 'react-codemirror2';
+import { RouteComponentProps } from 'react-router';
+import { ToastId } from 'react-toastify';
+import { Button } from './button';
+import CustomMarkdown from './custom-markdown';
+import { onError } from './utils';
+import * as ClientApi from './api/client-api';
+
+import TagsInput = require('react-tagsinput');
 
 type Props = RouteComponentProps<{
   id: string;
@@ -96,7 +97,8 @@ export class EditPostPage extends React.Component<Props, State> {
           }}
         />
         <CustomMarkdown className="markdown" source={this.state.markdownText} />
-           </div>;
+      </div>
+    );
   }
 
   private onCommit = async (): Promise<void> => {

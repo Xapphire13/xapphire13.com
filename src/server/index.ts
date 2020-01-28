@@ -6,28 +6,23 @@ import { useContainer, useExpressServer } from 'routing-controllers';
 import { container } from 'tsyringe';
 import { MongoClient } from 'mongodb';
 import { APP_PATH } from './constants';
-import { Config } from './config';
 import { Logger } from './logger';
 import { UserRepository } from './repositories/UserRepository';
 import registerDependencies from './registerDependencies';
+import config from './config';
 
 import bodyParser = require('body-parser');
 import express = require('express');
 
 async function main(): Promise<void> {
-  // Config
-  const config = new Config();
-
-  if (config.mongoDbConnectionString == null) {
-    throw new Error("Can't get mongo connection URI");
-  }
-  const mongoDb = new MongoClient(config.mongoDbConnectionString, {
+  const mongoDb = new MongoClient(config.mongoDbConnectionString(), {
     useUnifiedTopology: true
   });
   await mongoDb.connect();
 
   container.registerInstance('Config', config);
   registerDependencies(mongoDb);
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   useContainer({
     get: (token: any) => container.resolve(token)
   });
@@ -42,6 +37,7 @@ async function main(): Promise<void> {
 
     return matches && matches[1];
   };
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   useExpressServer(app, {
     controllers: [path.join(__dirname, 'controllers/*.js')],
     defaultErrorHandler: false,
@@ -70,7 +66,7 @@ async function main(): Promise<void> {
         return false;
       }
 
-      return await new Promise<boolean>(res =>
+      return new Promise<boolean>(res =>
         jwt.verify(token, user.tokenSecret, (err: any) => res(!err))
       );
     },

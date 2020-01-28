@@ -1,6 +1,6 @@
 import { Logger } from './logger';
 
-export class CompositeLogger implements Logger {
+export default class CompositeLogger implements Logger {
   constructor(private loggers: Logger[] = []) {}
 
   public debug(message: string): Promise<any> {
