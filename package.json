@@ -31,7 +31,7 @@
     "@types/globby": "^9.1.0",
     "@types/halogen": "^0.2.6",
     "@types/handlebars": "^4.0.39",
-    "@types/jest": "^24.9.1",
+    "@types/jest": "^25.1.0",
     "@types/jsonwebtoken": "^8.3.7",
     "@types/mongodb": "^3.3.14",
     "@types/node": "^13.5.0",
