@@ -1,7 +1,7 @@
-import Experiment from ":entities/experiment";
+import Experiment from ':entities/experiment';
 
 export async function getExperiments(): Promise<Experiment[]> {
-  const response = await fetch("/api/playground/experiments");
+  const response = await fetch('/api/playground/experiments');
 
   if (!response.ok) {
     throw new Error(response.statusText);

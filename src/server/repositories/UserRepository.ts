@@ -1,4 +1,4 @@
-import User from "../entities/user";
+import User from '../entities/user';
 
 export interface UserRepository {
   getUser(username: string): Promise<User | null>;

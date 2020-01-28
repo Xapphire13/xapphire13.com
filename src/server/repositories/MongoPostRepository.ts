@@ -1,17 +1,18 @@
-import { PostRepository } from "./PostRepository";
-import Semaphore from "semaphore-async-await";
-import { inject, injectable } from "tsyringe";
-import Post from "../entities/post";
-import { Db as MongoDatabase, Collection } from "mongodb";
-import shortid from "shortid";
+import Semaphore from 'semaphore-async-await';
+import { inject, injectable } from 'tsyringe';
+import { Db as MongoDatabase, Collection } from 'mongodb';
+import shortid from 'shortid';
+import Post from '../entities/post';
+import { PostRepository } from './PostRepository';
 
 @injectable()
 export default class MongoPostRepository implements PostRepository {
   private lock = new Semaphore(1);
+
   private postCollection: Collection<Post>;
 
-  constructor(@inject("mongoDatabase") db: MongoDatabase) {
-    this.postCollection = db.collection("posts");
+  constructor(@inject('mongoDatabase') db: MongoDatabase) {
+    this.postCollection = db.collection('posts');
   }
 
   public async createPost(post: Post): Promise<Post> {
@@ -35,11 +36,15 @@ export default class MongoPostRepository implements PostRepository {
   }
 
   public async getPosts(pageSize: number, from?: Date): Promise<Post[]> {
-    return (await this.postCollection.find({
-      createdAt: {
-        $lte: from || new Date()
-      }
-    }).limit(pageSize).sort("createdAt", -1).toArray());
+    return await this.postCollection
+      .find({
+        createdAt: {
+          $lte: from || new Date()
+        }
+      })
+      .limit(pageSize)
+      .sort('createdAt', -1)
+      .toArray();
   }
 
   public async deletePost(id: string): Promise<void> {
@@ -51,11 +56,14 @@ export default class MongoPostRepository implements PostRepository {
   public async editPost(id: string, postDelta: Partial<Post>): Promise<void> {
     postDelta.tags = postDelta.tags?.map(tag => tag.toLowerCase());
 
-    await this.postCollection.updateOne({ _id: id }, {
-      $set: {
-        ...postDelta,
-        lastModified: new Date()
+    await this.postCollection.updateOne(
+      { _id: id },
+      {
+        $set: {
+          ...postDelta,
+          lastModified: new Date()
+        }
       }
-    })
+    );
   }
 }

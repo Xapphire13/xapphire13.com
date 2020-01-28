@@ -1,15 +1,16 @@
-import "./styles/home-page.less";
-import * as ClientApi from "./api/client-api";
+import './styles/home-page.less';
 import * as React from "react";
-import * as Utils from "./utils";
-import { Disposable } from "./disposable";
-import { PlusCircle } from "react-feather";
-import { PostPreview } from "./post-preview";
-import { RouteComponentProps } from "react-router";
-import { ScaleLoader } from "halogenium";
-import { UserContext } from "./user-context";
-import Post from ":entities/post";
-import throttle = require("throttleit");
+import * as ClientApi from "./api/client-api";
+import * as Utils from './utils';
+import { Disposable } from './disposable';
+import { PlusCircle } from 'react-feather';
+import { PostPreview } from './post-preview';
+import { RouteComponentProps } from 'react-router';
+import { ScaleLoader } from 'halogenium';
+import { UserContext } from './user-context';
+import Post from ':entities/post';
+
+import throttle = require('throttleit');
 
 const MAX_PREVIEW_LENGTH = 4000;
 
@@ -24,7 +25,8 @@ type State = {
 export class HomePage extends React.Component<Props, State> {
   public state: Readonly<State>;
 
-  private scrollSubscription: Disposable = { dispose: () => { } };
+  private scrollSubscription: Disposable = { dispose: () => {} };
+
   private ref: HTMLDivElement | null;
 
   constructor(props: Props) {
@@ -40,12 +42,20 @@ export class HomePage extends React.Component<Props, State> {
     const isMore = await this.loadPosts();
 
     if (isMore) {
-      this.scrollSubscription = Utils.subscribeToEvent(window, "scroll", this.onScroll);
+      this.scrollSubscription = Utils.subscribeToEvent(
+        window,
+        "scroll",
+        this.onScroll
+      );
     }
   }
 
   public componentDidUpdate(_prevProps: Props, prevState: State): void {
-    if (prevState.loading && !this.state.loading && !this.state.allPostsLoaded) {
+    if (
+      prevState.loading &&
+      !this.state.loading &&
+      !this.state.allPostsLoaded
+    ) {
       window.requestAnimationFrame(() => {
         if (this.ref && this.ref.clientHeight <= window.innerHeight) {
           this.loadPosts();
@@ -59,32 +69,44 @@ export class HomePage extends React.Component<Props, State> {
   }
 
   public render(): JSX.Element {
-    return <UserContext.Consumer>{({ isAuthorized }) =>
-      <div className="home-page" ref={ref => this.ref = ref}>
-        {isAuthorized && <this.newPost />}
-        {this.state.loadedPosts.map((post, i) => <PostPreview
-          key={post._id as unknown as string} // TODO
-          id={post._id as unknown as string} // TODO
-          title={post.title}
-          created={new Date(post.createdAt)}
-          lastModified={new Date(post.lastModified)}
-          markdownText={post.markdownText}
-          tags={post.tags}
-          maxLength={MAX_PREVIEW_LENGTH}
-          edit={() => this.props.history.push(`/posts/${post._id}/edit`)}
-          delete={async () => {
-            await ClientApi.deletePost(post._id as unknown as string); // TODO
-            delete this.state.loadedPosts[i];
-            this.setState({});
-          }} />)}
-        {this.loadingMessage()}
-      </div>
-    }</UserContext.Consumer>;
+    return (
+      <UserContext.Consumer>
+        {({ isAuthorized }) => (
+          <div className="home-page" ref={ref => (this.ref = ref)}>
+            {isAuthorized && <this.newPost />}
+            {this.state.loadedPosts.map((post, i) => (
+              <PostPreview
+                key={(post._id as unknown) as string} // TODO
+                id={(post._id as unknown) as string} // TODO
+                title={post.title}
+                created={new Date(post.createdAt)}
+                lastModified={new Date(post.lastModified)}
+                markdownText={post.markdownText}
+                tags={post.tags}
+                maxLength={MAX_PREVIEW_LENGTH}
+                edit={() => this.props.history.push(`/posts/${post._id}/edit`)}
+                delete={async () => {
+                  await ClientApi.deletePost((post._id as unknown) as string); // TODO
+                  delete this.state.loadedPosts[i];
+                  this.setState({});
+                }}
+              />
+            ))}
+            {this.loadingMessage()}
+          </div>
+        )}
+      </UserContext.Consumer>
+    );
   }
 
-  private newPost = (): JSX.Element => <div className="new-post" title="New post" onClick={() => this.props.history.push("/posts/new")}>
-    <PlusCircle className="new-post-icon" />
-  </div>
+  private newPost = (): JSX.Element => (
+    <div
+      className="new-post"
+      title="New post"
+      onClick={() => this.props.history.push("/posts/new")}
+    >
+      <PlusCircle className="new-post-icon" />
+                                       </div>;
 
   private loadingMessage = (): JSX.Element | null => {
     if (this.state.allPostsLoaded) {
@@ -92,15 +114,23 @@ export class HomePage extends React.Component<Props, State> {
         return <p className="post-loading-status">No posts to load...</p>;
       }
 
-      return <p className="post-loading-status">Looks like you've reached the end...</p>;
+      return (
+        <p className="post-loading-status">
+          Looks like you've reached the end...
+        </p>
+      );
     }
 
     if (this.state.loading) {
-      return <div className="post-loading-status"><ScaleLoader /></div>;
+      return (
+        <div className="post-loading-status">
+          <ScaleLoader />
+        </div>
+      );
     }
 
     return null;
-  }
+  };
 
   private loadPosts = (() => {
     let contToken: string | null;
@@ -123,7 +153,9 @@ export class HomePage extends React.Component<Props, State> {
           loading: true
         });
 
-        const { continuationToken, values } = await ClientApi.getPosts(contToken);
+        const { continuationToken, values } = await ClientApi.getPosts(
+          contToken
+        );
 
         loadedPosts.push(...values);
 
@@ -141,9 +173,9 @@ export class HomePage extends React.Component<Props, State> {
   })();
 
   private onScroll = throttle(async () => {
-    const app = document.getElementById("app");
+    const app = document.getElementById('app');
     if (app && window.innerHeight + window.scrollY + 200 >= app.offsetHeight) {
-      if (!await this.loadPosts()) {
+      if (!(await this.loadPosts())) {
         this.scrollSubscription.dispose();
       }
     }

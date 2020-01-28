@@ -1,8 +1,11 @@
-export async function getTempToken(username: string, password: string): Promise<{challenge: string, authenticatorUrl: string}> {
-  const response = await fetch("/api/auth", {
-    method: "POST",
+export async function getTempToken(
+  username: string,
+  password: string
+): Promise<{ challenge: string; authenticatorUrl: string }> {
+  const response = await fetch('/api/auth', {
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json"
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify({
       username,
@@ -17,11 +20,14 @@ export async function getTempToken(username: string, password: string): Promise<
   return await response.json();
 }
 
-export async function getAuthToken(challengeResponse: string, challenge: string): Promise<string> {
-  const response = await fetch("/api/auth", {
-    method: "POST",
+export async function getAuthToken(
+  challengeResponse: string,
+  challenge: string
+): Promise<string> {
+  const response = await fetch('/api/auth', {
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json"
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify({
       challengeResponse,

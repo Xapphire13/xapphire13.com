@@ -1,5 +1,5 @@
-import * as React from "react";
-import {User} from "./models/user";
+import * as React from 'react';
+import { User } from './models/user';
 
 type State = {
   user: User | null;

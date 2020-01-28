@@ -1,6 +1,5 @@
 export class Config {
-
-  constructor() { }
+  constructor() {}
 
   public get githubToken(): string | undefined {
     return process.env.GITHUB_TOKEN;

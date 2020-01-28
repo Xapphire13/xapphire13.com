@@ -1,4 +1,4 @@
-import {Logger} from "./logger";
+import { Logger } from './logger';
 
 export class ConsoleLogger implements Logger {
   public debug(message: string): Promise<void> {
@@ -12,7 +12,9 @@ export class ConsoleLogger implements Logger {
   }
 
   public error(message: string): Promise<void>;
+
   public error(exception: Error): Promise<void>;
+
   public error(messageOrException: string | Error): Promise<void> {
     console.error(messageOrException);
 

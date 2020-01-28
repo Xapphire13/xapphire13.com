@@ -1,23 +1,25 @@
-import { Get, JsonController } from "routing-controllers";
-import { Config } from "../config";
-import GitHub from "@octokit/rest";
-import { inject, singleton } from "tsyringe";
-import fetch from "node-fetch";
-import moment from "moment";
+import { Get, JsonController } from 'routing-controllers';
+import GitHub from '@octokit/rest';
+import { inject, singleton } from 'tsyringe';
+import fetch from 'node-fetch';
+import moment from 'moment';
+import { Config } from '../config';
 
-const CACHE_LIFETIME = moment.duration(1, "h");
+const CACHE_LIFETIME = moment.duration(1, 'h');
 
 type CachedValue<T = any> = [T, moment.Moment];
 type RepoWithPrCount = { repo: any; prCount: number };
 
 @singleton()
-@JsonController("/api/github")
+@JsonController('/api/github')
 export class GitHubController {
   private github: GitHub;
+
   private ownedRepos: CachedValue<any[]> = [[], moment(0)];
+
   private contributionRepos: CachedValue<RepoWithPrCount[]> = [[], moment(0)];
 
-  constructor(@inject("Config") private config: Config) {
+  constructor(@inject('Config') private config: Config) {
     if (config.githubToken) {
       this.github = new GitHub({
         auth: config.githubToken
@@ -25,16 +27,15 @@ export class GitHubController {
     }
   }
 
-  @Get("/projects")
+  @Get('/projects')
   public async getProjects(): Promise<any[]> {
     if (moment().diff(this.ownedRepos[1]) > CACHE_LIFETIME.asMilliseconds()) {
       const opts = this.github.repos.list.endpoint.merge({
-        type: "owner"
+        type: 'owner'
       });
-      const ownedRepos = (await this.github.paginate(
-        opts,
-        response => response.data
-      )).filter((repo: any) => !repo.fork && !repo.private);
+      const ownedRepos = (
+        await this.github.paginate(opts, response => response.data)
+      ).filter((repo: any) => !repo.fork && !repo.private);
       this.ownedRepos = [ownedRepos, moment()];
 
       return ownedRepos;
@@ -43,7 +44,7 @@ export class GitHubController {
     return this.ownedRepos[0];
   }
 
-  @Get("/contributions")
+  @Get('/contributions')
   public async getContributions(): Promise<RepoWithPrCount[]> {
     if (
       moment().diff(this.contributionRepos[1]) > CACHE_LIFETIME.asMilliseconds()
@@ -52,7 +53,7 @@ export class GitHubController {
 
       if (this.config.githubToken) {
         const opts = this.github.search.issuesAndPullRequests.endpoint.merge({
-          q: "is:pr author:Xapphire13 archived:false is:merged"
+          q: 'is:pr author:Xapphire13 archived:false is:merged'
         });
 
         const pullRequests = await this.github.paginate(
@@ -69,11 +70,11 @@ export class GitHubController {
           const repo = await fetch(repoUrl, {
             headers: {
               Authorization: `token ${this.config.githubToken}`,
-              "Content-Type": "application/json"
+              'Content-Type': 'application/json'
             }
           }).then(res => res.json());
 
-          if (repo.owner.login.toLowerCase() !== "xapphire13") {
+          if (repo.owner.login.toLowerCase() !== 'xapphire13') {
             contributionRepos.push({
               repo,
               prCount: repositories[repoUrl]
