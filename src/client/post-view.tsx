@@ -1,5 +1,4 @@
-import "./styles/post-view.less";
-import * as ClientApi from "./api/client-api";
+import './styles/post-view.less';
 import * as React from "react";
 import { BookOpen, Clock, Edit } from "react-feather";
 import CustomMarkdown from "./custom-markdown";
@@ -7,8 +6,10 @@ import DisqusThread from "react-disqus-comments";
 import { NotFound } from "./not-found";
 import { RouteComponentProps } from "react-router-dom";
 import moment from "moment";
-import Post from ":entities/post";
-import readingTime = require("reading-time");
+import * as ClientApi from "./api/client-api";
+import Post from ':entities/post';
+
+import readingTime = require('reading-time');
 
 type Params = {
   id: string;
@@ -50,15 +51,21 @@ export class PostView extends React.Component<Props, State> {
     }
 
     if (!this.state.post) {
-      return <div className="post-view">
+      return (
+<div className="post-view">
         Loading...
-      </div>;
+      </div>
+);
     }
 
     const isEdited = this.state.post.createdAt !== this.state.post.lastModified;
-    const lengthInMin = Math.floor(readingTime(this.state.post.markdownText).time / 1000 / 60);
+    const lengthInMin = Math.floor(
+      readingTime(this.state.post.markdownText).time / 1000 / 60
+    );
 
-    return <div className="post-view">
+    return (
+      (
+<div className="post-view">
       <div className="post-title">{this.state.post.title}</div>
       <div className="post-details">
         <span className="post-details-created" title={this.state.post.createdAt.toLocaleString()}>
@@ -83,7 +90,8 @@ export class PostView extends React.Component<Props, State> {
         identifier={this.state.post._id as unknown as string} // TODO
         title={this.state.post.title}
         url={this.getThreadUrl(this.state.post)} />
-    </div>;
+    </div>
+);
   }
 
   private getThreadUrl(post: Post): string {

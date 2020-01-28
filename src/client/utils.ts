@@ -1,12 +1,16 @@
-import { Disposable } from "./disposable";
-import { toast, ToastId } from "react-toastify";
+import { toast, ToastId } from 'react-toastify';
+import { Disposable } from './disposable';
 
-export function subscribeToEvent<K extends keyof WindowEventMap>(target: EventTarget, event: K, listener: (this: Window, ev: Event) => any): Disposable {
+export function subscribeToEvent<K extends keyof WindowEventMap>(
+  target: EventTarget,
+  event: K,
+  listener: (this: Window, ev: Event) => any
+): Disposable {
   target.addEventListener(event, listener);
 
   let dispose = () => {
     target.removeEventListener(event, listener);
-    dispose = () => { };
+    dispose = () => {};
   };
 
   return {
@@ -16,7 +20,11 @@ export function subscribeToEvent<K extends keyof WindowEventMap>(target: EventTa
 
 export function onError(message: string, toastId: ToastId): ToastId;
 export function onError(message: string, err: Error, toastId: ToastId): ToastId;
-export function onError(message: string, errOrToastId: Error | ToastId, toastId?: ToastId): ToastId {
+export function onError(
+  message: string,
+  errOrToastId: Error | ToastId,
+  toastId?: ToastId
+): ToastId {
   if (errOrToastId instanceof Error) {
     console.error(errOrToastId);
   } else {

@@ -1,4 +1,4 @@
-export type RepoWithPrCount = {repo: GithubRepo, prCount: number};
+export type RepoWithPrCount = { repo: GithubRepo; prCount: number };
 export type GithubRepo = {
   name: string;
   description: string;
@@ -10,10 +10,10 @@ export type GithubRepo = {
 };
 
 export async function getProjects(): Promise<GithubRepo[]> {
-  const response = await fetch("/api/github/projects", {
-    method: "GET",
+  const response = await fetch('/api/github/projects', {
+    method: 'GET',
     headers: {
-      "Content-Type": "application/json"
+      'Content-Type': 'application/json'
     }
   });
 
@@ -25,10 +25,10 @@ export async function getProjects(): Promise<GithubRepo[]> {
 }
 
 export async function getContributions(): Promise<RepoWithPrCount[]> {
-  const response = await fetch("/api/github/contributions", {
-    method: "GET",
+  const response = await fetch('/api/github/contributions', {
+    method: 'GET',
     headers: {
-      "Content-Type": "application/json"
+      'Content-Type': 'application/json'
     }
   });
 
