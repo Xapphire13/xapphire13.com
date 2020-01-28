@@ -2,7 +2,8 @@ import { PostRepository } from "./PostRepository";
 import Semaphore from "semaphore-async-await";
 import { inject, injectable } from "tsyringe";
 import Post from "../entities/post";
-import { Db as MongoDatabase, Collection, ObjectId } from "mongodb";
+import { Db as MongoDatabase, Collection } from "mongodb";
+import shortid from "shortid";
 
 @injectable()
 export default class MongoPostRepository implements PostRepository {
@@ -15,6 +16,7 @@ export default class MongoPostRepository implements PostRepository {
 
   public async createPost(post: Post): Promise<Post> {
     const result = await this.postCollection.insertOne({
+      _id: shortid.generate(),
       createdAt: new Date(),
       lastModified: new Date(),
       tags: post.tags ? post.tags.map(tag => tag.toLowerCase()) : [],
@@ -23,17 +25,11 @@ export default class MongoPostRepository implements PostRepository {
       isPublished: false
     });
 
-    post._id = result.insertedId;
-
-    return post;
+    return result.ops[0];
   }
 
   public async getPost(id: string): Promise<Post | null> {
-    const post = await this.postCollection.findOne({ _id: new ObjectId(id) });
-
-    if (post) {
-      post._id = post._id.toHexString() as any; // TODO
-    }
+    const post = await this.postCollection.findOne({ _id: id });
 
     return post;
   }
@@ -43,22 +39,19 @@ export default class MongoPostRepository implements PostRepository {
       createdAt: {
         $lte: from || new Date()
       }
-    }).limit(pageSize).sort("createdAt", -1).toArray()).map(post => {
-      post._id = post._id.toHexString() as any; // TODO
-      return post;
-    });
+    }).limit(pageSize).sort("createdAt", -1).toArray());
   }
 
   public async deletePost(id: string): Promise<void> {
     await this.lock.acquire();
-    await this.postCollection.deleteOne({ _id: new ObjectId(id) });
+    await this.postCollection.deleteOne({ _id: id });
     this.lock.release();
   }
 
   public async editPost(id: string, postDelta: Partial<Post>): Promise<void> {
     postDelta.tags = postDelta.tags?.map(tag => tag.toLowerCase());
 
-    await this.postCollection.updateOne({ _id: new ObjectId(id) }, {
+    await this.postCollection.updateOne({ _id: id }, {
       $set: {
         ...postDelta,
         lastModified: new Date()
