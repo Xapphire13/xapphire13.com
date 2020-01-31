@@ -1,6 +1,6 @@
 import './styles/admin-page.less';
 import './styles/table.less';
-import * as React from 'react';
+import React from 'react';
 import ReactTable, { Column } from 'react-table';
 import { RouteComponentProps } from 'react-router-dom';
 import * as ClientApi from './api/client-api';
@@ -20,9 +20,7 @@ type State = {
 
 const PAGE_SIZE = 10;
 
-export class AdminPage extends React.Component<Props, State> {
-  public state: Readonly<State>;
-
+export default class AdminPage extends React.Component<Props, State> {
   private logColumns: Column[] = [
     {
       Header: 'Timestamp',
@@ -53,29 +51,30 @@ export class AdminPage extends React.Component<Props, State> {
   }
 
   public render(): JSX.Element {
+    const { user } = this.props;
+    const { numberOfPages, logs, loading, continuationToken } = this.state;
+
     return (
       <div className="admin-page">
-        Welcome {this.props.user.username}
+        Welcome {user.username}
         <ReactTable
           sortable={false}
-          pages={this.state.numberOfPages}
+          pages={numberOfPages}
           showPageJump={false}
           showPageSizeOptions={false}
           pageSize={PAGE_SIZE}
-          data={this.state.logs}
-          loading={this.state.loading}
+          data={logs}
+          loading={loading}
           columns={this.logColumns}
           onFetchData={async () => {
-            if (this.state.continuationToken !== null) {
+            if (continuationToken !== null) {
               this.setState({ loading: true });
-              const page = await ClientApi.getLogs(
-                this.state.continuationToken
-              );
-              const logs = this.state.logs.concat(page.values);
-              let numberOfPages = Math.ceil(logs.length / PAGE_SIZE);
-              page.continuationToken && numberOfPages++;
+              const page = await ClientApi.getLogs(continuationToken);
+              const newLogs = logs.concat(page.values);
+              let numberOfPages = Math.ceil(newLogs.length / PAGE_SIZE);
+              if (page.continuationToken) numberOfPages++;
               this.setState({
-                logs,
+                logs: newLogs,
                 loading: false,
                 continuationToken: page.continuationToken,
                 numberOfPages

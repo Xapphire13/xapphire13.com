@@ -1,9 +1,9 @@
 import './styles/playground-page.less';
-import * as React from 'react';
+import React from 'react';
 import { Link, Route, RouteComponentProps, Switch } from 'react-router-dom';
 import { ScaleLoader } from 'halogenium';
 import delay from 'delay';
-import { PlaygroundExperimentPage } from './playground-experiment-page';
+import PlaygroundExperimentPage from './playground-experiment-page';
 import * as ClientApi from './api/client-api';
 import Experiment from ':entities/experiment';
 
@@ -13,9 +13,7 @@ type State = {
   loading: boolean;
 };
 
-export class PlaygroundPage extends React.Component<Props, State> {
-  public state: Readonly<State>;
-
+export default class PlaygroundPage extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
@@ -39,19 +37,22 @@ export class PlaygroundPage extends React.Component<Props, State> {
   }
 
   public render(): JSX.Element {
+    const { match } = this.props;
+    const { experiments, loading } = this.state;
+
     return (
       <Switch>
         <Route
           exact
-          path={`${this.props.match.path}/:experiment`}
+          path={`${match.path}/:experiment`}
           component={PlaygroundExperimentPage}
         />
         <Route
           render={() => (
             <div className="playground-page">
-              {!this.state.loading ? (
-                this.state.experiments.map((experiment, index) => (
-                  <div key={index}>
+              {!loading ? (
+                experiments.map(experiment => (
+                  <div key={experiment.name}>
                     <Link to={`/playground/${experiment.name}`}>
                       {experiment.name}
                     </Link>{' '}

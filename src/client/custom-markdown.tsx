@@ -3,7 +3,7 @@ import 'codemirror/mode/gfm/gfm';
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/mode/jsx/jsx';
 import 'codemirror/theme/material.css';
-import * as React from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { UnControlled as CodeMirror } from 'react-codemirror2';
@@ -21,6 +21,16 @@ type CodeProps = {
 type LinkProps = {
   children: React.ReactNode;
   href: string;
+};
+
+const LANGUAGE_MAP: { [key: string]: string } = {
+  js: 'javascript',
+  jsx: 'text/jsx',
+  markdown: 'gfm',
+  md: 'gfm',
+  ts: 'text/typescript',
+  tsx: 'text/typescript-jsx',
+  typescript: 'text/typescript'
 };
 
 export default (props: Props) => (
@@ -42,22 +52,12 @@ export default (props: Props) => (
       ),
       link: ({ children, href }: LinkProps) =>
         href.startsWith('/') ? (
-          <Link to={href} children={children} />
+          <Link to={href}>{children}</Link>
         ) : (
-          <a href={href} target="_blank">
+          <a href={href} target="_blank" rel="noopener noreferrer">
             {children}
           </a>
         )
     }}
   />
 );
-
-const LANGUAGE_MAP: { [key: string]: string } = {
-  js: 'javascript',
-  jsx: 'text/jsx',
-  markdown: 'gfm',
-  md: 'gfm',
-  ts: 'text/typescript',
-  tsx: 'text/typescript-jsx',
-  typescript: 'text/typescript'
-};

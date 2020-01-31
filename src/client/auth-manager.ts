@@ -1,7 +1,7 @@
 import { CrossStorageClient } from 'cross-storage';
 import { User } from './models/user';
 
-export class AuthManager {
+export default class AuthManager {
   private username: Promise<string | null>;
 
   private token: Promise<string | null>;

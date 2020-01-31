@@ -17,6 +17,7 @@ export class ContinuationToken {
 
   constructor(id: string, offset: number, hash: number);
 
+  // eslint-disable-next-line no-shadow
   constructor(idOrToken64: string, offset?: number, hash?: number) {
     let id = idOrToken64;
 

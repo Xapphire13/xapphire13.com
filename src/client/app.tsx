@@ -1,6 +1,6 @@
 import './styles/app.less';
 import 'react-toastify/dist/ReactToastify.css';
-import * as React from 'react';
+import React from 'react';
 import {
   Route,
   RouteComponentProps,
@@ -9,19 +9,19 @@ import {
 } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import { GitHub } from 'react-feather';
-import { AdminPage } from './admin-page';
-import { AppHeader } from './app-header';
-import { AuthManager } from './auth-manager';
-import { EditPostPage } from './edit-post-page';
-import { HomePage } from './home-page';
-import { LoginPage } from './login-page';
-import { NotFound } from './not-found';
-import { PlaygroundPage } from './playground-page';
-import { PostView } from './post-view';
-import { ProjectsPage } from './projects-page';
-import { ProtectedRoute } from './route-helpers';
+import AdminPage from './admin-page';
+import AppHeader from './app-header';
+import AuthManager from './auth-manager';
+import EditPostPage from './edit-post-page';
+import HomePage from './home-page';
+import LoginPage from './login-page';
+import NotFound from './not-found';
+import PlaygroundPage from './playground-page';
+import PostView from './post-view';
+import ProjectsPage from './projects-page';
+import ProtectedRoute from './route-helpers';
 import { User } from './models/user';
-import { UserContext } from './user-context';
+import UserContext from './user-context';
 
 type Props = {
   authManager: AuthManager;
@@ -34,10 +34,8 @@ type State = {
 };
 
 // tslint:disable-next-line variable-name
-export const App = withRouter(
+const App = withRouter(
   class App extends React.Component<Props, State> {
-    public state: Readonly<State>;
-
     constructor(props: Props) {
       super(props);
 
@@ -47,24 +45,41 @@ export const App = withRouter(
         loading: true
       };
 
-      this.props.history.listen(() => this.onNavigate());
+      // Dismiss toast on navigate
+      props.history.listen(() => toast.dismiss());
     }
 
     public componentDidMount(): void {
-      Promise.all([
-        this.props.authManager.user,
-        this.props.authManager.isAuthorized
-      ]).then(([user, isAuthorized]) => {
-        this.setState({
-          user,
-          isAuthorized: isAuthorized ?? false,
-          loading: false
-        });
-      });
+      const { authManager } = this.props;
+
+      Promise.all([authManager.user, authManager.isAuthorized]).then(
+        ([user, isAuthorized]) => {
+          this.setState({
+            user,
+            isAuthorized: isAuthorized ?? false,
+            loading: false
+          });
+        }
+      );
     }
 
+    private onAuthenticated = async (
+      user: User,
+      token: string
+    ): Promise<void> => {
+      const { authManager } = this.props;
+
+      this.setState({
+        isAuthorized: true,
+        user
+      });
+      await authManager.onSignedIn(user.username, token);
+    };
+
     public render(): JSX.Element {
-      if (this.state.loading) {
+      const { loading, isAuthorized, user } = this.state;
+
+      if (loading) {
         return <div />;
       }
 
@@ -84,20 +99,18 @@ export const App = withRouter(
                   <ProtectedRoute
                     path="/posts/new"
                     component={EditPostPage}
-                    isAuthorized={this.state.isAuthorized}
+                    isAuthorized={isAuthorized}
                   />
                   <Route exact path="/posts/:id" component={PostView} />
                   <ProtectedRoute
                     path="/posts/:id/edit"
                     component={EditPostPage}
-                    isAuthorized={this.state.isAuthorized}
+                    isAuthorized={isAuthorized}
                   />
                   <ProtectedRoute
                     path="/admin"
-                    render={props => (
-                      <AdminPage user={this.state.user!} {...props} />
-                    )}
-                    isAuthorized={this.state.isAuthorized}
+                    render={props => <AdminPage user={user!} {...props} />}
+                    isAuthorized={isAuthorized}
                   />
                   <Route
                     path="/login"
@@ -105,7 +118,7 @@ export const App = withRouter(
                       <LoginPage
                         {...props}
                         onAuthenticated={this.onAuthenticated}
-                        isAuthorized={this.state.isAuthorized}
+                        isAuthorized={isAuthorized}
                       />
                     )}
                   />
@@ -119,6 +132,7 @@ export const App = withRouter(
               <a
                 href="https://github.com/xapphire13/xapphire13.com"
                 target="_blank"
+                rel="noopener noreferrer"
                 className="github-link"
               >
                 <GitHub
@@ -135,20 +149,7 @@ export const App = withRouter(
         </UserContext.Provider>
       );
     }
-
-    private onAuthenticated = async (
-      user: User,
-      token: string
-    ): Promise<void> => {
-      this.setState({
-        isAuthorized: true,
-        user
-      });
-      await this.props.authManager.onSignedIn(user.username, token);
-    };
-
-    private onNavigate(): void {
-      toast.dismiss();
-    }
   }
 );
+
+export default App;

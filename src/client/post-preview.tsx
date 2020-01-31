@@ -1,5 +1,5 @@
 import './styles/post-preview.less';
-import * as React from 'react';
+import React from 'react';
 import {
   BookOpen,
   Clock,
@@ -12,7 +12,7 @@ import ClipboardJS from 'clipboard';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { toast } from 'react-toastify';
-import { UserContext } from './user-context';
+import UserContext from './user-context';
 import CustomMarkdown from './custom-markdown';
 import { Menu, MenuItem, MenuTrigger } from './menu';
 
@@ -34,9 +34,20 @@ type State = {
   menuOpen: boolean;
 };
 
-export class PostPreview extends React.Component<Props, State> {
-  public state: Readonly<State>;
+function copyShareLink(postPath: string): void {
+  const btn = document.createElement('button');
+  const clipboard = new ClipboardJS(btn, {
+    text: () => `${document.location.origin}${postPath}`
+  });
+  btn.click();
+  clipboard.destroy();
+  btn.remove();
+  toast.info('Link copied to clipboard!', {
+    autoClose: 2000
+  });
+}
 
+export default class PostPreview extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
@@ -46,13 +57,23 @@ export class PostPreview extends React.Component<Props, State> {
   }
 
   public render(): JSX.Element {
-    const isEdited =
-      this.props.created.getTime() !== this.props.lastModified.getTime();
-    const isClipped = this.props.markdownText.length > this.props.maxLength;
-    const lengthInMin = Math.floor(
-      readingTime(this.props.markdownText).time / 1000 / 60
-    );
-    const postPath = `/posts/${this.props.id}`;
+    const {
+      created,
+      edit,
+      delete: deletePost,
+      id,
+      lastModified,
+      markdownText,
+      maxLength,
+      title,
+      tags
+    } = this.props;
+    const { menuOpen } = this.state;
+
+    const isEdited = created.getTime() !== lastModified.getTime();
+    const isClipped = markdownText.length > maxLength;
+    const lengthInMin = Math.floor(readingTime(markdownText).time / 1000 / 60);
+    const postPath = `/posts/${id}`;
 
     return (
       <UserContext.Consumer>
@@ -60,18 +81,16 @@ export class PostPreview extends React.Component<Props, State> {
           <div className="post-preview">
             <div style={{ display: 'flex', flexDirection: 'row' }}>
               <Link className="post-title" to={postPath}>
-                {this.props.title}
+                {title}
               </Link>
               <Menu
                 right
                 className="post-menu"
-                isOpen={this.state.menuOpen}
+                isOpen={menuOpen}
                 close={() => this.setState({ menuOpen: false })}
               >
                 <MenuTrigger
-                  onClick={() =>
-                    this.setState({ menuOpen: !this.state.menuOpen })
-                  }
+                  onClick={() => this.setState({ menuOpen: !menuOpen })}
                 >
                   <MenuIcon />
                 </MenuTrigger>
@@ -79,40 +98,40 @@ export class PostPreview extends React.Component<Props, State> {
                   visible={isAuthorized}
                   label="Edit"
                   icon={props => <Edit {...props} />}
-                  onClick={() => this.props.edit()}
+                  onClick={() => edit()}
                 />
                 <MenuItem
                   visible={isAuthorized}
                   label="Delete"
                   icon={props => <Trash2 {...props} />}
                   onClick={() => {
-                    this.props.delete();
+                    deletePost();
                     this.setState({ menuOpen: false });
                   }}
                 />
                 <MenuItem
                   label="Share"
                   icon={props => <Share2 {...props} />}
-                  onClick={() => this.copyShareLink(postPath)}
+                  onClick={() => copyShareLink(postPath)}
                 />
               </Menu>
             </div>
             <div className="post-details">
               <span
                 className="post-details-created"
-                title={this.props.created.toLocaleString()}
+                title={created.toLocaleString()}
               >
                 <Clock className="icon" />
-                {moment(this.props.created).fromNow()}
+                {moment(created).fromNow()}
               </span>
               {isEdited && ' \u00B7 '}
               {isEdited && (
                 <span
                   className="post-details-edited"
-                  title={this.props.lastModified.toLocaleString()}
+                  title={lastModified.toLocaleString()}
                 >
                   <Edit className="icon" />
-                  {moment(this.props.lastModified).fromNow()}
+                  {moment(lastModified).fromNow()}
                 </span>
               )}
               {' \u00B7 '}
@@ -128,7 +147,7 @@ export class PostPreview extends React.Component<Props, State> {
             >
               <CustomMarkdown
                 className="post-preview-markdown markdown"
-                source={this.props.markdownText.substr(0, this.props.maxLength)}
+                source={markdownText.substr(0, maxLength)}
               />
               {isClipped && (
                 <Link to={postPath} className="post-preview-read-more">
@@ -136,9 +155,9 @@ export class PostPreview extends React.Component<Props, State> {
                 </Link>
               )}
             </div>
-            {this.props.tags && !!this.props.tags.length && (
+            {tags && !!tags.length && (
               <div className="post-tags">
-                {this.props.tags.map(tag => (
+                {tags.map(tag => (
                   <span key={tag} className="post-tag">
                     {tag}
                   </span>
@@ -149,18 +168,5 @@ export class PostPreview extends React.Component<Props, State> {
         )}
       </UserContext.Consumer>
     );
-  }
-
-  private copyShareLink(postPath: string): void {
-    const btn = document.createElement('button');
-    const clipboard = new ClipboardJS(btn, {
-      text: () => `${document.location.origin}${postPath}`
-    });
-    btn.click();
-    clipboard.destroy();
-    btn.remove();
-    toast.info('Link copied to clipboard!', {
-      autoClose: 2000
-    });
   }
 }

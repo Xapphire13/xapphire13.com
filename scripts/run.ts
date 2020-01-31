@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import childProcess from 'child_process';
 import yargs from 'yargs';
 import { MongoMemoryServer } from 'mongodb-memory-server';
