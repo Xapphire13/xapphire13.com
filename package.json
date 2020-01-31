@@ -83,7 +83,7 @@
     "yargs": "^15.1.0"
   },
   "dependencies": {
-    "@octokit/rest": "^16.40.2",
+    "@octokit/rest": "^16.41.0",
     "bcrypt": "^3.0.7",
     "body-parser": "^1.18.2",
     "boom": "^7.1.1",
