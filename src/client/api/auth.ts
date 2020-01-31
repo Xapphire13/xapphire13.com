@@ -17,7 +17,7 @@ export async function getTempToken(
     throw new Error(response.statusText);
   }
 
-  return await response.json();
+  return response.json();
 }
 
 export async function getAuthToken(

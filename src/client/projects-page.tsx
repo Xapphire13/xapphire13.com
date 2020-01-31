@@ -1,5 +1,5 @@
 import './styles/projects-page.less';
-import * as React from 'react';
+import React from 'react';
 import { GitPullRequest, Star } from 'react-feather';
 import { ScaleLoader } from 'halogenium';
 import * as ClientApi from './api/client-api';
@@ -10,9 +10,7 @@ type State = {
   showLoading: boolean;
 };
 
-export class ProjectsPage extends React.Component<any, State> {
-  public state: Readonly<State>;
-
+export default class ProjectsPage extends React.Component<any, State> {
   constructor(props: any) {
     super(props);
 
@@ -41,19 +39,23 @@ export class ProjectsPage extends React.Component<any, State> {
   }
 
   public render(): JSX.Element {
+    const { showLoading, ownedRepos, contributions } = this.state;
+
     return (
       <div className="projects-page">
         <div>
           <h2>
             Repositories
-            {!this.state.showLoading &&
-              this.state.ownedRepos &&
-              ` (${this.state.ownedRepos.length})`}
+            {!showLoading && ownedRepos && ` (${ownedRepos.length})`}
           </h2>
-          {this.state.ownedRepos && !this.state.showLoading ? (
-            this.state.ownedRepos.map((repo, index) => (
-              <p key={index}>
-                <a href={repo.html_url} target="_blank">
+          {ownedRepos && !showLoading ? (
+            ownedRepos.map(repo => (
+              <p key={repo.name}>
+                <a
+                  href={repo.html_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   {repo.name}
                 </a>
                 {repo.description && ` - ${repo.description}`}
@@ -72,17 +74,21 @@ export class ProjectsPage extends React.Component<any, State> {
         <div>
           <h2>
             Contributions
-            {!this.state.showLoading &&
-              this.state.contributions &&
-              ` (${this.state.contributions.reduce(
+            {!showLoading &&
+              contributions &&
+              ` (${contributions.reduce(
                 (agg, curr) => agg + curr.prCount,
                 0
               )})`}
           </h2>
-          {this.state.contributions && !this.state.showLoading ? (
-            this.state.contributions.map(({ repo, prCount }, index) => (
-              <p key={index}>
-                <a href={repo.html_url} target="_blank">
+          {contributions && !showLoading ? (
+            contributions.map(({ repo, prCount }) => (
+              <p key={repo.name}>
+                <a
+                  href={repo.html_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <span style={{ fontWeight: 'bold' }}>{repo.owner.login}</span>
                   /{repo.name}
                 </a>

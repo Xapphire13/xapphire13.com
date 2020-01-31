@@ -1,5 +1,5 @@
 import { container } from 'tsyringe';
-import { AuthManager } from '../auth-manager';
+import AuthManager from '../auth-manager';
 import Page from ':entities/page';
 import Post from ':entities/post';
 

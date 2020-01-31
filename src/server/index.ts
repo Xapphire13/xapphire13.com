@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import './error-handler';
-import * as jwt from 'jsonwebtoken';
-import * as path from 'path';
+import jwt from 'jsonwebtoken';
+import path from 'path';
 import { useContainer, useExpressServer } from 'routing-controllers';
 import { container } from 'tsyringe';
 import { MongoClient } from 'mongodb';

@@ -3,12 +3,12 @@ import 'codemirror/lib/codemirror.css';
 import 'codemirror/mode/gfm/gfm';
 import 'codemirror/theme/material.css';
 import 'react-tagsinput/react-tagsinput.css';
-import * as React from 'react';
+import React from 'react';
 import { Save, Send } from 'react-feather';
 import { Controlled as CodeMirror } from 'react-codemirror2';
 import { RouteComponentProps } from 'react-router';
 import { ToastId } from 'react-toastify';
-import { Button } from './button';
+import Button from './button';
 import CustomMarkdown from './custom-markdown';
 import { onError } from './utils';
 import * as ClientApi from './api/client-api';
@@ -26,9 +26,7 @@ type State = {
   titleMissing: boolean;
 };
 
-export class EditPostPage extends React.Component<Props, State> {
-  public state: Readonly<State>;
-
+export default class EditPostPage extends React.Component<Props, State> {
   private toastId: ToastId;
 
   constructor(props: Props) {
@@ -43,7 +41,8 @@ export class EditPostPage extends React.Component<Props, State> {
   }
 
   public async componentDidMount(): Promise<void> {
-    const { id } = this.props.match.params;
+    const { match } = this.props;
+    const { id } = match.params;
 
     if (id) {
       try {
@@ -60,8 +59,42 @@ export class EditPostPage extends React.Component<Props, State> {
     }
   }
 
+  private onCommit = async (): Promise<void> => {
+    const { match, history } = this.props;
+    const { title, markdownText, tags } = this.state;
+
+    const titleMissing = !title;
+    this.setState({ titleMissing });
+
+    if (titleMissing) {
+      this.toastId = onError("Title can't be empty", this.toastId);
+
+      return;
+    }
+
+    const { id } = match.params;
+    if (id) {
+      try {
+        await ClientApi.savePost(id, title, markdownText, tags);
+        history.replace(`/posts/${id}`);
+      } catch (err) {
+        this.toastId = onError('Error saving post', err, this.toastId);
+      }
+    } else {
+      try {
+        const post = await ClientApi.createPost(title, markdownText, tags);
+        history.replace(`/posts/${post._id}`);
+      } catch (err) {
+        this.toastId = onError('Error creating post', err, this.toastId);
+      }
+    }
+  };
+
   public render(): JSX.Element {
-    const isEdit = !!this.props.match.params.id;
+    const { match } = this.props;
+    const { markdownText, tags, title, titleMissing } = this.state;
+
+    const isEdit = !!match.params.id;
     const commitText = isEdit ? 'Save' : 'Post';
 
     return (
@@ -70,9 +103,9 @@ export class EditPostPage extends React.Component<Props, State> {
           <input
             type="text"
             id="title"
-            className={this.state.titleMissing ? 'error' : ''}
+            className={titleMissing ? 'error' : ''}
             placeholder="Title..."
-            value={this.state.title}
+            value={title}
             onChange={ev => this.setState({ title: ev.target.value })}
           />
           <Button
@@ -82,11 +115,11 @@ export class EditPostPage extends React.Component<Props, State> {
           />
         </div>
         <TagsInput
-          value={this.state.tags}
-          onChange={tags => this.setState({ tags })}
+          value={tags}
+          onChange={value => this.setState({ tags: value })}
         />
         <CodeMirror
-          value={this.state.markdownText}
+          value={markdownText}
           onBeforeChange={(_editor, _data, value) =>
             this.setState({ markdownText: value })
           }
@@ -96,38 +129,8 @@ export class EditPostPage extends React.Component<Props, State> {
             theme: 'material'
           }}
         />
-        <CustomMarkdown className="markdown" source={this.state.markdownText} />
+        <CustomMarkdown className="markdown" source={markdownText} />
       </div>
     );
   }
-
-  private onCommit = async (): Promise<void> => {
-    const titleMissing = !this.state.title;
-    this.setState({ titleMissing });
-
-    if (titleMissing) {
-      this.toastId = onError("Title can't be empty", this.toastId);
-
-      return;
-    }
-
-    const { title, markdownText, tags } = this.state;
-
-    const { id } = this.props.match.params;
-    if (id) {
-      try {
-        await ClientApi.savePost(id, title, markdownText, tags);
-        this.props.history.replace(`/posts/${id}`);
-      } catch (err) {
-        this.toastId = onError('Error saving post', err, this.toastId);
-      }
-    } else {
-      try {
-        const post = await ClientApi.createPost(title, markdownText, tags);
-        this.props.history.replace(`/posts/${post._id}`);
-      } catch (err) {
-        this.toastId = onError('Error creating post', err, this.toastId);
-      }
-    }
-  };
 }

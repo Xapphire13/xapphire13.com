@@ -21,7 +21,7 @@ export async function getProjects(): Promise<GithubRepo[]> {
     throw new Error(response.statusText);
   }
 
-  return await response.json();
+  return response.json();
 }
 
 export async function getContributions(): Promise<RepoWithPrCount[]> {
@@ -36,5 +36,5 @@ export async function getContributions(): Promise<RepoWithPrCount[]> {
     throw new Error(response.statusText);
   }
 
-  return await response.json();
+  return response.json();
 }

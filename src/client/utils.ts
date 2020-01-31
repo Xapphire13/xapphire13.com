@@ -28,6 +28,7 @@ export function onError(
   if (errOrToastId instanceof Error) {
     console.error(errOrToastId);
   } else {
+    // eslint-disable-next-line no-param-reassign
     toastId = errOrToastId;
   }
 

@@ -1,9 +1,9 @@
 import { container } from 'tsyringe';
-import { AuthManager } from '../auth-manager';
+import AuthManager from '../auth-manager';
 import Log from ':entities/log';
 import Page from ':entities/page';
 
-export async function getLogs(
+export default async function getLogs(
   continuationToken: string | null = null
 ): Promise<Page<Log>> {
   const authManager = container.resolve(AuthManager);

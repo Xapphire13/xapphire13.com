@@ -1,5 +1,5 @@
 declare module "react-github-button" {
-  import * as React from "react";
+  import React from "react";
 
   type Props = {
     type: "stargazer" | "watchers" | "forks";

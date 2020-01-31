@@ -1,5 +1,5 @@
 import './styles/button.less';
-import * as React from 'react';
+import React from 'react';
 
 type Props = {
   text: string;
@@ -7,13 +7,11 @@ type Props = {
   onClick?: () => void;
 };
 
-export class Button extends React.Component<Props> {
-  public render(): JSX.Element {
-    return (
-      <button className="button" onClick={this.props.onClick}>
-        {this.props.icon && this.props.icon({ className: 'button-icon' })}
-        <span className="button-text">{this.props.text}</span>
-      </button>
-    );
-  }
+export default function Button({ onClick, text, icon }: Props) {
+  return (
+    <button className="button" onClick={onClick} type="button">
+      {icon && icon({ className: 'button-icon' })}
+      <span className="button-text">{text}</span>
+    </button>
+  );
 }

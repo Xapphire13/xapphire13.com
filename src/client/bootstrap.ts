@@ -1,11 +1,11 @@
 import 'reflect-metadata';
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import { container } from 'tsyringe';
 import ready from 'document-ready';
-import { AuthManager } from './auth-manager';
-import { App } from './app';
+import AuthManager from './auth-manager';
+import App from './app';
 
 ready(() => {
   const authManager = new AuthManager();
