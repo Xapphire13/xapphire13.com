@@ -1,7 +1,7 @@
 import { container } from 'tsyringe';
 import AuthManager from '../auth-manager';
-import Page from ':entities/page';
-import Post from ':entities/post';
+import Page from ':models/page';
+import Post from ':models/post';
 
 export async function getPosts(
   continuationToken: string | null = null

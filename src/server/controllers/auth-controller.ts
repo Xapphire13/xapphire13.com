@@ -11,7 +11,7 @@ import {
 import Boom from 'boom';
 import { inject, injectable } from 'tsyringe';
 import { UserRepository } from '../repositories/UserRepository';
-import User from '../entities/user';
+import User from '../models/user';
 
 import otplib = require('otplib');
 

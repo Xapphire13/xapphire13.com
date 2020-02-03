@@ -2,7 +2,7 @@ import Semaphore from 'semaphore-async-await';
 import { inject, injectable } from 'tsyringe';
 import { Db as MongoDatabase, Collection } from 'mongodb';
 import shortid from 'shortid';
-import Post from '../entities/post';
+import Post from '../models/post';
 import { PostRepository } from './PostRepository';
 
 @injectable()

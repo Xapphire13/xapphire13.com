@@ -5,7 +5,7 @@ import ReactTable, { Column } from 'react-table';
 import { RouteComponentProps } from 'react-router-dom';
 import * as ClientApi from './api/client-api';
 import { User } from './models/user';
-import Log from ':entities/log';
+import Log from ':models/log';
 
 type Props = {
   user: User;

@@ -7,7 +7,7 @@ import moment from 'moment';
 import NotFound from './not-found';
 import CustomMarkdown from './custom-markdown';
 import * as ClientApi from './api/client-api';
-import Post from ':entities/post';
+import Post from ':models/post';
 
 import readingTime = require('reading-time');
 

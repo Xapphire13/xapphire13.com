@@ -1,7 +1,7 @@
 import { injectable, inject } from 'tsyringe';
 import { Db as MongoDatabase, Collection } from 'mongodb';
 import { UserRepository } from './UserRepository';
-import User from ':entities/user';
+import User from 'src/server/models/user';
 
 @injectable()
 export default class MongoUserRepository implements UserRepository {

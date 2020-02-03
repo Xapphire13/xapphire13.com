@@ -1,4 +1,4 @@
-import Experiment from ':entities/experiment';
+import Experiment from ':models/experiment';
 
 export async function getExperiments(): Promise<Experiment[]> {
   const response = await fetch('/api/playground/experiments');

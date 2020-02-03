@@ -19,8 +19,8 @@
     "target": "es6",
     "baseUrl": ".",
     "paths": {
-      ":entities/*": [
-        "./src/server/entities/*"
+      ":models/*": [
+        "./src/server/models/*"
       ]
     }
   },
