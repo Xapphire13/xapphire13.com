@@ -36,7 +36,6 @@ type State = {
   loading: boolean;
 };
 
-// tslint:disable-next-line variable-name
 const App = withRouter(
   class App extends React.Component<Props, State> {
     constructor(props: Props) {
