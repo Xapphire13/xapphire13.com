@@ -1,6 +1,7 @@
 type Experiment {
   name: String
   description: String
+  path: String
 }
 
 type Query {

@@ -7,7 +7,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const webpack = require('webpack');
 
 const SRC_PATH = path.resolve(__dirname, 'src/client');
-const PLAYGROUND_PATH = path.join(SRC_PATH, 'playground');
+const PLAYGROUND_PATH = path.join(__dirname, 'src/playground');
 const DIST_PATH = path.resolve(__dirname, 'dist/app');
 
 const playgroundDirs = fs.readdirSync(PLAYGROUND_PATH);
@@ -15,8 +15,7 @@ const playgroundApps = playgroundDirs
   .map(dir => {
     const appPath = path.join(PLAYGROUND_PATH, dir, 'index.ts');
     if (fs.existsSync(appPath)) {
-      const appName = `playground-${dir}`;
-      return [appName, appPath];
+      return [dir, appPath];
     }
 
     return null;
