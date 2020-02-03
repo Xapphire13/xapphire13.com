@@ -22,6 +22,11 @@
     "test:debug": "node --inspect-brk ./node_modules/jest/bin/jest --config test/jest.config.js --verbose -i",
     "test": "jest --config test/jest.config.js --passWithNoTests"
   },
+  "husky": {
+    "hooks": {
+      "pre-push": "npm run lint"
+    }
+  },
   "devDependencies": {
     "@types/bcrypt": "^3.0.0",
     "@types/body-parser": "^1.17.1",
