@@ -1,12 +1,12 @@
-import './styles/login-page.less';
+import '../styles/login-page.less';
 import React from 'react';
 import { Redirect, RouteComponentProps } from 'react-router-dom';
 import { QRCode } from 'react-qr-svg';
 import { ToastId } from 'react-toastify';
-import * as ClientApi from './api/client-api';
-import Button from './button';
-import { User } from './models/user';
-import { onError } from './utils';
+import * as ClientApi from '../api/client-api';
+import Button from '../button';
+import { User } from '../models/user';
+import { onError } from '../utils';
 
 type Props = {
   isAuthorized: boolean;

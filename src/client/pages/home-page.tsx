@@ -1,13 +1,13 @@
-import './styles/home-page.less';
+import '../styles/home-page.less';
 import React from 'react';
 import { PlusCircle } from 'react-feather';
 import { RouteComponentProps } from 'react-router';
 import { ScaleLoader } from 'halogenium';
-import * as ClientApi from './api/client-api';
-import * as Utils from './utils';
-import { Disposable } from './disposable';
-import PostPreview from './post-preview';
-import UserContext from './user-context';
+import * as ClientApi from '../api/client-api';
+import * as Utils from '../utils';
+import { Disposable } from '../disposable';
+import PostPreview from '../post-preview';
+import UserContext from '../user-context';
 import Post from ':models/post';
 
 import throttle = require('throttleit');

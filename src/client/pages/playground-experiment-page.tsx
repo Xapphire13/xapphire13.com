@@ -1,4 +1,4 @@
-import './styles/playground-experiment-page.less';
+import '../styles/playground-experiment-page.less';
 import React, { useRef, useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 

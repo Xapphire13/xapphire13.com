@@ -1,4 +1,4 @@
-import './styles/edit-post-page.less';
+import '../styles/edit-post-page.less';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/mode/gfm/gfm';
 import 'codemirror/theme/material.css';
@@ -8,10 +8,10 @@ import { Save, Send } from 'react-feather';
 import { Controlled as CodeMirror } from 'react-codemirror2';
 import { RouteComponentProps } from 'react-router';
 import { ToastId } from 'react-toastify';
-import Button from './button';
-import CustomMarkdown from './custom-markdown';
-import { onError } from './utils';
-import * as ClientApi from './api/client-api';
+import Button from '../button';
+import CustomMarkdown from '../custom-markdown';
+import { onError } from '../utils';
+import * as ClientApi from '../api/client-api';
 
 import TagsInput = require('react-tagsinput');
 

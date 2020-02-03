@@ -1,10 +1,10 @@
-import './styles/admin-page.less';
-import './styles/table.less';
+import '../styles/admin-page.less';
+import '../styles/table.less';
 import React from 'react';
 import ReactTable, { Column } from 'react-table';
 import { RouteComponentProps } from 'react-router-dom';
-import * as ClientApi from './api/client-api';
-import { User } from './models/user';
+import * as ClientApi from '../api/client-api';
+import { User } from '../models/user';
 import Log from ':models/log';
 
 type Props = {
