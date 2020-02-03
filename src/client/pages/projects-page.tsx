@@ -1,8 +1,8 @@
-import './styles/projects-page.less';
+import '../styles/projects-page.less';
 import React from 'react';
 import { GitPullRequest, Star } from 'react-feather';
 import { ScaleLoader } from 'halogenium';
-import * as ClientApi from './api/client-api';
+import * as ClientApi from '../api/client-api';
 
 type State = {
   ownedRepos?: ClientApi.GithubRepo[];

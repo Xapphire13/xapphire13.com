@@ -1,4 +1,4 @@
-import './styles/playground-page.less';
+import '../styles/playground-page.less';
 import React, { useState, useEffect } from 'react';
 import { Link, Route, RouteComponentProps, Switch } from 'react-router-dom';
 import { ScaleLoader } from 'halogenium';
@@ -6,8 +6,8 @@ import delay from 'delay';
 import { gql } from 'apollo-boost';
 import { useQuery } from '@apollo/react-hooks';
 import PlaygroundExperimentPage from './playground-experiment-page';
-import { LoadExperiments } from '../__generated__/graphql';
-import notNull from '../shared/utils/notNull';
+import { LoadExperiments } from '../../__generated__/graphql';
+import notNull from '../../shared/utils/notNull';
 
 const EXPERIMENTS_QUERY = gql`
   query LoadExperiments {
