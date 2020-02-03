@@ -1,7 +1,6 @@
 import React from 'react';
 import { Redirect, Route, RouteProps } from 'react-router-dom';
 
-// tslint:disable-next-line variable-name
 const ProtectedRoute = ({
   component: Component,
   render,
