@@ -1,7 +1,7 @@
 import { inject, injectable } from 'tsyringe';
 import { Db as MongoDatabase, Collection } from 'mongodb';
 import { LogRepository } from './LogRepository';
-import Log from '../entities/log';
+import Log from '../models/log';
 
 @injectable()
 export default class MongoLogRepository implements LogRepository {

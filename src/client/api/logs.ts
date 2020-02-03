@@ -1,7 +1,7 @@
 import { container } from 'tsyringe';
 import AuthManager from '../auth-manager';
-import Log from ':entities/log';
-import Page from ':entities/page';
+import Log from ':models/log';
+import Page from ':models/page';
 
 export default async function getLogs(
   continuationToken: string | null = null

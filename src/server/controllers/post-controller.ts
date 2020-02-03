@@ -15,8 +15,8 @@ import Boom from 'boom';
 import { inject, injectable } from 'tsyringe';
 import { ContinuationToken, createPage, getPagingAdvice } from '../pagination';
 import { PostRepository } from '../repositories/PostRepository';
-import Page from '../entities/page';
-import PostEntity from '../entities/post';
+import Page from '../models/page';
+import PostEntity from '../models/post';
 
 const DEFAULT_PAGE_SIZE = 5;
 

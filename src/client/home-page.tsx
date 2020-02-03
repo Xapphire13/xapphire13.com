@@ -8,7 +8,7 @@ import * as Utils from './utils';
 import { Disposable } from './disposable';
 import PostPreview from './post-preview';
 import UserContext from './user-context';
-import Post from ':entities/post';
+import Post from ':models/post';
 
 import throttle = require('throttleit');
 

@@ -1,5 +1,5 @@
 import crc32 from 'crc-32';
-import Page from './entities/page';
+import Page from './models/page';
 
 export interface PagingAdvice {
   limit: number;

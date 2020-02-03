@@ -8,8 +8,8 @@ import { inject, injectable } from 'tsyringe';
 import { ContinuationToken, createPage, getPagingAdvice } from '../pagination';
 import { LogRepository } from '../repositories/LogRepository';
 
-import Log from '../entities/log';
-import Page from '../entities/page';
+import Log from '../models/log';
+import Page from '../models/page';
 
 export const DEFAULT_PAGE_SIZE = 20;
 
