@@ -1,4 +1,4 @@
-import PIXI from 'pixi.js';
+import * as PIXI from 'pixi.js';
 
 const app = new PIXI.Application({ width: 800, height: 600, antialias: true });
 document.body.appendChild(app.view);

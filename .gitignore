@@ -7,3 +7,4 @@ coverage/
 config.json
 database.sqlite
 .env
+src/__generated__/

@@ -9,6 +9,8 @@ import {
 } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import { GitHub } from 'react-feather';
+import ApolloClient from 'apollo-boost';
+import { ApolloProvider } from '@apollo/react-hooks';
 import AdminPage from './admin-page';
 import AppHeader from './app-header';
 import AuthManager from './auth-manager';
@@ -25,6 +27,7 @@ import UserContext from './user-context';
 
 type Props = {
   authManager: AuthManager;
+  apolloClient: ApolloClient<any>;
 } & RouteComponentProps<any>;
 
 type State = {
@@ -77,6 +80,7 @@ const App = withRouter(
     };
 
     public render(): JSX.Element {
+      const { apolloClient } = this.props;
       const { loading, isAuthorized, user } = this.state;
 
       if (loading) {
@@ -84,69 +88,71 @@ const App = withRouter(
       }
 
       return (
-        <UserContext.Provider value={this.state}>
-          <div id="app">
-            <ToastContainer />
-            <AppHeader />
-            <div className="app-content-wrapper">
-              <div className="app-content">
-                <Switch>
-                  <Route
-                    exact
-                    path="/"
-                    render={props => <HomePage {...props} />}
-                  />
-                  <ProtectedRoute
-                    path="/posts/new"
-                    component={EditPostPage}
-                    isAuthorized={isAuthorized}
-                  />
-                  <Route exact path="/posts/:id" component={PostView} />
-                  <ProtectedRoute
-                    path="/posts/:id/edit"
-                    component={EditPostPage}
-                    isAuthorized={isAuthorized}
-                  />
-                  <ProtectedRoute
-                    path="/admin"
-                    render={props => <AdminPage user={user!} {...props} />}
-                    isAuthorized={isAuthorized}
-                  />
-                  <Route
-                    path="/login"
-                    render={props => (
-                      <LoginPage
-                        {...props}
-                        onAuthenticated={this.onAuthenticated}
-                        isAuthorized={isAuthorized}
-                      />
-                    )}
-                  />
-                  <Route path="/projects" component={ProjectsPage} />
-                  <Route path="/playground" component={PlaygroundPage} />
-                  <Route component={NotFound} />
-                </Switch>
+        <ApolloProvider client={apolloClient}>
+          <UserContext.Provider value={this.state}>
+            <div id="app">
+              <ToastContainer />
+              <AppHeader />
+              <div className="app-content-wrapper">
+                <div className="app-content">
+                  <Switch>
+                    <Route
+                      exact
+                      path="/"
+                      render={props => <HomePage {...props} />}
+                    />
+                    <ProtectedRoute
+                      path="/posts/new"
+                      component={EditPostPage}
+                      isAuthorized={isAuthorized}
+                    />
+                    <Route exact path="/posts/:id" component={PostView} />
+                    <ProtectedRoute
+                      path="/posts/:id/edit"
+                      component={EditPostPage}
+                      isAuthorized={isAuthorized}
+                    />
+                    <ProtectedRoute
+                      path="/admin"
+                      render={props => <AdminPage user={user!} {...props} />}
+                      isAuthorized={isAuthorized}
+                    />
+                    <Route
+                      path="/login"
+                      render={props => (
+                        <LoginPage
+                          {...props}
+                          onAuthenticated={this.onAuthenticated}
+                          isAuthorized={isAuthorized}
+                        />
+                      )}
+                    />
+                    <Route path="/projects" component={ProjectsPage} />
+                    <Route path="/playground" component={PlaygroundPage} />
+                    <Route component={NotFound} />
+                  </Switch>
+                </div>
               </div>
+              <footer className="app-footer">
+                <a
+                  href="https://github.com/xapphire13/xapphire13.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="github-link"
+                >
+                  <GitHub
+                    style={{
+                      position: 'relative',
+                      top: '5px',
+                      marginRight: '0.3em'
+                    }}
+                  />
+                  GitHub
+                </a>
+              </footer>
             </div>
-            <footer className="app-footer">
-              <a
-                href="https://github.com/xapphire13/xapphire13.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="github-link"
-              >
-                <GitHub
-                  style={{
-                    position: 'relative',
-                    top: '5px',
-                    marginRight: '0.3em'
-                  }}
-                />
-                GitHub
-              </a>
-            </footer>
-          </div>
-        </UserContext.Provider>
+          </UserContext.Provider>
+        </ApolloProvider>
       );
     }
   }

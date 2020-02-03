@@ -1,87 +1,41 @@
 import './styles/playground-experiment-page.less';
-import React from 'react';
-import path from 'path';
+import React, { useRef, useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import * as ClientApi from './api/client-api';
-import Experiment from ':entities/experiment';
 
-type Props = RouteComponentProps<any>;
+type Props = RouteComponentProps<{ experiment: string }>;
 
-type State = {
-  experimentInfo?: Experiment;
-};
+export default function PlaygroundExperimentPage({ match }: Props) {
+  const experimentName = match.params.experiment;
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
-export default class PlaygroundExperimentPage extends React.Component<
-  Props,
-  State
-> {
-  private iframe: HTMLIFrameElement | null;
+  useEffect(() => {
+    if (iframeRef.current) {
+      const iframe = iframeRef.current;
 
-  private frameObserver: MutationObserver | null;
+      const resizeFrame = () => {
+        iframe.height = `${iframe.contentWindow!.document.body.scrollHeight}px`;
+      };
 
-  constructor(props: Props) {
-    super(props);
-
-    this.state = {};
-  }
-
-  public async componentDidMount(): Promise<void> {
-    const { match } = this.props;
-
-    const experimentName = match.params.experiment;
-    this.setState({
-      experimentInfo: await ClientApi.getExperiment(experimentName)
-    });
-  }
-
-  public componentWillUnmount(): void {
-    if (this.frameObserver) this.frameObserver.disconnect();
-  }
-
-  private setupFrame(): void {
-    const { experimentInfo } = this.state;
-
-    if (this.iframe) {
-      this.frameObserver = new MutationObserver(() => this.resizeFrame());
-      this.frameObserver.observe(this.iframe.contentDocument!, {
+      const frameObserver = new MutationObserver(() => resizeFrame);
+      frameObserver.observe(iframe.contentDocument!, {
         childList: true,
         subtree: true
       });
-      const script = this.iframe.contentDocument!.createElement('script');
-      script.src = path.join(
-        '/experiment',
-        experimentInfo!.name,
-        experimentInfo!.main
-      );
-      this.iframe.contentDocument!.body.appendChild(script);
+      const script = iframe.contentDocument!.createElement('script');
+      script.src = `/app/playground/${experimentName}.js`;
+      iframe.contentDocument!.body.appendChild(script);
+
+      return () => {
+        frameObserver.disconnect();
+      };
     }
-  }
 
-  private resizeFrame(): void {
-    if (this.iframe)
-      this.iframe.height = `${
-        this.iframe.contentWindow!.document.body.scrollHeight
-      }px`;
-  }
+    return () => {};
+  }, [experimentName]);
 
-  public render(): JSX.Element {
-    const { experimentInfo } = this.state;
-
-    return (
-      <div className="playground-experiment-page">
-        {experimentInfo && (
-          <iframe
-            title="experiment-frame"
-            ref={element => {
-              if (!this.iframe) {
-                this.iframe = element;
-                this.setupFrame();
-              }
-            }}
-            src="about:blank"
-          />
-        )}
-      </div>
-    );
-  }
+  return (
+    <div className="playground-experiment-page">
+      <iframe title="experiment-frame" ref={iframeRef} src="about:blank" />
+    </div>
+  );
 }
