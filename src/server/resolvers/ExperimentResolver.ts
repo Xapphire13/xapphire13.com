@@ -1,6 +1,7 @@
 import { injectable } from 'tsyringe';
 import path from 'path';
-import globby from 'globby';
+import fs from 'fs';
+import { promisify } from 'util';
 import { APP_PATH } from '../constants';
 import Resolver from './Resolver';
 
@@ -8,14 +9,20 @@ import Resolver from './Resolver';
 export default class ExperimentResolver implements Resolver {
   readonly Query = {
     async experiments() {
-      const experiments = await globby([`${APP_PATH}/playground/*.js`]);
+      const experiments: Record<
+        string,
+        { name: string; description: string }
+      > = JSON.parse(
+        await promisify(fs.readFile)(
+          path.join(APP_PATH, 'playground/index.json'),
+          'utf8'
+        )
+      );
 
-      return experiments.map(experiment => {
-        return {
-          name: path.basename(experiment).replace(/\.[^.]+$/, ''),
-          description: 'TODO'
-        };
-      });
+      return Object.keys(experiments).map(path => ({
+        ...experiments[path],
+        path
+      }));
     }
   };
 }

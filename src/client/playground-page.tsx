@@ -14,6 +14,7 @@ const EXPERIMENTS_QUERY = gql`
     experiments {
       name
       description
+      path
     }
   }
 `;
@@ -49,7 +50,7 @@ export default function PlaygroundPage({ match }: Props) {
               <>
                 {experiments.map(experiment => (
                   <div key={experiment.name ?? ''}>
-                    <Link to={`/playground/${experiment.name}`}>
+                    <Link to={`/playground/${experiment.path}`}>
                       {experiment.name}
                     </Link>{' '}
                     - {experiment.description}

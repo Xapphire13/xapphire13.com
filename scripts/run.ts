@@ -3,9 +3,9 @@ import childProcess from 'child_process';
 import yargs from 'yargs';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { MongoClient } from 'mongodb';
-import User from '../src/server/entities/user';
-import Post from '../src/server/entities/post';
-import Log from '../src/server/entities/log';
+import User from '../src/server/models/user';
+import Post from '../src/server/models/post';
+import Log from '../src/server/models/log';
 
 const args = yargs
   .options({
