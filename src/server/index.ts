@@ -5,6 +5,8 @@ import path from 'path';
 import { useContainer, useExpressServer } from 'routing-controllers';
 import { container } from 'tsyringe';
 import { MongoClient } from 'mongodb';
+import { ApolloServer, IResolvers } from 'apollo-server-express';
+import { importSchema } from 'graphql-import';
 import { APP_PATH } from './constants';
 import { Logger } from './logger';
 import { UserRepository } from './repositories/UserRepository';
@@ -27,7 +29,13 @@ async function main(): Promise<void> {
     get: (token: any) => container.resolve(token)
   });
 
+  // GraphQL
+  const apolloServer = new ApolloServer({
+    typeDefs: await importSchema(path.join(__dirname, './schema.graphql')),
+    resolvers: container.resolveAll<IResolvers>('Resolver')
+  });
   const app = express();
+  apolloServer.applyMiddleware({ app });
   app.set('port', process.env.PORT || 8080);
   app.use(bodyParser.json());
 

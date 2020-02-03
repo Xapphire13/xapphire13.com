@@ -57,15 +57,14 @@ async function seedDatabase(connectionUri: string) {
 }
 
 (async function run() {
+  childProcess.execSync('npm run copyschema');
   const tsc = childProcess.spawn('./node_modules/.bin/tsc', [
     '--watch',
     '-p',
     './src/server'
   ]);
   const webpack = childProcess.spawn('./node_modules/.bin/webpack', [
-    '--watch',
-    '--config',
-    './webpack.dev.js'
+    '--watch'
   ]);
 
   const serverCompile = new Promise(resolve => {

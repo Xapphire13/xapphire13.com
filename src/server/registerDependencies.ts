@@ -6,13 +6,15 @@ import MongoLogRepository from './repositories/MongoLogRepository';
 import DatabaseLogger from './DatabaseLogger';
 import MongoPostRepository from './repositories/MongoPostRepository';
 import MongoUserRepository from './repositories/MongoUserRepository';
+import ExperimentResolver from './resolvers/ExperimentResolver';
 
 export default function registerDependencies(mongoClient: MongoClient): void {
   container
     .registerInstance('mongoDatabase', mongoClient.db())
-    .registerType('PostRepository', MongoPostRepository)
-    .registerType('UserRepository', MongoUserRepository)
-    .registerType('LogRepository', MongoLogRepository)
+    .registerSingleton('PostRepository', MongoPostRepository)
+    .registerSingleton('UserRepository', MongoUserRepository)
+    .registerSingleton('LogRepository', MongoLogRepository)
+    .registerSingleton('Resolver', ExperimentResolver)
     .registerInstance(
       'Logger',
       new CompositeLogger([

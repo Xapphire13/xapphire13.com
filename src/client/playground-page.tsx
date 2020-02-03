@@ -1,73 +1,70 @@
 import './styles/playground-page.less';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, Route, RouteComponentProps, Switch } from 'react-router-dom';
 import { ScaleLoader } from 'halogenium';
 import delay from 'delay';
+import { gql } from 'apollo-boost';
+import { useQuery } from '@apollo/react-hooks';
 import PlaygroundExperimentPage from './playground-experiment-page';
-import * as ClientApi from './api/client-api';
-import Experiment from ':entities/experiment';
+import { LoadExperiments } from '../__generated__/graphql';
+import notNull from '../shared/utils/notNull';
 
-type Props = RouteComponentProps<any>;
-type State = {
-  experiments: Experiment[];
-  loading: boolean;
-};
-
-export default class PlaygroundPage extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-
-    this.state = {
-      experiments: [],
-      loading: true
-    };
+const EXPERIMENTS_QUERY = gql`
+  query LoadExperiments {
+    experiments {
+      name
+      description
+    }
   }
+`;
 
-  public async componentDidMount(): Promise<void> {
-    await Promise.all([
-      delay(500), // Synthetic delay to prevent loading indicator flashing
-      (async () => {
-        const experiments = await ClientApi.getExperiments();
+type Props = RouteComponentProps;
 
-        this.setState({ experiments });
-      })()
-    ]);
+export default function PlaygroundPage({ match }: Props) {
+  const { data, loading: experimentsLoading } = useQuery<LoadExperiments>(
+    EXPERIMENTS_QUERY
+  );
+  const [delayFinished, setDelayFinished] = useState(false);
+  const loading = experimentsLoading || !delayFinished;
+  const experiments = data?.experiments?.filter(notNull) ?? [];
 
-    this.setState({ loading: false });
-  }
+  useEffect(() => {
+    // Synthetic delay to prevent loading indicator flashing
+    delay(500).then(() => {
+      setDelayFinished(true);
+    });
+  }, []);
 
-  public render(): JSX.Element {
-    const { match } = this.props;
-    const { experiments, loading } = this.state;
-
-    return (
-      <Switch>
-        <Route
-          exact
-          path={`${match.path}/:experiment`}
-          component={PlaygroundExperimentPage}
-        />
-        <Route
-          render={() => (
-            <div className="playground-page">
-              {!loading ? (
-                experiments.map(experiment => (
-                  <div key={experiment.name}>
+  return (
+    <Switch>
+      <Route
+        exact
+        path={`${match.path}/:experiment`}
+        component={PlaygroundExperimentPage}
+      />
+      <Route
+        render={() => (
+          <div className="playground-page">
+            {!loading && (
+              <>
+                {experiments.map(experiment => (
+                  <div key={experiment.name ?? ''}>
                     <Link to={`/playground/${experiment.name}`}>
                       {experiment.name}
                     </Link>{' '}
                     - {experiment.description}
                   </div>
-                ))
-              ) : (
-                <div className="halogenium-container">
-                  <ScaleLoader className="halogenium-loader" />
-                </div>
-              )}
-            </div>
-          )}
-        />
-      </Switch>
-    );
-  }
+                ))}
+              </>
+            )}
+            {loading && (
+              <div className="halogenium-container">
+                <ScaleLoader className="halogenium-loader" />
+              </div>
+            )}
+          </div>
+        )}
+      />
+    </Switch>
+  );
 }
