@@ -115,7 +115,7 @@
     "halogenium": "^2.3.0",
     "jsonwebtoken": "^8.1.1",
     "moment": "^2.20.1",
-    "mongodb": "^3.5.2",
+    "mongodb": "^3.5.3",
     "node-fetch": "^2.2.0",
     "otplib": "^12.0.1",
     "pixi.js": "^5.2.1",
