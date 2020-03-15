@@ -119,7 +119,7 @@
     "node-fetch": "^2.2.0",
     "otplib": "^12.0.1",
     "pixi.js": "^5.2.1",
-    "react-codemirror2": "^6.0.0",
+    "react-codemirror2": "^6.0.1",
     "react-disqus-comments": "^1.2.0",
     "react-dom": "^16.12.0",
     "react-feather": "^2.0.3",
