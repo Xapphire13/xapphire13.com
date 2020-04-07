@@ -135,7 +135,7 @@
     "routing-controllers": "^0.8.0",
     "semaphore-async-await": "^1.5.1",
     "shortid": "^2.2.15",
-    "styled-components": "^4.4.1",
+    "styled-components": "^5.1.0",
     "tsyringe": "^4.0.1"
   }
 }
