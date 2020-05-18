@@ -40,7 +40,7 @@
     "@types/globby": "^9.1.0",
     "@types/halogen": "^0.2.6",
     "@types/handlebars": "^4.0.39",
-    "@types/jest": "^25.1.1",
+    "@types/jest": "^25.2.3",
     "@types/jsonwebtoken": "^8.3.7",
     "@types/mongodb": "^3.3.15",
     "@types/node": "^10.17.14",
