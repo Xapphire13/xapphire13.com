@@ -54,7 +54,7 @@
     "@types/react-tagsinput": "^3.19.6",
     "@types/rimraf": "^2.0.3",
     "@types/shortid": "0.0.29",
-    "@typescript-eslint/eslint-plugin": "^2.18.0",
+    "@typescript-eslint/eslint-plugin": "^3.0.0",
     "@typescript-eslint/parser": "^2.18.0",
     "apollo": "^2.22.0",
     "chalk": "^3.0.0",
