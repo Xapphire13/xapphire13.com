@@ -1,8 +1,8 @@
 # Build files
-app/
+dist/
 
 # npm
 node_modules/
 
 # Rust
-/target
+target/

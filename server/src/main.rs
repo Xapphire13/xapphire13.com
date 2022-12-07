@@ -10,6 +10,6 @@ fn index() -> Template {
 fn rocket() -> _ {
     rocket::build()
         .mount("/", routes![index])
-        .mount("/app", FileServer::from("app/").rank(-12))
+        .mount("/app", FileServer::from("../app/dist/").rank(-12))
         .attach(Template::fairing())
 }
