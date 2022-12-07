@@ -8,6 +8,6 @@ const classNames = {
   `,
 };
 
-export default function App() {
+export default function App(): JSX.Element {
   return <p className={cx(classNames.container)}>Hello React!</p>;
 }
