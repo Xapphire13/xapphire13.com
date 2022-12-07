@@ -1,41 +1,52 @@
-// Generated using webpack-cli https://github.com/webpack/webpack-cli
-
 const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const isProduction = process.env.NODE_ENV == "production";
 
-const stylesHandler = MiniCssExtractPlugin.loader;
-
 const config = {
-  entry: "./src/index.ts",
+  entry: "./src/index.tsx",
+  devtool: isProduction ? false : "source-map",
   output: {
     path: path.resolve(__dirname, "dist"),
   },
   plugins: [
-    new MiniCssExtractPlugin(),
-
-    // Add your plugins here
-    // Learn more about plugins from https://webpack.js.org/configuration/plugins/
+    new MiniCssExtractPlugin({
+      filename: "styles.css",
+    }),
   ],
   module: {
     rules: [
       {
         test: /\.(ts|tsx)$/i,
-        loader: "ts-loader",
+        use: [
+          {
+            loader: "babel-loader",
+          },
+          {
+            loader: "@linaria/webpack-loader",
+            options: {
+              sourceMap: !isProduction,
+            },
+          },
+        ],
         exclude: ["/node_modules/"],
       },
       {
         test: /\.css$/i,
-        use: [stylesHandler, "css-loader"],
+        use: [
+          { loader: MiniCssExtractPlugin.loader },
+          {
+            loader: "css-loader",
+            options: {
+              sourceMap: !isProduction,
+            },
+          },
+        ],
       },
       {
         test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
         type: "asset",
       },
-
-      // Add your rules for custom modules here
-      // Learn more about loaders from https://webpack.js.org/loaders/
     ],
   },
   resolve: {
