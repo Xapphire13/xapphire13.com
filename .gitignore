@@ -1,10 +1,8 @@
-dist/
+# Build files
+app/
+
+# npm
 node_modules/
-coverage/
-.vscode/
-*.zip
-*.log
-config.json
-database.sqlite
-.env
-src/__generated__/
+
+# Rust
+/target
