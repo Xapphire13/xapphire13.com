@@ -1,13 +1,28 @@
 import React from "react";
-import { css } from "@linaria/atomic";
-import { cx } from "@linaria/core";
+import "modern-normalize";
+import HomePage from "./components/pages/HomePage";
+import ThemeProvider, { THEME } from "./providers/ThemeProvider";
+import { css, cx } from "@linaria/atomic";
 
 const classNames = {
   container: css`
-    color: red;
+    height: 100%;
+    width: 100%;
+    color: ${THEME.palette.text};
+    background-color: ${THEME.palette.background};
+    position: relative;
+    overflow: auto;
   `,
 };
 
 export default function App(): JSX.Element {
-  return <p className={cx(classNames.container)}>Hello React!</p>;
+  return (
+    <ThemeProvider>
+      {({ className }) => (
+        <div id="app-container" className={cx(className, classNames.container)}>
+          <HomePage />
+        </div>
+      )}
+    </ThemeProvider>
+  );
 }

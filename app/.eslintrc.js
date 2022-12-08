@@ -27,5 +27,7 @@ module.exports = {
     project: path.join(__dirname, "/tsconfig.json"),
   },
   plugins: ["@typescript-eslint"],
-  rules: {},
+  rules: {
+    "@typescript-eslint/explicit-function-return-type": "off",
+  },
 };
