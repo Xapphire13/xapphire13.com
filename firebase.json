@@ -1,0 +1,14 @@
+{
+  "hosting": {
+    "ignore": ["**", "firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      {
+        "source": "**",
+        "run": {
+          "serviceId": "xapphire13",
+          "region": "us-central1"
+        }
+      }
+    ]
+  }
+}
